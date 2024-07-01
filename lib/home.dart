@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ssoup/course.dart';
+import 'package:ssoup/stamp.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -127,14 +128,30 @@ class HomePage extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(
-                          child: SizedBox(
-                            height: 200,
-                            child: Card(
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => StampPage()));
+                            },
+                            child: SizedBox(
+                              height: 200,
+                              child: Card(
                                 color: Color(0xffD5E3FF),
-                                child: Image.asset(
-                                  'assets/stamp.png',
-                                  fit: BoxFit.cover,
-                                )),
+                                child: Padding(
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        '스탬프 모아보기',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
                         SizedBox(width: 10),
