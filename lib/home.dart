@@ -139,17 +139,7 @@ class HomePage extends StatelessWidget {
                               height: 200,
                               child: Card(
                                 color: Color(0xffD5E3FF),
-                                child: Padding(
-                                  padding: EdgeInsets.all(10.0),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        '스탬프 모아보기',
-                                        style: TextStyle(fontSize: 16),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                child: Image.asset('assets/stamp.png', fit: BoxFit.cover,),
                               ),
                             ),
                           ),
