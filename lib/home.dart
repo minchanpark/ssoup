@@ -97,17 +97,8 @@ class HomePage extends StatelessWidget {
                             height: 200,
                             child: Card(
                               color: Color(0xffD5E3FF),
-                              child: Padding(
-                                padding: EdgeInsets.all(10.0),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      '울릉투어 맵',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                              child: Image.asset('assets/map.png',
+                                  fit: BoxFit.cover),
                             ),
                           ),
                         ),
@@ -124,17 +115,8 @@ class HomePage extends StatelessWidget {
                               height: 200,
                               child: Card(
                                 color: Color(0xffD5E3FF),
-                                child: Padding(
-                                  padding: EdgeInsets.all(10.0),
-                                  child: Column(
-                                    children: [
-                                      Text(
-                                        '플로깅 코스',
-                                        style: TextStyle(fontSize: 16),
-                                      ),
-                                    ],
-                                  ),
-                                ),
+                                child: Image.asset('assets/course.png',
+                                    fit: BoxFit.cover),
                               ),
                             ),
                           ),
@@ -148,19 +130,11 @@ class HomePage extends StatelessWidget {
                           child: SizedBox(
                             height: 200,
                             child: Card(
-                              color: Color(0xffD5E3FF),
-                              child: Padding(
-                                padding: EdgeInsets.all(10.0),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      '스탬프 모아보기',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                                color: Color(0xffD5E3FF),
+                                child: Image.asset(
+                                  'assets/stamp.png',
+                                  fit: BoxFit.cover,
+                                )),
                           ),
                         ),
                         SizedBox(width: 10),
@@ -168,19 +142,11 @@ class HomePage extends StatelessWidget {
                           child: SizedBox(
                             height: 200,
                             child: Card(
-                              color: Color(0xffD5E3FF),
-                              child: Padding(
-                                padding: EdgeInsets.all(10.0),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      'SSOUP 토크',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
+                                color: Color(0xffD5E3FF),
+                                child: Image.asset(
+                                  'assets/stalk.png',
+                                  fit: BoxFit.cover,
+                                )),
                           ),
                         ),
                       ],
