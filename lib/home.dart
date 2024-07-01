@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ssoup/course.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -12,16 +13,16 @@ class HomePage extends StatelessWidget {
           child: Column(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   bottomLeft: Radius.circular(50),
                   bottomRight: Radius.circular(50),
                 ),
                 child: Container(
-                  color: Color(0xffA3C2FF),
+                  color: const Color(0xffA3C2FF),
                   height: 278,
                   width: double.infinity,
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    padding: EdgeInsets.symmetric(horizontal: 20.0),
                     child: Row(
                       children: [
                         Expanded(
@@ -84,9 +85,9 @@ class HomePage extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 50),
+              const SizedBox(height: 50),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                padding: EdgeInsets.symmetric(horizontal: 20.0),
                 child: Column(
                   children: [
                     Row(
@@ -97,7 +98,7 @@ class HomePage extends StatelessWidget {
                             child: Card(
                               color: Color(0xffD5E3FF),
                               child: Padding(
-                                padding: const EdgeInsets.all(10.0),
+                                padding: EdgeInsets.all(10.0),
                                 child: Column(
                                   children: [
                                     Text(
@@ -112,19 +113,27 @@ class HomePage extends StatelessWidget {
                         ),
                         SizedBox(width: 10),
                         Expanded(
-                          child: SizedBox(
-                            height: 200,
-                            child: Card(
-                              color: Color(0xffD5E3FF),
-                              child: Padding(
-                                padding: const EdgeInsets.all(10.0),
-                                child: Column(
-                                  children: [
-                                    Text(
-                                      '플로깅 코스',
-                                      style: TextStyle(fontSize: 16),
-                                    ),
-                                  ],
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => CoursePage()));
+                            },
+                            child: SizedBox(
+                              height: 200,
+                              child: Card(
+                                color: Color(0xffD5E3FF),
+                                child: Padding(
+                                  padding: EdgeInsets.all(10.0),
+                                  child: Column(
+                                    children: [
+                                      Text(
+                                        '플로깅 코스',
+                                        style: TextStyle(fontSize: 16),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -141,7 +150,7 @@ class HomePage extends StatelessWidget {
                             child: Card(
                               color: Color(0xffD5E3FF),
                               child: Padding(
-                                padding: const EdgeInsets.all(10.0),
+                                padding: EdgeInsets.all(10.0),
                                 child: Column(
                                   children: [
                                     Text(
@@ -161,7 +170,7 @@ class HomePage extends StatelessWidget {
                             child: Card(
                               color: Color(0xffD5E3FF),
                               child: Padding(
-                                padding: const EdgeInsets.all(10.0),
+                                padding: EdgeInsets.all(10.0),
                                 child: Column(
                                   children: [
                                     Text(
@@ -179,7 +188,9 @@ class HomePage extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 50,),
+              const SizedBox(
+                height: 50,
+              ),
               Container(
                   height: 64,
                   child: ListView(scrollDirection: Axis.horizontal, children: [
@@ -188,11 +199,11 @@ class HomePage extends StatelessWidget {
                       child: Container(
                         width: 343,
                         height: 64,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(25)),
                         ),
-                        child: Text('울릉도 눈축제'),
+                        child: const Text('울릉도 눈축제'),
                       ),
                     ),
                     Padding(
@@ -200,11 +211,11 @@ class HomePage extends StatelessWidget {
                       child: Container(
                         width: 343,
                         height: 64,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           color: Colors.white,
                           borderRadius: BorderRadius.all(Radius.circular(25)),
                         ),
-                        child: Text('다른 축제'),
+                        child: const Text('다른 축제'),
                       ),
                     )
                   ]))
