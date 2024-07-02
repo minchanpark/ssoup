@@ -55,8 +55,6 @@ dev_dependencies:
 flutter:
   assets:
     - assets/
-    - assets/6/ssoup.png
-    - assets/6/fish1.png
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -78,17 +76,26 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
+  - family: SCDream
+      fonts:
+        - asset: assets/SCDream1.otf
+          weight: 400
+        - asset: assets/SCDream2.otf
+          weight: 400
+        - asset: assets/SCDream3.otf
+          weight: 400
+        - asset: assets/SCDream4.otf
+          weight: 400
+        - asset: assets/SCDream5.otf
+          weight: 400
+        - asset: assets/SCDream6.otf
+          weight: 400
+        - asset: assets/SCDream7.otf
+          weight: 400
+        - asset: assets/SCDream8.otf
+          weight: 400
+        - asset: assets/SCDream9.otf
+          weight: 400
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
