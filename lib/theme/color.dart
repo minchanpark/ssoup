@@ -10,7 +10,7 @@ class AppColor {
   ]);
   static const Color home2 = Color(0xff8ACEFF);
   static const Color home1 = Color(0xffA3C2FF);
-  static const Color mainText = Color(0xff484646);
+  static const Color mainText = Color(0xff131313);
   static const Color subText = Color(0xffADAAAA);
   static const Color button = Color(0xff50A2FF);
 }
