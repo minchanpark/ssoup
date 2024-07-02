@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
 
 class AppColor {
-  static const Color primary = Color(0xffFFDEA7);
-  static const Color secondary = Color(0xffBFA883);
-  static const Color tertiery = Color(0xff443E3E);
-  static const Color fourth = Color(0xff1C1B1F);
-  static const Color textbox = Color(0xffFFFFFF);
-  static const Color textboxs = Color(0xff6B6B6B);
-  static const Color background = Color(0xffFFFCF6);
-  static const Color button = Color(0xffF6DE83);
-  static const Color text = Color(0xff3F3B3B);
-  static const Color texts = Color(0xffA1A1A1);
-  static const Color textt = Color(0xff9D9D9D);
-  static const Color texth = Color(0xffACACAC);
+  static const Color primary = Color(0xFF98C8FF);
+  static const Color secondary = Color(0xffBFE4FF);
+  static const Color tertiery = Color(0xffBAC8D5);
+  static const LinearGradient homeMix = LinearGradient(colors: [
+    Color.fromRGBO(138, 206, 255, 1),
+    Color.fromRGBO(163, 194, 255, 1)
+  ]);
+  static const Color home2 = Color(0xff8ACEFF);
+  static const Color home1 = Color(0xffA3C2FF);
+  static const Color mainText = Color(0xff484646);
+  static const Color subText = Color(0xffADAAAA);
+  static const Color button = Color(0xff50A2FF);
 }
