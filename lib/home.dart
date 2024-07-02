@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ssoup/course.dart';
-import 'package:ssoup/stamp.dart';
+
+import 'course.dart';
+import 'stamp.dart';
+import 'theme/text.dart';
+
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -33,11 +36,7 @@ class HomePage extends StatelessWidget {
                             children: [
                               Text(
                                 '김한동님의 플로깅 현황',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
+                                style: extrabold24.copyWith(color: Color(0xff1E528E)),
                               ),
                               SizedBox(height: 10),
                               Text(
