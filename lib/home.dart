@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:ssoup/theme/color.dart';
 
 import 'course.dart';
 import 'stamp.dart';
 import 'theme/text.dart';
+import 'theme/color.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
