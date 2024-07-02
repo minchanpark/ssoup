@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'color.dart';
 
 final basicTheme = ThemeData(
-  textTheme: TextTheme(
+  textTheme: const TextTheme(
     displayLarge: TextStyle(fontFamily: 'SCDream6', fontSize: 16),
   ),
 );

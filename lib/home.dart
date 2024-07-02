@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'course.dart';
 import 'stamp.dart';
 import 'theme/text.dart';
-import 'theme/color.dart';
-
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -23,7 +21,7 @@ class HomePage extends StatelessWidget {
                   bottomRight: Radius.circular(50),
                 ),
                 child: Container(
-                  color: AppColor.homeMix,
+                  color: const Color(0xffA3C2FF),
                   height: 278,
                   width: double.infinity,
                   child: Padding(
@@ -37,7 +35,8 @@ class HomePage extends StatelessWidget {
                             children: [
                               Text(
                                 '김한동님의 플로깅 현황',
-                                style: extrabold24.copyWith(color: Color(0xff1E528E)),
+                                // style: extrabold24.copyWith(
+                                //color: Color(0xff1E528E)),
                               ),
                               SizedBox(height: 10),
                               Text(
@@ -139,7 +138,10 @@ class HomePage extends StatelessWidget {
                               height: 200,
                               child: Card(
                                 color: Color(0xffD5E3FF),
-                                child: Image.asset('assets/stamp.png', fit: BoxFit.cover,),
+                                child: Image.asset(
+                                  'assets/stamp.png',
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                             ),
                           ),
