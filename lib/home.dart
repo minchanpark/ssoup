@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:ssoup/theme/color.dart';
 
 import 'course.dart';
 import 'stamp.dart';
@@ -21,7 +22,8 @@ class HomePage extends StatelessWidget {
                   bottomRight: Radius.circular(50),
                 ),
                 child: Container(
-                  color: const Color(0xffA3C2FF),
+                  //color: const Color(0xffA3C2FF),
+                  decoration: BoxDecoration(gradient: AppColor.homeMix),
                   height: 278,
                   width: double.infinity,
                   child: Padding(
@@ -35,8 +37,8 @@ class HomePage extends StatelessWidget {
                             children: [
                               Text(
                                 '김한동님의 플로깅 현황',
-                                // style: extrabold24.copyWith(
-                                //color: Color(0xff1E528E)),
+                                style: extrabold24.copyWith(
+                                    color: Color(0xff1E528E)),
                               ),
                               SizedBox(height: 10),
                               Text(
@@ -87,7 +89,7 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 50),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Column(
                   children: [
                     Row(
@@ -96,13 +98,13 @@ class HomePage extends StatelessWidget {
                           child: SizedBox(
                             height: 200,
                             child: Card(
-                              color: Color(0xffD5E3FF),
+                              color: const Color(0xffD5E3FF),
                               child: Image.asset('assets/map.png',
                                   fit: BoxFit.cover),
                             ),
                           ),
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: GestureDetector(
                             onTap: () {
@@ -114,7 +116,7 @@ class HomePage extends StatelessWidget {
                             child: SizedBox(
                               height: 200,
                               child: Card(
-                                color: Color(0xffD5E3FF),
+                                color: const Color(0xffD5E3FF),
                                 child: Image.asset('assets/course.png',
                                     fit: BoxFit.cover),
                               ),
@@ -123,7 +125,7 @@ class HomePage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     Row(
                       children: [
                         Expanded(
@@ -137,7 +139,7 @@ class HomePage extends StatelessWidget {
                             child: SizedBox(
                               height: 200,
                               child: Card(
-                                color: Color(0xffD5E3FF),
+                                color: const Color(0xffD5E3FF),
                                 child: Image.asset(
                                   'assets/stamp.png',
                                   fit: BoxFit.cover,
@@ -146,12 +148,12 @@ class HomePage extends StatelessWidget {
                             ),
                           ),
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: SizedBox(
                             height: 200,
                             child: Card(
-                                color: Color(0xffD5E3FF),
+                                color: const Color(0xffD5E3FF),
                                 child: Image.asset(
                                   'assets/stalk.png',
                                   fit: BoxFit.cover,
