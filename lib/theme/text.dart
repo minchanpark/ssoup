@@ -1,100 +1,103 @@
 import 'package:flutter/material.dart';
 
+import 'color.dart';
+
 final basicTheme = ThemeData(
   textTheme: TextTheme(
-    displayLarge: TextStyle(fontFamily: 'Kangwonedu', fontSize: 24),
+    displayLarge: TextStyle(fontFamily: 'SCDream6', fontSize: 16),
   ),
 );
 
-const TextStyle b27 = TextStyle(
-  fontFamily: 'Kangwonedu',
-  fontWeight: FontWeight.bold,
-  fontSize: 27,
-  color: Color(0xFF3F3B3B),
+const TextStyle light11 = TextStyle(
+  fontFamily: 'SCDream3',
+  fontSize: 11,
+  color: AppColor.text,
 );
 
-const TextStyle b23 = TextStyle(
-  fontFamily: 'Kangwonedu',
-  fontWeight: FontWeight.bold,
+const TextStyle regular10 = TextStyle(
+  fontFamily: 'SCDream4',
+  fontSize: 10,
+  color: AppColor.text,
+);
+const TextStyle regular13 = TextStyle(
+  fontFamily: 'SCDream4',
+  fontSize: 13,
+  color: AppColor.text,
+);
+
+const TextStyle regular15 = TextStyle(
+  fontFamily: 'SCDream4',
+  fontSize: 15,
+  color: AppColor.text,
+);
+
+const TextStyle regular23 = TextStyle(
+  fontFamily: 'SCDream4',
   fontSize: 23,
-  color: Color(0xFF3F3B3B),
+  color: AppColor.text,
 );
 
-const TextStyle b20 = TextStyle(
-  fontFamily: 'Kangwonedu',
-  fontWeight: FontWeight.bold,
+const TextStyle medium13 = TextStyle(
+  fontFamily: 'SCDream5',
+  fontSize: 13,
+  color: AppColor.text,
+);
+
+const TextStyle medium15 = TextStyle(
+  fontFamily: 'SCDream5',
+  fontSize: 15,
+  color: AppColor.text,
+);
+
+const TextStyle medium16 = TextStyle(
+  fontFamily: 'SCDream5',
+  fontSize: 16,
+  color: AppColor.text,
+);
+
+const TextStyle medium20 = TextStyle(
+  fontFamily: 'SCDream5',
   fontSize: 20,
-  color: Color(0xFF3F3B3B),
+  color: AppColor.text,
 );
 
-const TextStyle b18 = TextStyle(
-  fontFamily: 'Kangwonedu',
-  fontWeight: FontWeight.bold,
-  fontSize: 18,
-  color: Color(0xFF3F3B3B),
+const TextStyle medium23 = TextStyle(
+  fontFamily: 'SCDream5',
+  fontSize: 23,
+  color: AppColor.text,
 );
 
-const TextStyle b15 = TextStyle(
-  fontFamily: 'Kangwonedu',
-  fontWeight: FontWeight.bold,
+const TextStyle medium24 = TextStyle(
+  fontFamily: 'SCDream5',
+  fontSize: 24,
+  color: AppColor.text,
+);
+
+const TextStyle bold15 = TextStyle(
+  fontFamily: 'SCDream6',
   fontSize: 15,
-  color: Color(0xFF3F3B3B),
+  color: AppColor.text,
 );
 
-const TextStyle b15g = TextStyle(
-  fontFamily: 'Kangwonedu',
-  fontWeight: FontWeight.bold,
-  fontSize: 15,
-  color: Color(0xFFACACAC),
+const TextStyle bold23 = TextStyle(
+  fontFamily: 'SCDream6',
+  fontSize: 23,
+  color: AppColor.text,
 );
 
-const TextStyle b13 = TextStyle(
-  fontFamily: 'Kangwonedu',
-  fontWeight: FontWeight.bold,
-  fontSize: 13,
-  color: Color(0xFF3F3B3B),
+const TextStyle extrabold20 = TextStyle(
+  fontFamily: 'SCDream7',
+  fontSize: 20,
+  color: AppColor.text,
 );
 
-
-
-const TextStyle l22 = TextStyle(
-  fontFamily: 'Kangwonedu',
-  fontWeight: FontWeight.w400,
-  fontSize: 22,
-  color: Color(0xFF3F3B3B),
+const TextStyle extrabold24 = TextStyle(
+  fontFamily: 'SCDream7',
+  fontSize: 24,
+  color: AppColor.text,
 );
-
-const TextStyle l17 = TextStyle(
-  fontFamily: 'Kangwonedu',
-  fontWeight: FontWeight.w400,
-  fontSize: 17,
-  color: Color(0xFF3F3B3B),
-);
-
-const TextStyle l15 = TextStyle(
-  fontFamily: 'Kangwonedu',
-  fontWeight: FontWeight.w400,
-  fontSize: 15,
-  color: Color(0xFF3F3B3B),
-);
-
-const TextStyle l15g = TextStyle(
-  fontFamily: 'Kangwonedu',
-  fontWeight: FontWeight.w400,
-  fontSize: 15,
-  color: Color(0xFF424242),
-);
-
-const TextStyle l14 = TextStyle(
-  fontFamily: 'Kangwonedu',
-  fontWeight: FontWeight.w400,
-  fontSize: 14,
-  color: Color(0xFF3F3B3B),
-);
-
-const TextStyle l13 = TextStyle(
-  fontFamily: 'Kangwonedu',
-  fontWeight: FontWeight.w400,
-  fontSize: 13,
-  color: Color(0xFF3F3B3B),
+const TextStyle extrabold25 = TextStyle(
+  fontFamily: 'SCDream7',
+  fontSize: 25,
+  color: AppColor.text,
 );
