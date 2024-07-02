@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'course.dart';
 import 'stamp.dart';
 import 'theme/text.dart';
+import 'theme/color.dart';
 
 
 class HomePage extends StatelessWidget {
@@ -22,7 +23,7 @@ class HomePage extends StatelessWidget {
                   bottomRight: Radius.circular(50),
                 ),
                 child: Container(
-                  color: const Color(0xffA3C2FF),
+                  color: AppColor.homeMix,
                   height: 278,
                   width: double.infinity,
                   child: Padding(
