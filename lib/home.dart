@@ -41,34 +41,21 @@ class HomePage extends StatelessWidget {
                                     color: Color(0xff1E528E)),
                               ),
                               SizedBox(height: 10),
-                              Text(
-                                '방문한 관광지 0곳',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
-                              ),
+                              Text('방문한 관광지 0곳',
+                                  style:
+                                      medium15.copyWith(color: Colors.white)),
                               Text(
                                 '획득한 스탬프 1개',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
+                                style: medium15.copyWith(color: Colors.white),
                               ),
                               Text(
                                 '움직인 거리 0.5km',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
+                                style: medium15.copyWith(color: Colors.white),
                               ),
                               SizedBox(height: 10),
                               Text(
                                 '김한동님은 총 1번의 플로깅을 인증했어요!',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                ),
+                                style: medium15.copyWith(color: Colors.white),
                               ),
                             ],
                           ),
