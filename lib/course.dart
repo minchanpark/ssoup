@@ -3,6 +3,8 @@ import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/zondicons.dart';
 
 class CoursePage extends StatefulWidget {
+  const CoursePage({super.key});
+
   @override
   _CoursePageState createState() => _CoursePageState();
 }
@@ -78,16 +80,16 @@ class _CoursePageState extends State<CoursePage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
+        title: const Text(
           '플로깅 코스',
           style: TextStyle(color: Color(0xff1E528E)),
         ),
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: Color(0xff1E528E),
-          labelColor: Color(0xff1E528E),
+          indicatorColor: const Color(0xff1E528E),
+          labelColor: const Color(0xff1E528E),
           unselectedLabelColor: Colors.grey,
-          tabs: [
+          tabs: const [
             Tab(
               child: Text(
                 '뚜벅이',
@@ -111,9 +113,10 @@ class _CoursePageState extends State<CoursePage>
             itemBuilder: (context, index) {
               final course = courses[index];
               return Container(
-                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                margin:
+                    const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                 decoration: BoxDecoration(
-                  border: Border.all(color: Color(0xff1E528E)),
+                  border: Border.all(color: const Color(0xff1E528E)),
                   borderRadius: BorderRadius.circular(8.0),
                 ),
                 child: ListTile(
@@ -124,17 +127,19 @@ class _CoursePageState extends State<CoursePage>
                   ),
                   title: Text(
                     course.title,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 15),
                   ),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Row(
                         children: [
-                          Iconify(Zondicons.location, color: Colors.black),
-                          SizedBox(width: 4),
-                          Text("출발 위치 :"),
-                          SizedBox(width: 4),
+                          const Iconify(Zondicons.location,
+                              color: Colors.black),
+                          const SizedBox(width: 4),
+                          const Text("출발 위치 :"),
+                          const SizedBox(width: 4),
                           Text(
                             course.location,
                           ),
@@ -142,8 +147,8 @@ class _CoursePageState extends State<CoursePage>
                       ),
                       Row(
                         children: [
-                          Iconify(Zondicons.time, color: Colors.black),
-                          SizedBox(width: 4),
+                          const Iconify(Zondicons.time, color: Colors.black),
+                          const SizedBox(width: 4),
                           Text(course.duration),
                         ],
                       ),
@@ -155,7 +160,7 @@ class _CoursePageState extends State<CoursePage>
               );
             },
           ),
-          Center(
+          const Center(
             child: Text(
               '코스 업데이트 준비중',
               style: TextStyle(fontSize: 18, color: Colors.grey),

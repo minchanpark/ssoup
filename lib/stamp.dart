@@ -5,9 +5,6 @@ class StampPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double mediaWidth = MediaQuery.sizeOf(context).width;
-    double mediaHeight = MediaQuery.sizeOf(context).height;
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xffA3C2FF),
@@ -59,7 +56,7 @@ class StampPage extends StatelessWidget {
             child: GridView.count(
               crossAxisCount: 3,
               padding: const EdgeInsets.all(16),
-              children: [
+              children: const [
                 StampItem(
                   name: '무꼬기',
                   image: 'assets/stamp_fish1.png',
@@ -129,7 +126,7 @@ class StampItem extends StatelessWidget {
   final double width;
   final double height;
 
-  StampItem({
+  const StampItem({
     super.key,
     required this.name,
     required this.image,
@@ -150,7 +147,6 @@ class StampItem extends StatelessWidget {
             width: (width / 393) * mediaWidth,
             height: (height / 852) * mediaHeight,
           ),
-          //backgroundImage: AssetImage(image),
         ),
         const SizedBox(height: 8),
         Text(
