@@ -5,6 +5,9 @@ class StampPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double mediaWidth = MediaQuery.sizeOf(context).width;
+    double mediaHeight = MediaQuery.sizeOf(context).height;
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xffA3C2FF),
@@ -136,14 +139,16 @@ class StampItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double mediaWidth = MediaQuery.sizeOf(context).width;
+    double mediaHeight = MediaQuery.sizeOf(context).height;
     return Column(
       children: [
         CircleAvatar(
           radius: 40,
           child: Image.asset(
             image,
-            width: width,
-            height: height,
+            width: (width / 393) * mediaWidth,
+            height: (height / 852) * mediaHeight,
           ),
           //backgroundImage: AssetImage(image),
         ),
