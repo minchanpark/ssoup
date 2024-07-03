@@ -95,13 +95,13 @@ class StampPage extends StatelessWidget {
                 ),
                 StampItem(
                   name: '',
-                  image: 'assets/images/example.png',
+                  image: 'assets/stamp_fish6.png',
                   width: 144,
                   height: 144,
                 ),
                 StampItem(
                   name: '',
-                  image: 'assets/images/example.png',
+                  image: 'assets/stamp_fish6.png',
                   width: 144,
                   height: 144,
                 ),
