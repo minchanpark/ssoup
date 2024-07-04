@@ -62,10 +62,14 @@ class _CoursePageState extends State<CoursePage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
+        backgroundColor: Colors.white,
+        title: Text(
           '플로깅 코스',
-          style: TextStyle(color: Color(0xff1E528E)),
+          style: medium20.copyWith(
+            color: Color(0xff1E528E),
+          ),
         ),
       ),
       body: ListView.builder(
