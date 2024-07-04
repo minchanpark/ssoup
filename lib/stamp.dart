@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 
+import 'theme/text.dart';
+
 class StampPage extends StatelessWidget {
   const StampPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: const Color(0xffA3C2FF),
         title: Image.asset('assets/6/ssoup.png', width: 77, height: 77),
@@ -20,34 +23,44 @@ class StampPage extends StatelessWidget {
             child: Container(
               color: const Color(0xffA3C2FF),
               height: 200,
-              child: const Row(
+              child: Column(
                 children: [
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Center(
-                          child: Text(
-                            '김한동님의 스탬프 모아보기',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Center(
+                              child: Text(
+                                '김한동님의 스탬프 모아보기',
+                                style: bold23.copyWith(color: Colors.white),
+                              ),
                             ),
-                          ),
-                        ),
-                        Center(
-                          child: Text(
-                            '2024.06.27',
-                            style: TextStyle(
-                              fontSize: 16,
-                              color: Colors.white,
+                            Center(
+                              child: Text(
+                                '2024.07.05',
+                                style: regular15.copyWith(color: Colors.white),
+                              ),
                             ),
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset(
+                        'assets/aaa.png',
+                        width: 150,
+                      ),
+                      Image.asset(
+                        'assets/mugogi.png',
+                        width: 100,
+                      )
+                    ],
+                  )
                 ],
               ),
             ),
@@ -107,6 +120,24 @@ class StampPage extends StatelessWidget {
                 ),
                 StampItem(
                   name: '',
+                  image: 'assets/stamp_fish6.png',
+                  width: 144,
+                  height: 144,
+                ),
+                StampItem(
+                  name: '',
+                  image: 'assets/stamp_fish6.png',
+                  width: 144,
+                  height: 144,
+                ),
+                StampItem(
+                  name: '',
+                  image: 'assets/stamp_fish6.png',
+                  width: 144,
+                  height: 144,
+                ),
+                StampItem(
+                  name: '',
                   image: 'assets/complete.png',
                   width: 58,
                   height: 21,
@@ -138,22 +169,99 @@ class StampItem extends StatelessWidget {
   Widget build(BuildContext context) {
     double mediaWidth = MediaQuery.sizeOf(context).width;
     double mediaHeight = MediaQuery.sizeOf(context).height;
-    return Column(
-      children: [
-        CircleAvatar(
-          radius: 40,
-          child: Image.asset(
-            image,
-            width: (width / 393) * mediaWidth,
-            height: (height / 852) * mediaHeight,
+    return GestureDetector(
+      onTap: () {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: Colors.white,
+              title: Center(
+                  child: Text(
+                name + ' 스탬프',
+                style: extrabold24.copyWith(color: Color(0xff1E528E)),
+              )),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Container(
+                    width: 280,
+                    height: 200,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(30),
+                      color: Color(0xffEEF4FF),
+                    ),
+                    child: Image.asset(
+                      image,
+                      width: (width / 393) * mediaWidth,
+                      height: (height / 852) * mediaHeight,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Text(
+                    '봉래폭포 플로깅 완료',
+                    style: medium16,
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Text(
+                    '일시: 2024.06.27 / 14:27 \n거리: 1.5km',
+                    style: medium15,
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Container(
+                    width: 280,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Color(0xffA3C2FF)),
+                      borderRadius: BorderRadius.circular(26),
+                    ),
+                    child: Center(
+                        child: Text(
+                      '10마리의 해양생물이 고마워하고 있어요!',
+                      style: medium13,
+                    )),
+                  )
+                ],
+              ),
+              actions: [
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: Color(0xff50A2FF)),
+                  child: Text(
+                    "닫기",
+                    style: bold15.copyWith(color: Colors.white),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
+        );
+      },
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 40,
+            backgroundColor: Color(0xffEEF4FF),
+            child: Image.asset(
+              image,
+              width: (width / 393) * mediaWidth,
+              height: (height / 852) * mediaHeight,
+            ),
           ),
-        ),
-        const SizedBox(height: 8),
-        Text(
-          name,
-          style: const TextStyle(fontSize: 16),
-        ),
-      ],
+          const SizedBox(height: 8),
+          Text(name, style: regular15),
+        ],
+      ),
     );
   }
 }
