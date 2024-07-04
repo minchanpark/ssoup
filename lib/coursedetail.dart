@@ -84,7 +84,7 @@ class CourseDetailPage extends StatelessWidget {
                             side: BorderSide(color: Color(0xff4468AD))),
                       ))),
               SizedBox(
-                height: 50,
+                height: 70,
               ),
             ],
           ),

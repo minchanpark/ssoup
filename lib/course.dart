@@ -51,10 +51,10 @@ class _CoursePageState extends State<CoursePage>
       peopleCount: '누적 참여자 수: 593명',
     ),
     Course(
-      image: 'assets/course1.png',
-      title: '인생샷을 건져보자 코스',
-      location: '울릉도 선착장',
-      duration: '소요시간: 1시간',
+      image: 'assets/course6.png',
+      title: '가족과 함께 즐기는 코스',
+      location: '내수일출 전망대',
+      duration: '소요시간: 2시간',
       peopleCount: '누적 참여자 수: 553명',
     ),
   ];
