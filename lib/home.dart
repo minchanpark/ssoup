@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'course.dart';
+import 'map.dart';
 import 'stamp.dart';
-import 'theme/text.dart';
 import 'theme/color.dart';
+import 'theme/text.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -82,12 +83,20 @@ class HomePage extends StatelessWidget {
                     Row(
                       children: [
                         Expanded(
-                          child: SizedBox(
-                            height: 200,
-                            child: Card(
-                              color: const Color(0xffD5E3FF),
-                              child: Image.asset('assets/map.png',
-                                  fit: BoxFit.cover),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => GoogleMapPage()));
+                            },
+                            child: SizedBox(
+                              height: 200,
+                              child: Card(
+                                color: const Color(0xffD5E3FF),
+                                child: Image.asset('assets/map.png',
+                                    fit: BoxFit.cover),
+                              ),
                             ),
                           ),
                         ),
