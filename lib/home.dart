@@ -12,6 +12,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Center(
@@ -170,26 +171,24 @@ class HomePage extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(left: 28, right: 14),
                       child: Container(
-                        width: 343,
-                        height: 64,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(25)),
-                        ),
-                        child: const Text('울릉도 눈축제'),
-                      ),
+                          width: 370,
+                          height: 64,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(25)),
+                          ),
+                          child: Image.asset('assets/ssss.png')),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(right: 14),
                       child: Container(
-                        width: 343,
-                        height: 64,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(25)),
-                        ),
-                        child: const Text('다른 축제'),
-                      ),
+                          width: 343,
+                          height: 64,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(25)),
+                          ),
+                          child: Image.asset('assets/ssss.png')),
                     )
                   ]))
             ],
