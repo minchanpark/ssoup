@@ -1,8 +1,9 @@
+import 'package:firebase_core/firebase_core.dart'; // Firebase 초기화를 위해 추가
 import 'package:flutter/material.dart';
-
-import 'home.dart';
-
+import 'package:ssoup/login.dart';
 void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Flutter 엔진이 초기화될 때까지 기다림
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
@@ -12,7 +13,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: HomePage(),
+      home: LoginPage(),
     );
   }
 }

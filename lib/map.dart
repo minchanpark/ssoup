@@ -10,7 +10,7 @@ class GoogleMapPage extends StatefulWidget {
 class _GoogleMapPageState extends State<GoogleMapPage> {
   late GoogleMapController mapController;
 
-  final LatLng _center = const LatLng(45.521563, -122.677433);
+  final LatLng _center = const LatLng(37.54141203773016, 130.81681101601686  );
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
