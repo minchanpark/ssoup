@@ -2,178 +2,166 @@ import 'package:flutter/material.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/zondicons.dart';
 
+import 'coursedetail.dart';
+import 'theme/text.dart';
+
 class CoursePage extends StatefulWidget {
+  const CoursePage({super.key});
+
   @override
   _CoursePageState createState() => _CoursePageState();
 }
 
 class _CoursePageState extends State<CoursePage>
     with SingleTickerProviderStateMixin {
-  late TabController _tabController;
-
   final List<Course> courses = [
     Course(
+      image: 'assets/course1.png',
       title: '인생샷을 건져보자 코스',
-      location: '올림픽 공원',
+      location: '울릉도 선착장',
       duration: '소요시간: 1시간',
       peopleCount: '누적 참여자 수: 553명',
     ),
     Course(
+      image: 'assets/course2.png',
       title: '자연과 하나되는 코스',
-      location: '청계천',
+      location: '봉래폭포',
       duration: '소요시간: 1시간',
       peopleCount: '누적 참여자 수: 433명',
     ),
     Course(
+      image: 'assets/course3.png',
       title: '독도 바라보기 코스',
-      location: '용산구 선정릉',
+      location: '울릉도 선착장',
       duration: '소요시간: 40분',
       peopleCount: '누적 참여자 수: 255명',
     ),
     Course(
-      title: '홀로도 한강에 보고 싶다면 코스',
-      location: '서울숲',
+      image: 'assets/course4.png',
+      title: '울릉도를 한눈에 보고 싶다면 코스',
+      location: '울릉도 선착장',
       duration: '소요시간: 50분',
       peopleCount: '누적 참여자 수: 808명',
     ),
     Course(
-      title: '홀로도 한강에 하면서 졸깅?',
-      location: '행복해지기',
+      image: 'assets/course5.png',
+      title: '울릉도 한바퀴하면서 플로깅?',
+      location: '울릉도 선착장',
       duration: '소요시간: 1시간',
       peopleCount: '누적 참여자 수: 593명',
     ),
     Course(
+      image: 'assets/course6.png',
       title: '가족과 함께 즐기는 코스',
-      location: '나의 사랑해요',
-      duration: '소요시간: 1시간 30분',
-      peopleCount: '누적 참여자 수: 310명',
-    ),
-    Course(
-      title: '홀로도 함께하는 졸토트 필수 코스',
-      location: '서울마리나',
-      duration: '소요시간: 1시간 30분',
-      peopleCount: '누적 참여자 수: 705명',
-    ),
-    Course(
-      title: '노을이 질 때 가장 아름다운 ...',
-      location: '서울행복',
-      duration: '소요시간: 1시간',
-      peopleCount: '누적 참여자 수: 309명',
+      location: '내수일출 전망대',
+      duration: '소요시간: 2시간',
+      peopleCount: '누적 참여자 수: 553명',
     ),
   ];
 
   @override
-  void initState() {
-    super.initState();
-    _tabController = TabController(length: 2, vsync: this);
-  }
-
-  @override
-  void dispose() {
-    _tabController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text(
           '플로깅 코스',
-          style: TextStyle(color: Color(0xff1E528E)),
-        ),
-        bottom: TabBar(
-          controller: _tabController,
-          indicatorColor: Color(0xff1E528E),
-          labelColor: Color(0xff1E528E),
-          unselectedLabelColor: Colors.grey,
-          tabs: [
-            Tab(
-              child: Text(
-                '뚜벅이',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-            ),
-            Tab(
-              child: Text(
-                '자전거',
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-              ),
-            ),
-          ],
+          style: medium20.copyWith(
+            color: Color(0xff1E528E),
+          ),
         ),
       ),
-      body: TabBarView(
-        controller: _tabController,
-        children: [
-          ListView.builder(
-            itemCount: courses.length,
-            itemBuilder: (context, index) {
-              final course = courses[index];
-              return Container(
-                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Color(0xff1E528E)),
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: ListTile(
-                  leading: Container(
-                    color: Colors.blue,
-                    width: 40,
-                    height: 40,
+      body: ListView.builder(
+        itemCount: courses.length,
+        itemBuilder: (context, index) {
+          final course = courses[index];
+          return Column(
+            children: [
+              const SizedBox(height: 10),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => CourseDetailPage(
+                          courseImage: course.image,
+                          courseTitle: course.title,
+                          courseLocation: course.location,
+                          courseDuration: course.duration),
+                    ),
+                  );
+                },
+                child: Container(
+                  margin: const EdgeInsets.symmetric(
+                      vertical: 8.0, horizontal: 16.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: const Color(0xff1E528E)),
+                    borderRadius: BorderRadius.circular(8.0),
                   ),
-                  title: Text(
-                    course.title,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Iconify(Zondicons.location, color: Colors.black),
-                          SizedBox(width: 4),
-                          Text("출발 위치 :"),
-                          SizedBox(width: 4),
-                          Text(
-                            course.location,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          course.image,
+                          width: 100,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        ),
+                        const SizedBox(width: 16.0),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(course.title, style: medium15),
+                              const SizedBox(height: 8.0),
+                              Row(
+                                children: [
+                                  const Iconify(Zondicons.location,
+                                      color: Colors.black),
+                                  const SizedBox(width: 4),
+                                  const Text("출발 위치:"),
+                                  const SizedBox(width: 4),
+                                  Text(course.location, style: light11),
+                                ],
+                              ),
+                              const SizedBox(height: 4.0),
+                              Row(
+                                children: [
+                                  const Iconify(Zondicons.time,
+                                      color: Colors.black),
+                                  const SizedBox(width: 4),
+                                  Text(course.duration, style: light11),
+                                ],
+                              ),
+                              const SizedBox(height: 4.0),
+                              Text(course.peopleCount, style: regular10),
+                            ],
                           ),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          Iconify(Zondicons.time, color: Colors.black),
-                          SizedBox(width: 4),
-                          Text(course.duration),
-                        ],
-                      ),
-                      Text(course.peopleCount),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
-                  isThreeLine: true,
                 ),
-              );
-            },
-          ),
-          Center(
-            child: Text(
-              '코스 업데이트 준비중',
-              style: TextStyle(fontSize: 18, color: Colors.grey),
-            ),
-          ),
-        ],
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 }
 
 class Course {
+  final String image;
   final String title;
   final String location;
   final String duration;
   final String peopleCount;
 
   Course({
+    required this.image,
     required this.title,
     required this.location,
     required this.duration,

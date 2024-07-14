@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "159990997817",
+    "project_id": "ssoup-82c05",
+    "storage_bucket": "ssoup-82c05.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:159990997817:android:f5dc842c23b21f61ed7ee8",
+        "android_client_info": {
+          "package_name": "com.example.ssoup"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "159990997817-eqitbmdlf8k9397r2hd6prvpl7lfk5rn.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.ssoup",
+            "certificate_hash": "8e25e0d0ef11d054b8289144dbfa8b59c2f08b78"
+          }
+        },
+        {
+          "client_id": "159990997817-5e1d1fv21gkvvbml4s27btj6et84qiao.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHvMqUXRSbwHzkWl6IKMcDHFbvvy6vZVA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "159990997817-5e1d1fv21gkvvbml4s27btj6et84qiao.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "159990997817-tt1iuefonnsar5a7p1iq1igdl1j987ta.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.qr.ssopu"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

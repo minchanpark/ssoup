@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:ssoup/course.dart';
+
+import 'course.dart';
+import 'map.dart';
+import 'stamp.dart';
+import 'theme/color.dart';
+import 'theme/text.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -7,6 +12,7 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
         child: Center(
@@ -18,7 +24,8 @@ class HomePage extends StatelessWidget {
                   bottomRight: Radius.circular(50),
                 ),
                 child: Container(
-                  color: const Color(0xffA3C2FF),
+                  //color: const Color(0xffA3C2FF),
+                  decoration: BoxDecoration(gradient: AppColor.homeMix),
                   height: 278,
                   width: double.infinity,
                   child: Padding(
@@ -32,41 +39,25 @@ class HomePage extends StatelessWidget {
                             children: [
                               Text(
                                 '김한동님의 플로깅 현황',
-                                style: TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
+                                style: extrabold24.copyWith(
+                                    color: Color(0xff1E528E)),
                               ),
                               SizedBox(height: 10),
-                              Text(
-                                '방문한 관광지 0곳',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
-                              ),
+                              Text('방문한 관광지 0곳',
+                                  style:
+                                      medium15.copyWith(color: Colors.white)),
                               Text(
                                 '획득한 스탬프 1개',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
+                                style: medium15.copyWith(color: Colors.white),
                               ),
                               Text(
                                 '움직인 거리 0.5km',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.white,
-                                ),
+                                style: medium15.copyWith(color: Colors.white),
                               ),
                               SizedBox(height: 10),
                               Text(
                                 '김한동님은 총 1번의 플로깅을 인증했어요!',
-                                style: TextStyle(
-                                  fontSize: 14,
-                                  color: Colors.white,
-                                ),
+                                style: medium15.copyWith(color: Colors.white),
                               ),
                             ],
                           ),
@@ -87,22 +78,30 @@ class HomePage extends StatelessWidget {
               ),
               const SizedBox(height: 50),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20.0),
+                padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Column(
                   children: [
                     Row(
                       children: [
                         Expanded(
-                          child: SizedBox(
-                            height: 200,
-                            child: Card(
-                              color: Color(0xffD5E3FF),
-                              child: Image.asset('assets/map.png',
-                                  fit: BoxFit.cover),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => GoogleMapPage()));
+                            },
+                            child: SizedBox(
+                              height: 200,
+                              child: Card(
+                                color: const Color(0xffD5E3FF),
+                                child: Image.asset('assets/map.png',
+                                    fit: BoxFit.cover),
+                              ),
                             ),
                           ),
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: GestureDetector(
                             onTap: () {
@@ -114,7 +113,7 @@ class HomePage extends StatelessWidget {
                             child: SizedBox(
                               height: 200,
                               child: Card(
-                                color: Color(0xffD5E3FF),
+                                color: const Color(0xffD5E3FF),
                                 child: Image.asset('assets/course.png',
                                     fit: BoxFit.cover),
                               ),
@@ -123,26 +122,35 @@ class HomePage extends StatelessWidget {
                         ),
                       ],
                     ),
-                    SizedBox(height: 30),
+                    const SizedBox(height: 30),
                     Row(
                       children: [
                         Expanded(
-                          child: SizedBox(
-                            height: 200,
-                            child: Card(
-                                color: Color(0xffD5E3FF),
+                          child: GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => StampPage()));
+                            },
+                            child: SizedBox(
+                              height: 200,
+                              child: Card(
+                                color: const Color(0xffD5E3FF),
                                 child: Image.asset(
                                   'assets/stamp.png',
                                   fit: BoxFit.cover,
-                                )),
+                                ),
+                              ),
+                            ),
                           ),
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Expanded(
                           child: SizedBox(
                             height: 200,
                             child: Card(
-                                color: Color(0xffD5E3FF),
+                                color: const Color(0xffD5E3FF),
                                 child: Image.asset(
                                   'assets/stalk.png',
                                   fit: BoxFit.cover,
@@ -163,26 +171,24 @@ class HomePage extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.only(left: 28, right: 14),
                       child: Container(
-                        width: 343,
-                        height: 64,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(25)),
-                        ),
-                        child: const Text('울릉도 눈축제'),
-                      ),
+                          width: 370,
+                          height: 64,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(25)),
+                          ),
+                          child: Image.asset('assets/ssss.png')),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(right: 14),
                       child: Container(
-                        width: 343,
-                        height: 64,
-                        decoration: const BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(Radius.circular(25)),
-                        ),
-                        child: const Text('다른 축제'),
-                      ),
+                          width: 343,
+                          height: 64,
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(Radius.circular(25)),
+                          ),
+                          child: Image.asset('assets/ssss.png')),
                     )
                   ]))
             ],
