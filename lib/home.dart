@@ -24,8 +24,7 @@ class HomePage extends StatelessWidget {
                   bottomRight: Radius.circular(50),
                 ),
                 child: Container(
-                  //color: const Color(0xffA3C2FF),
-                  decoration: BoxDecoration(gradient: AppColor.homeMix),
+                  color: const Color(0xffA3C2FF),
                   height: 278,
                   width: double.infinity,
                   child: Padding(
@@ -136,7 +135,7 @@ class HomePage extends StatelessWidget {
                             child: SizedBox(
                               height: 200,
                               child: Card(
-                                color: const Color(0xffD5E3FF),
+                                color: Color(0xffD5E3FF),
                                 child: Image.asset(
                                   'assets/stamp.png',
                                   fit: BoxFit.cover,
