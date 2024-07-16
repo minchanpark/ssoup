@@ -27,12 +27,63 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   final Set<Polyline> _polylines = {};
   StreamSubscription<LocationData>? _locationSubscription;
 
+  Future<void> _getNaverRoute() async {
+    final String url =
+        'https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${_startLocation.longitude},${_startLocation.latitude}&goal=${_destinationLocation.longitude},${_destinationLocation.latitude}&option=trafast';
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        'X-NCP-APIGW-API-KEY-ID': naverClientId,
+        'X-NCP-APIGW-API-KEY': naverClientSecret,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      print('Response Data: $data'); // 응답 데이터를 출력하여 확인합니다.
+
+      final List<dynamic>? routes = data['route'] != null
+          ? data['route']['trafast'] ?? data['route']['traoptimal']
+          : null;
+
+      if (routes != null && routes.isNotEmpty) {
+        final points = routes[0]['path'];
+        _setPolylineFromNaverPoints(points);
+      } else {
+        print('No routes found');
+      }
+    } else {
+      print('Failed to load directions: ${response.statusCode}');
+      print('Error Response: ${response.body}'); // 에러 응답 내용을 출력하여 확인합니다.
+    }
+  }
+
+  void _setPolylineFromNaverPoints(List points) {
+    final List<LatLng> polylineCoordinates = points.map<LatLng>((point) {
+      return LatLng(point[1], point[0]);
+    }).toList();
+
+    if (!mounted) return;
+    setState(() {
+      _polylines.clear();
+      _polylines.add(
+        Polyline(
+          polylineId: const PolylineId('route'),
+          points: polylineCoordinates,
+          color: Colors.black,
+          width: 5,
+        ),
+      );
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     _checkPermissions();
     _setInitialMarkers();
-    _getRoute();
+    _getNaverRoute(); // 네이버 지도 API로 경로 데이터를 가져옵니다.
   }
 
   @override
@@ -87,117 +138,34 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
     setState(() {
       _markers.add(
         Marker(
-          markerId: MarkerId('sL'),
+          markerId: const MarkerId('sL'),
           position: _startLocation,
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-          infoWindow: InfoWindow(title: 'Start Location'),
+          infoWindow: const InfoWindow(title: 'Start Location'),
         ),
       );
       _markers.add(
         Marker(
-          markerId: MarkerId('dL'),
+          markerId: const MarkerId('dL'),
           position: _destinationLocation,
           icon:
               BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-          infoWindow: InfoWindow(title: 'Destination Location'),
+          infoWindow: const InfoWindow(title: 'Destination Location'),
         ),
       );
     });
-  }
-
-  Future<void> _getRoute() async {
-    final String apiKey = googleMapsDirectionsApiKeys;
-    final String url =
-        'https://maps.googleapis.com/maps/api/directions/json?origin=${_startLocation.latitude},${_startLocation.longitude}&destination=${_destinationLocation.latitude},${_destinationLocation.longitude}&mode=driving&key=$apiKey';
-
-    print('Request URL: $url'); // 요청 URL을 출력하여 확인합니다.
-
-    final response = await http.get(Uri.parse(url));
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      print('Response Data: $data'); // 응답 데이터를 출력하여 확인합니다.
-      if (data['routes'].isNotEmpty) {
-        final points = data['routes'][0]['overview_polyline']['points'];
-        _setPolylineFromPoints(points);
-      } else {
-        print('No routes found');
-      }
-    } else {
-      print('Failed to load directions: ${response.statusCode}');
-      print('Error Response: ${response.body}'); // 에러 응답 내용을 출력하여 확인합니다.
-    }
-  }
-
-  void _setPolylineFromPoints(String points) {
-    final List<LatLng> polylineCoordinates = _decodePolyline(points);
-    if (!mounted) return;
-    setState(() {
-      _polylines.add(
-        Polyline(
-          polylineId: PolylineId('route'),
-          points: polylineCoordinates,
-          color: Colors.black,
-          width: 5,
-        ),
-      );
-    });
-  }
-
-  List<LatLng> _decodePolyline(String polyline) {
-    List<LatLng> coordinates = [];
-    int index = 0;
-    int len = polyline.length;
-    int lat = 0;
-    int lng = 0;
-
-    while (index < len) {
-      int b;
-      int shift = 0;
-      int result = 0;
-
-      do {
-        b = polyline.codeUnitAt(index++) - 63;
-        result |= (b & 0x1F) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-
-      int dlat = (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
-      lat += dlat;
-
-      shift = 0;
-      result = 0;
-
-      do {
-        b = polyline.codeUnitAt(index++) - 63;
-        result |= (b & 0x1F) << shift;
-        shift += 5;
-      } while (b >= 0x20);
-
-      int dlng = (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
-      lng += dlng;
-
-      coordinates.add(LatLng(
-        lat / 1E5,
-        lng / 1E5,
-      ));
-    }
-
-    print('Decoded Polyline Coordinates: $coordinates'); // 디코딩된 좌표를 출력하여 확인합니다.
-
-    return coordinates;
   }
 
   void _updateCurrentLocationMarker() {
     if (!mounted) return;
     setState(() {
-      _markers.removeWhere((marker) => marker.markerId == MarkerId('cL'));
+      _markers.removeWhere((marker) => marker.markerId == const MarkerId('cL'));
       _markers.add(
         Marker(
-          markerId: MarkerId('cL'),
+          markerId: const MarkerId('cL'),
           position: _currentPosition,
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-          infoWindow: InfoWindow(title: 'Current Location'),
+          infoWindow: const InfoWindow(title: 'Current Location'),
         ),
       );
     });
