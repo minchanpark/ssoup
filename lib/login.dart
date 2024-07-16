@@ -5,14 +5,16 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:ssoup/home.dart';
 
 Future<void> addUserToFirestore(User user, {String? statusMessage}) async {
-  final CollectionReference users = FirebaseFirestore.instance.collection('user');
+  final CollectionReference users =
+      FirebaseFirestore.instance.collection('user');
   final DocumentSnapshot snapshot = await users.doc(user.uid).get();
 
   if (snapshot.exists) {
     final updatedUserData = {
       'email': user.email,
       'name': user.displayName,
-      'status_message': statusMessage ?? 'I promise to take the test honestly before GOD.',
+      'status_message':
+          statusMessage ?? 'I promise to take the test honestly before GOD.',
     };
     await users.doc(user.uid).update(updatedUserData);
   } else {
@@ -20,7 +22,8 @@ Future<void> addUserToFirestore(User user, {String? statusMessage}) async {
       'uid': user.uid,
       'email': user.email,
       'name': user.displayName,
-      'status_message': statusMessage ?? 'I promise to take the test honestly before GOD.',
+      'status_message':
+          statusMessage ?? 'I promise to take the test honestly before GOD.',
     };
     await users.doc(user.uid).set(newUserData);
   }
@@ -44,7 +47,8 @@ Future<UserCredential> signInWithGoogle() async {
     idToken: googleAuth.idToken,
   );
 
-  final userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+  final userCredential =
+      await FirebaseAuth.instance.signInWithCredential(credential);
   final User user = userCredential.user!;
   await addUserToFirestore(user);
   return userCredential;
@@ -85,7 +89,8 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 40.0),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
-                  foregroundColor: Colors.white, backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
+                  backgroundColor: Colors.blue,
                   minimumSize: const Size(double.infinity, 50),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8.0),
@@ -100,7 +105,7 @@ class _LoginPageState extends State<LoginPage> {
                     final userCredential = await signInWithGoogle();
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
+                      MaterialPageRoute(builder: (context) => const HomePage()),
                     );
                   } catch (e) {
                     print('Google 로그인 오류: $e');

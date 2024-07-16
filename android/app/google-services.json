@@ -39,10 +39,10 @@
               "client_type": 3
             },
             {
-              "client_id": "159990997817-tt1iuefonnsar5a7p1iq1igdl1j987ta.apps.googleusercontent.com",
+              "client_id": "159990997817-6f382o1qjbnga4k132u5dktmh7uev3dj.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
-                "bundle_id": "com.qr.ssopu"
+                "bundle_id": "com.example.ssoup"
               }
             }
           ]

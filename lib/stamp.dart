@@ -179,7 +179,7 @@ class StampItem extends StatelessWidget {
               title: Center(
                   child: Text(
                 name + ' 스탬프',
-                style: extrabold24.copyWith(color: Color(0xff1E528E)),
+                style: extrabold24.copyWith(color: const Color(0xff1E528E)),
               )),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -189,7 +189,7 @@ class StampItem extends StatelessWidget {
                     height: 200,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
-                      color: Color(0xffEEF4FF),
+                      color: const Color(0xffEEF4FF),
                     ),
                     child: Image.asset(
                       image,
@@ -197,21 +197,21 @@ class StampItem extends StatelessWidget {
                       height: (height / 852) * mediaHeight,
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
-                  Text(
+                  const Text(
                     '봉래폭포 플로깅 완료',
                     style: medium16,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
-                  Text(
+                  const Text(
                     '일시: 2024.06.27 / 14:27 \n거리: 1.5km',
                     style: medium15,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
                   Container(
@@ -219,10 +219,10 @@ class StampItem extends StatelessWidget {
                     height: 40,
                     decoration: BoxDecoration(
                       color: Colors.white,
-                      border: Border.all(color: Color(0xffA3C2FF)),
+                      border: Border.all(color: const Color(0xffA3C2FF)),
                       borderRadius: BorderRadius.circular(26),
                     ),
-                    child: Center(
+                    child: const Center(
                         child: Text(
                       '10마리의 해양생물이 고마워하고 있어요!',
                       style: medium13,
@@ -233,7 +233,7 @@ class StampItem extends StatelessWidget {
               actions: [
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xff50A2FF)),
+                      backgroundColor: const Color(0xff50A2FF)),
                   child: Text(
                     "닫기",
                     style: bold15.copyWith(color: Colors.white),
@@ -251,7 +251,7 @@ class StampItem extends StatelessWidget {
         children: [
           CircleAvatar(
             radius: 40,
-            backgroundColor: Color(0xffEEF4FF),
+            backgroundColor: const Color(0xffEEF4FF),
             child: Image.asset(
               image,
               width: (width / 393) * mediaWidth,

@@ -40,6 +40,8 @@ dependencies:
   cloud_firestore: ^5.0.2
   firebase_auth: ^5.1.1
   google_sign_in: ^6.2.1
+  location: ^7.0.0
+  flutter_polyline_points: ^2.1.0
 
 dev_dependencies:
   flutter_test:
