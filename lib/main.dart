@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart'; // Firebase 초기화를 위해 추가
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:ssoup/home.dart';
 import 'package:ssoup/login.dart';
 
 void main() async {
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
-      home: LoginPage(),
+      home: HomePage(),
     );
   }
 }

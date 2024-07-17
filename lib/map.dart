@@ -113,6 +113,15 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
       }
     }
 
+    final currentLocation = await _location.getLocation();
+    if (!mounted) return;
+    setState(() {
+      _currentPosition =
+          LatLng(currentLocation.latitude!, currentLocation.longitude!);
+      _updateCurrentLocationMarker();
+      _mapController?.animateCamera(CameraUpdate.newLatLng(_currentPosition));
+    });
+
     _locationSubscription =
         _location.onLocationChanged.listen((LocationData currentLocation) {
       if (!mounted) return;
@@ -122,14 +131,6 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
         _updateCurrentLocationMarker();
         _mapController?.animateCamera(CameraUpdate.newLatLng(_currentPosition));
       });
-    });
-
-    final currentLocation = await _location.getLocation();
-    if (!mounted) return;
-    setState(() {
-      _currentPosition =
-          LatLng(currentLocation.latitude!, currentLocation.longitude!);
-      _updateCurrentLocationMarker();
     });
   }
 
