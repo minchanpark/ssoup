@@ -1,10 +1,11 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:math' show cos, sqrt, asin;
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
 
 import 'package:ssoup/constants.dart';
 
@@ -21,9 +22,8 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   final Location _location = Location();
   final Set<Marker> _markers = {};
   final LatLng _destinationLocation =
-      const LatLng(36.1047753, 129.3876298); // 변경된 도착지
-  final LatLng _startLocation =
-      const LatLng(36.10155104193711, 129.39063285108818);
+      const LatLng(36.10155104193711, 129.39063285108818); // 변경된 도착지
+  final LatLng _startLocation = const LatLng(36.1047753, 129.3876298);
   final Set<Polyline> _polylines = {};
   StreamSubscription<LocationData>? _locationSubscription;
 
@@ -130,8 +130,52 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
             LatLng(currentLocation.latitude!, currentLocation.longitude!);
         _updateCurrentLocationMarker();
         _mapController?.animateCamera(CameraUpdate.newLatLng(_currentPosition));
+
+        // Check if within 10 meters of destination
+        double distance = _calculateDistance(
+          _currentPosition.latitude,
+          _currentPosition.longitude,
+          _destinationLocation.latitude,
+          _destinationLocation.longitude,
+        );
+
+        if (distance <= 10) {
+          _showArrivalPopup();
+        }
       });
     });
+  }
+
+  void _showArrivalPopup() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('도착 알림'),
+          content: const Text('목적지에 도착했습니다!'),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('확인'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  double _calculateDistance(
+      double lat1, double lon1, double lat2, double lon2) {
+    const p = 0.017453292519943295; // Math.PI / 180
+    final c = cos;
+    final a = 0.5 -
+        c((lat2 - lat1) * p) / 2 +
+        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
+    return 12742 *
+        asin(sqrt(a)) *
+        1000; // 2 * R; R = 6371 km, convert to meters
   }
 
   void _setInitialMarkers() {
