@@ -16,9 +16,6 @@ Future<void> addUserToFirestore(User user, {String? statusMessage}) async {
     final updatedUserData = {
       'email': user.email,
       'name': user.displayName,
-      'totalSpot': 0,
-      'totalStamp': 0,
-      'totalKm': 0.0,
     };
     await users.doc(user.uid).update(updatedUserData);
   } else {
@@ -33,7 +30,6 @@ Future<void> addUserToFirestore(User user, {String? statusMessage}) async {
     await users.doc(user.uid).set(newUserData);
   }
 }
-
 
 Future<UserCredential> signInWithGoogle() async {
   late User? currentUser = FirebaseAuth.instance.currentUser;
@@ -59,6 +55,7 @@ Future<UserCredential> signInWithGoogle() async {
   await addUserToFirestore(user);
   return userCredential;
 }
+
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
