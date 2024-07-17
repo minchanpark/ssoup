@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'course.dart';
 import 'map.dart';
@@ -11,6 +12,9 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final User? user = FirebaseAuth.instance.currentUser;
+    final String userName = user?.displayName ?? '사용자';
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
@@ -37,14 +41,13 @@ class HomePage extends StatelessWidget {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                '김한동님의 플로깅 현황',
+                                '$userName님의 플로깅 현황',
                                 style: extrabold24.copyWith(
                                     color: Color(0xff1E528E)),
                               ),
                               SizedBox(height: 10),
                               Text('방문한 관광지 0곳',
-                                  style:
-                                      medium15.copyWith(color: Colors.white)),
+                                  style: medium15.copyWith(color: Colors.white)),
                               Text(
                                 '획득한 스탬프 1개',
                                 style: medium15.copyWith(color: Colors.white),
@@ -55,7 +58,7 @@ class HomePage extends StatelessWidget {
                               ),
                               SizedBox(height: 10),
                               Text(
-                                '김한동님은 총 1번의 플로깅을 인증했어요!',
+                                '$userName님은 총 1번의 플로깅을 인증했어요!',
                                 style: medium15.copyWith(color: Colors.white),
                               ),
                             ],
