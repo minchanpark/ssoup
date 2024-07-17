@@ -22,7 +22,7 @@ migrate_working_dir/
 #.vscode/
 
 # Ignore only the constants.dart file
-constants.dart
+key_file.dart
 
 # Flutter/Dart/Pub related
 **/doc/api/

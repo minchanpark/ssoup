@@ -7,7 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:ssoup/constants.dart';
+import 'package:ssoup/key_file.dart';
 
 class GoogleMapPage extends StatefulWidget {
   const GoogleMapPage({super.key});
@@ -22,7 +22,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   final Location _location = Location();
   final Set<Marker> _markers = {};
   final LatLng _destinationLocation =
-      const LatLng(36.10155104193711, 129.39063285108818); // 변경된 도착지
+      const LatLng(36.1022665, 129.3913618); // 변경된 도착지
   final LatLng _startLocation = const LatLng(36.1047753, 129.3876298);
   final Set<Polyline> _polylines = {};
   StreamSubscription<LocationData>? _locationSubscription;
