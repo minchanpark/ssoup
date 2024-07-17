@@ -8,7 +8,6 @@ import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 import 'constants.dart';
 
-
 class GoogleMapPage extends StatefulWidget {
   const GoogleMapPage({super.key});
 
