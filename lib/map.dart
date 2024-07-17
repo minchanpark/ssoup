@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
+import 'constants.dart';
 
-import 'package:ssoup/key_file.dart';
 
 class GoogleMapPage extends StatefulWidget {
   const GoogleMapPage({super.key});
