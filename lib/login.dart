@@ -4,6 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:ssoup/home.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 Future<void> addUserToFirestore(User user, {String? statusMessage}) async {
   final CollectionReference users =
       FirebaseFirestore.instance.collection('user');
@@ -13,8 +16,9 @@ Future<void> addUserToFirestore(User user, {String? statusMessage}) async {
     final updatedUserData = {
       'email': user.email,
       'name': user.displayName,
-      'status_message':
-          statusMessage ?? 'I promise to take the test honestly before GOD.',
+      'totalSpot': 0,
+      'totalStamp': 0,
+      'totalKm': 0.0,
     };
     await users.doc(user.uid).update(updatedUserData);
   } else {
@@ -22,12 +26,14 @@ Future<void> addUserToFirestore(User user, {String? statusMessage}) async {
       'uid': user.uid,
       'email': user.email,
       'name': user.displayName,
-      'status_message':
-          statusMessage ?? 'I promise to take the test honestly before GOD.',
+      'totalSpot': 0,
+      'totalStamp': 0,
+      'totalKm': 0.0,
     };
     await users.doc(user.uid).set(newUserData);
   }
 }
+
 
 Future<UserCredential> signInWithGoogle() async {
   late User? currentUser = FirebaseAuth.instance.currentUser;
@@ -53,7 +59,6 @@ Future<UserCredential> signInWithGoogle() async {
   await addUserToFirestore(user);
   return userCredential;
 }
-
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
 
