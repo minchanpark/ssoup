@@ -99,7 +99,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 child: const Text(
-                  'Sign in with Google',
+                  '구글 계정으로 시작하기',
                   style: TextStyle(fontSize: 18),
                 ),
                 onPressed: () async {
