@@ -87,4 +87,5 @@ class DefaultFirebaseOptions {
     authDomain: 'ssoup-82c05.firebaseapp.com',
     storageBucket: 'ssoup-82c05.appspot.com',
   );
+
 }
