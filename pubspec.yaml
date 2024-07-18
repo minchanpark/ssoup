@@ -43,6 +43,8 @@ dependencies:
   location: ^7.0.0
   flutter_polyline_points: ^2.1.0
   kakao_flutter_sdk: ^1.9.5
+  firebase_storage: ^12.1.1
+  image_picker: ^1.1.2
 
 dev_dependencies:
   flutter_test:
