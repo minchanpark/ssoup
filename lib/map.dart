@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:ssoup/constants.dart';
 
@@ -22,7 +23,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   final Location _location = Location();
   final Set<Marker> _markers = {};
   final LatLng _destinationLocation =
-      const LatLng(36.1022665, 129.3913618); // 변경된 도착지
+      const LatLng(36.101800065158876, 129.39075866621405);
   final LatLng _startLocation = const LatLng(36.1047753, 129.3876298);
   final Set<Polyline> _polylines = {};
   StreamSubscription<LocationData>? _locationSubscription;
@@ -41,7 +42,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      print('Response Data: $data'); // 응답 데이터를 출력하여 확인합니다.
+      print('Response Data: $data');
 
       final List<dynamic>? routes = data['route'] != null
           ? data['route']['trafast'] ?? data['route']['traoptimal']
@@ -55,7 +56,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
       }
     } else {
       print('Failed to load directions: ${response.statusCode}');
-      print('Error Response: ${response.body}'); // 에러 응답 내용을 출력하여 확인합니다.
+      print('Error Response: ${response.body}');
     }
   }
 
@@ -83,7 +84,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
     super.initState();
     _checkPermissions();
     _setInitialMarkers();
-    _getNaverRoute(); // 네이버 지도 API로 경로 데이터를 가져옵니다.
+    _getNaverRoute();
   }
 
   @override
@@ -131,7 +132,6 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
         _updateCurrentLocationMarker();
         _mapController?.animateCamera(CameraUpdate.newLatLng(_currentPosition));
 
-        // Check if within 10 meters of destination
         double distance = _calculateDistance(
           _currentPosition.latitude,
           _currentPosition.longitude,
@@ -146,13 +146,34 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
     });
   }
 
-  void _showArrivalPopup() {
+  Future<void> _showArrivalPopup() async {
+    final DocumentSnapshot stampSnapshot = await FirebaseFirestore.instance
+        .collection('stamp')
+        .doc('Tu1FQ3Q9hwZeCtGe67xQ')
+        .get();
+
+    final data = stampSnapshot.data() as Map<String, dynamic>;
+    final String stampName = data['stampName'] ?? 'No Name';
+    final String location = data['location'] ?? 'No Location';
+    final String km = data['km'] ?? '0';
+    final String date = data['date'] ?? 'No Date';
+    final String stampImageUrl = data['stampImageUrl'] ?? '';
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('도착 알림'),
-          content: const Text('목적지에 도착했습니다!'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Image.network(stampImageUrl),
+              Text('스탬프 이름: $stampName'),
+              Text('위치: $location'),
+              Text('거리: $km km'),
+              Text('날짜: $date'),
+            ],
+          ),
           actions: <Widget>[
             TextButton(
               child: const Text('확인'),
@@ -168,7 +189,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
 
   double _calculateDistance(
       double lat1, double lon1, double lat2, double lon2) {
-    const p = 0.017453292519943295; // Math.PI / 180
+    const p = 0.017453292519943295;
     final c = cos;
     final a = 0.5 -
         c((lat2 - lat1) * p) / 2 +
