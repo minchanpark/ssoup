@@ -132,7 +132,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
         _updateCurrentLocationMarker();
         _mapController?.animateCamera(CameraUpdate.newLatLng(_currentPosition));
 
-        // Check if within 10 meters of destination
+        // Check if within 30 meters of destination
         double distance = _calculateDistance(
           _currentPosition.latitude,
           _currentPosition.longitude,
@@ -140,7 +140,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
           _destinationLocation.longitude,
         );
 
-        if (distance <= 10) {
+        if (distance <= 30) {
           _showArrivalPopup(context);
         }
       });
