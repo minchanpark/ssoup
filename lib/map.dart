@@ -154,19 +154,19 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   }
 
   void _showArrivalPopup(BuildContext context) async {
-    Map<String, dynamic> notificationData = await _fetchNotificationData();
+    Map<String, dynamic> stampDetail = await _fetchNotificationData();
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(notificationData['stampName']),
+          title: Text(stampDetail['stampName']),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Image.network(notificationData['stampImageUrl']),
-              Text(notificationData['location']),
-              Text(notificationData['km']),
+              Image.network(stampDetail['stampImageUrl']),
+              Text(stampDetail['location']),
+              Text(stampDetail['km']),
             ],
           ),
           actions: <Widget>[
