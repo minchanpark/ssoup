@@ -22,8 +22,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   LatLng _currentPosition = const LatLng(36.10155104193711, 129.39063285108818);
   final Location _location = Location();
   final Set<Marker> _markers = {};
-  final LatLng _destinationLocation =
-      const LatLng(36.1022665, 129.3913618); // 변경된 도착지
+  final LatLng _destinationLocation = const LatLng(36.1022665, 129.3913618);
   final LatLng _startLocation = const LatLng(36.1047753, 129.3876298);
   final Set<Polyline> _polylines = {};
   StreamSubscription<LocationData>? _locationSubscription;
@@ -42,7 +41,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      print('Response Data: $data'); // 응답 데이터를 출력하여 확인합니다.
+      print('Response Data: $data');
 
       final List<dynamic>? routes = data['route'] != null
           ? data['route']['trafast'] ?? data['route']['traoptimal']
@@ -56,7 +55,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
       }
     } else {
       print('Failed to load directions: ${response.statusCode}');
-      print('Error Response: ${response.body}'); // 에러 응답 내용을 출력하여 확인합니다.
+      print('Error Response: ${response.body}');
     }
   }
 
@@ -84,7 +83,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
     super.initState();
     _checkPermissions();
     _setInitialMarkers();
-    _getNaverRoute(); // 네이버 지도 API로 경로 데이터를 가져옵니다.
+    _getNaverRoute();
   }
 
   @override
@@ -132,7 +131,6 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
         _updateCurrentLocationMarker();
         _mapController?.animateCamera(CameraUpdate.newLatLng(_currentPosition));
 
-        // Check if within 30 meters of destination
         double distance = _calculateDistance(
           _currentPosition.latitude,
           _currentPosition.longitude,
