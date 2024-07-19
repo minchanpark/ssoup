@@ -2,13 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' show cos, sqrt, asin;
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
-import 'package:firebase_core/firebase_core.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 
 import 'package:ssoup/constants.dart';
 
@@ -24,7 +22,8 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   LatLng _currentPosition = const LatLng(36.10155104193711, 129.39063285108818);
   final Location _location = Location();
   final Set<Marker> _markers = {};
-  final LatLng _destinationLocation = const LatLng(36.1022665, 129.3913618);
+  final LatLng _destinationLocation =
+      const LatLng(36.1022665, 129.3913618); // 변경된 도착지
   final LatLng _startLocation = const LatLng(36.1047753, 129.3876298);
   final Set<Polyline> _polylines = {};
   StreamSubscription<LocationData>? _locationSubscription;
@@ -43,7 +42,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      print('Response Data: $data');
+      print('Response Data: $data'); // 응답 데이터를 출력하여 확인합니다.
 
       final List<dynamic>? routes = data['route'] != null
           ? data['route']['trafast'] ?? data['route']['traoptimal']
@@ -57,7 +56,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
       }
     } else {
       print('Failed to load directions: ${response.statusCode}');
-      print('Error Response: ${response.body}');
+      print('Error Response: ${response.body}'); // 에러 응답 내용을 출력하여 확인합니다.
     }
   }
 
@@ -85,7 +84,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
     super.initState();
     _checkPermissions();
     _setInitialMarkers();
-    _getNaverRoute();
+    _getNaverRoute(); // 네이버 지도 API로 경로 데이터를 가져옵니다.
   }
 
   @override
@@ -133,6 +132,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
         _updateCurrentLocationMarker();
         _mapController?.animateCamera(CameraUpdate.newLatLng(_currentPosition));
 
+        // Check if within 10 meters of destination
         double distance = _calculateDistance(
           _currentPosition.latitude,
           _currentPosition.longitude,
@@ -149,8 +149,8 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
 
   Future<Map<String, dynamic>> _fetchNotificationData() async {
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
-        .collection('notifications')
-        .doc('destinationArrival')
+        .collection('stamp')
+        .doc('Tu1FQ3Q9hwZeCtGe67xQ')
         .get();
     return snapshot.data() as Map<String, dynamic>;
   }
@@ -162,12 +162,13 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text(notificationData['title']),
+          title: Text(notificationData['stampName']),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              Image.network(notificationData['imageUrl']),
-              Text(notificationData['content']),
+              Image.network(notificationData['stampImageUrl']),
+              Text(notificationData['location']),
+              Text(notificationData['km']),
             ],
           ),
           actions: <Widget>[
@@ -183,52 +184,73 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
     );
   }
 
-  double _calculateDistance(lat1, lon1, lat2, lon2) {
-    var p = 0.017453292519943295;
-    var c = cos;
-    var a = 0.5 -
+  double _calculateDistance(
+      double lat1, double lon1, double lat2, double lon2) {
+    const p = 0.017453292519943295; // Math.PI / 180
+    final c = cos;
+    final a = 0.5 -
         c((lat2 - lat1) * p) / 2 +
         c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
-    return 12742 * asin(sqrt(a));
+    return 12742 *
+        asin(sqrt(a)) *
+        1000; // 2 * R; R = 6371 km, convert to meters
   }
 
   void _setInitialMarkers() {
-    _markers.add(Marker(
-      markerId: const MarkerId('start'),
-      position: _startLocation,
-      infoWindow: const InfoWindow(title: '출발지'),
-    ));
-    _markers.add(Marker(
-      markerId: const MarkerId('destination'),
-      position: _destinationLocation,
-      infoWindow: const InfoWindow(title: '도착지'),
-    ));
+    if (!mounted) return;
+    setState(() {
+      _markers.add(
+        Marker(
+          markerId: const MarkerId('sL'),
+          position: _startLocation,
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+          infoWindow: const InfoWindow(title: 'Start Location'),
+        ),
+      );
+      _markers.add(
+        Marker(
+          markerId: const MarkerId('dL'),
+          position: _destinationLocation,
+          icon:
+              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
+          infoWindow: const InfoWindow(title: 'Destination Location'),
+        ),
+      );
+    });
   }
 
   void _updateCurrentLocationMarker() {
-    _markers.removeWhere((m) => m.markerId == const MarkerId('current'));
-    _markers.add(Marker(
-      markerId: const MarkerId('current'),
-      position: _currentPosition,
-      infoWindow: const InfoWindow(title: '현재 위치'),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-    ));
+    if (!mounted) return;
+    setState(() {
+      _markers.removeWhere((marker) => marker.markerId == const MarkerId('cL'));
+      _markers.add(
+        Marker(
+          markerId: const MarkerId('cL'),
+          position: _currentPosition,
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          infoWindow: const InfoWindow(title: 'Current Location'),
+        ),
+      );
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: const Text('Google Map Page'),
+      ),
       body: GoogleMap(
         initialCameraPosition: CameraPosition(
           target: _currentPosition,
-          zoom: 15.0,
+          zoom: 14.0,
         ),
-        myLocationEnabled: true,
-        myLocationButtonEnabled: true,
+        markers: _markers,
         onMapCreated: (GoogleMapController controller) {
           _mapController = controller;
         },
-        markers: _markers,
+        myLocationEnabled: true,
+        myLocationButtonEnabled: true,
         polylines: _polylines,
       ),
     );
