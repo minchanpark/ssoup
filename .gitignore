@@ -23,7 +23,6 @@ migrate_working_dir/
 
 # Ignore only the constants.dart file
 constants.dart
-ios/Runner/info.plist
 
 # Flutter/Dart/Pub related
 **/doc/api/

@@ -33,6 +33,31 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
   File? _image;
   String? _review;
   double _score = 5.0;
+  String nickname = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchNickname();
+  }
+
+  Future<void> _fetchNickname() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      try {
+        DocumentSnapshot documentSnapshot =
+            await _firestore.collection('user').doc(user.uid).get();
+
+        setState(() {
+          nickname = documentSnapshot['nick_name'];
+        });
+      } catch (e) {
+        print("Error fetching nickname: $e");
+      }
+    } else {
+      print("User not logged in");
+    }
+  }
 
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -74,7 +99,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
         .doc(user.uid)
         .set({
       'uid': user.uid,
-      'username': user.displayName ?? 'Anonymous',
+      'username': nickname,
       'reviewImageUrl': reviewImageUrl,
       'review': _review,
       'score': _score,
