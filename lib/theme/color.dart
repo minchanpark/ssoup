@@ -17,4 +17,5 @@ class AppColor {
   static const Color mainText = Color(0xff131313);
   static const Color subText = Color(0xffADAAAA);
   static const Color button = Color(0xff50A2FF);
+  static const Color white = Color(0xffFFFFFF);
 }

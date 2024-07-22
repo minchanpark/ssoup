@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math' show cos, sqrt, asin;
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -21,8 +22,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   LatLng _currentPosition = const LatLng(36.10155104193711, 129.39063285108818);
   final Location _location = Location();
   final Set<Marker> _markers = {};
-  final LatLng _destinationLocation =
-      const LatLng(36.10155104193711, 129.39063285108818); // 변경된 도착지
+  final LatLng _destinationLocation = const LatLng(36.1022665, 129.3913618);
   final LatLng _startLocation = const LatLng(36.1047753, 129.3876298);
   final Set<Polyline> _polylines = {};
   StreamSubscription<LocationData>? _locationSubscription;
@@ -41,7 +41,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      print('Response Data: $data'); // 응답 데이터를 출력하여 확인합니다.
+      print('Response Data: $data');
 
       final List<dynamic>? routes = data['route'] != null
           ? data['route']['trafast'] ?? data['route']['traoptimal']
@@ -55,7 +55,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
       }
     } else {
       print('Failed to load directions: ${response.statusCode}');
-      print('Error Response: ${response.body}'); // 에러 응답 내용을 출력하여 확인합니다.
+      print('Error Response: ${response.body}');
     }
   }
 
@@ -83,7 +83,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
     super.initState();
     _checkPermissions();
     _setInitialMarkers();
-    _getNaverRoute(); // 네이버 지도 API로 경로 데이터를 가져옵니다.
+    _getNaverRoute();
   }
 
   @override
@@ -131,7 +131,6 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
         _updateCurrentLocationMarker();
         _mapController?.animateCamera(CameraUpdate.newLatLng(_currentPosition));
 
-        // Check if within 10 meters of destination
         double distance = _calculateDistance(
           _currentPosition.latitude,
           _currentPosition.longitude,
@@ -139,23 +138,40 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
           _destinationLocation.longitude,
         );
 
-        if (distance <= 10) {
-          _showArrivalPopup();
+        if (distance <= 30) {
+          _showArrivalPopup(context);
         }
       });
     });
   }
 
-  void _showArrivalPopup() {
+  Future<Map<String, dynamic>> _fetchNotificationData() async {
+    DocumentSnapshot snapshot = await FirebaseFirestore.instance
+        .collection('stamp')
+        .doc('Tu1FQ3Q9hwZeCtGe67xQ')
+        .get();
+    return snapshot.data() as Map<String, dynamic>;
+  }
+
+  void _showArrivalPopup(BuildContext context) async {
+    Map<String, dynamic> stampDetail = await _fetchNotificationData();
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: const Text('도착 알림'),
-          content: const Text('목적지에 도착했습니다!'),
+          title: Text(stampDetail['stampName']),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Image.network(stampDetail['stampImageUrl']),
+              Text(stampDetail['location']),
+              Text(stampDetail['km']),
+            ],
+          ),
           actions: <Widget>[
             TextButton(
-              child: const Text('확인'),
+              child: Text('확인'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
