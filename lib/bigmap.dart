@@ -6,9 +6,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-import 'package:http/http.dart' as http;
 
 import 'package:ssoup/constants.dart';
+import 'package:ssoup/theme/text.dart';
 
 class BigMapPage extends StatefulWidget {
   const BigMapPage({super.key});
@@ -19,17 +19,16 @@ class BigMapPage extends StatefulWidget {
 
 class _BigMapPageState extends State<BigMapPage> {
   GoogleMapController? _mapController;
-  LatLng _currentPosition = const LatLng(37.49893355978079, 130.86866855621338);
+  LatLng _ulleungDo = const LatLng(37.49893355978079, 130.86866855621338);
   final Location _location = Location();
   final Set<Marker> _markers = {};
-  final Set<Polyline> _polylines = {};
   StreamSubscription<LocationData>? _locationSubscription;
 
   @override
   void initState() {
     super.initState();
     _checkPermissions();
-    _addMarkers();
+    _fetchLocationsFromFirestore();
   }
 
   @override
@@ -62,20 +61,20 @@ class _BigMapPageState extends State<BigMapPage> {
     final currentLocation = await _location.getLocation();
     if (!mounted) return;
     setState(() {
-      _currentPosition =
+      _ulleungDo =
           LatLng(currentLocation.latitude!, currentLocation.longitude!);
       _updateCurrentLocationMarker();
-      _mapController?.animateCamera(CameraUpdate.newLatLng(_currentPosition));
+      _mapController?.animateCamera(CameraUpdate.newLatLng(_ulleungDo));
     });
 
     _locationSubscription =
         _location.onLocationChanged.listen((LocationData currentLocation) {
       if (!mounted) return;
       setState(() {
-        _currentPosition =
+        _ulleungDo =
             LatLng(currentLocation.latitude!, currentLocation.longitude!);
         _updateCurrentLocationMarker();
-        _mapController?.animateCamera(CameraUpdate.newLatLng(_currentPosition));
+        _mapController?.animateCamera(CameraUpdate.newLatLng(_ulleungDo));
       });
     });
   }
@@ -87,7 +86,7 @@ class _BigMapPageState extends State<BigMapPage> {
       _markers.add(
         Marker(
           markerId: const MarkerId('cL'),
-          position: _currentPosition,
+          position: _ulleungDo,
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
           infoWindow: const InfoWindow(title: 'Current Location'),
         ),
@@ -95,56 +94,115 @@ class _BigMapPageState extends State<BigMapPage> {
     });
   }
 
-  void _addMarkers() {
-    const LatLng nariBunji = LatLng(37.5121, 130.8755);
-    const LatLng dokdoObservatory = LatLng(37.4864, 130.9262);
-    const LatLng bongnaeWaterfall = LatLng(37.4983781, 130.8833256);
-    const LatLng mushrRock = LatLng(37.486811659680065, 130.80605506896973);
+  Future<void> _fetchLocationsFromFirestore() async {
+    final QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection('locationMap').get();
 
     setState(() {
-      _markers.addAll([
-        Marker(
-          markerId: MarkerId('NariBunji'),
-          position: nariBunji,
-          infoWindow: InfoWindow(title: '나리분지'),
-        ),
-        Marker(
-          markerId: MarkerId('DokdoObservatory'),
-          position: dokdoObservatory,
-          infoWindow: InfoWindow(title: '독도 전망대'),
-        ),
-        Marker(
-          markerId: MarkerId('BongnaeWaterfall'),
-          position: bongnaeWaterfall,
-          infoWindow: InfoWindow(title: '봉래폭포'),
-        ),
-        Marker(
-          markerId: MarkerId('TurtleRock'),
-          position: mushrRock,
-          infoWindow: InfoWindow(title: '버섯바위'),
-        ),
-      ]);
+      for (var doc in snapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        final LatLng location =
+            LatLng(data['location'][0], data['location'][1]);
+        final String name = data['locationName'];
+        final String information = data['information'];
+
+        _markers.add(
+          Marker(
+            markerId: MarkerId(doc.id),
+            position: location,
+            onTap: () {
+              _showMarkerInfoDialog(name, information);
+            },
+          ),
+        );
+      }
     });
+  }
+
+  void _showMarkerInfoDialog(String name, String information) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(name),
+          content: Text(information),
+          actions: <Widget>[
+            TextButton(
+              child: const Text('Close'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _setMapStyle(GoogleMapController controller) async {
+    final String style = '''[
+    {
+      "featureType": "all",
+      "elementType": "labels",
+      "stylers": [
+        { "visibility": "off" }
+      ]
+    },
+    {
+      "featureType": "landscape",
+      "elementType": "geometry",
+      "stylers": [
+        { "color": "#ffffff" }
+      ]
+    },
+    {
+      "featureType": "water",
+      "elementType": "geometry",
+      "stylers": [
+        { "color": "#C6EBFE" }
+      ]
+    },
+    {
+      "featureType": "road",
+      "elementType": "geometry",
+      "stylers": [
+        { "visibility": "simplified" },
+        { "color": "#cccccc" }
+      ]
+    },
+    {
+      "featureType": "poi",
+      "elementType": "geometry",
+      "stylers": [
+        { "color": "#ffffff" }
+      ]
+    }
+  ]''';
+    controller.setMapStyle(style);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Google Map Page'),
+        title: const Text(
+          '울릉투어 맵',
+          style: regular23,
+        ),
+        backgroundColor: Color(0xffC6EBFE),
       ),
       body: GoogleMap(
         initialCameraPosition: CameraPosition(
-          target: _currentPosition,
+          target: _ulleungDo,
           zoom: 11.8,
         ),
         markers: _markers,
         onMapCreated: (GoogleMapController controller) {
           _mapController = controller;
+          _setMapStyle(controller);
         },
         myLocationEnabled: true,
         myLocationButtonEnabled: true,
-        polylines: _polylines,
       ),
     );
   }
