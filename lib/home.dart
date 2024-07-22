@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'bigmap.dart';
 import 'course.dart';
 import 'map.dart';
 import 'stamp.dart';
@@ -181,14 +182,22 @@ class HomePage extends StatelessWidget {
                             ),
                             const SizedBox(width: 10),
                             Expanded(
-                              child: SizedBox(
-                                height: 200,
-                                child: Card(
-                                    color: const Color(0xffD5E3FF),
-                                    child: Image.asset(
-                                      'assets/stalk.png',
-                                      fit: BoxFit.cover,
-                                    )),
+                              child: GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => BigMapPage()));
+                                },
+                                child: SizedBox(
+                                  height: 200,
+                                  child: Card(
+                                      color: const Color(0xffD5E3FF),
+                                      child: Image.asset(
+                                        'assets/stalk.png',
+                                        fit: BoxFit.cover,
+                                      )),
+                                ),
                               ),
                             ),
                           ],
