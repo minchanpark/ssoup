@@ -13,8 +13,11 @@ class StampPage extends StatelessWidget {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: const Color(0xffA3C2FF),
-        title: Image.asset('assets/6/ssoup.png',
-            width: screenWidth * (77 / 393), height: screenHeight * (77 / 852)),
+        title: Image.asset(
+          'assets/6/ssoup.png',
+          width: screenWidth * (77 / 393),
+          height: screenHeight * (77 / 852),
+        ),
       ),
       body: Column(
         children: [
@@ -25,7 +28,7 @@ class StampPage extends StatelessWidget {
             ),
             child: Container(
               color: const Color(0xffA3C2FF),
-              height: screenHeight * (200 / 852),
+              height: screenHeight * (250 / 852),
               child: Column(
                 children: [
                   Row(
@@ -100,56 +103,56 @@ class StampPage extends StatelessWidget {
                 StampItem(
                   name: '타꼬',
                   image: 'assets/stamp_fish4.png',
-                  width: 119,
-                  height: 119,
+                  width: screenWidth * (119 / 393),
+                  height: screenHeight * (119 / 852),
                 ),
                 StampItem(
                   name: '꾸래미',
                   image: 'assets/stamp_fish5.png',
-                  width: 164,
-                  height: 164,
+                  width: screenWidth * (164 / 393),
+                  height: screenHeight * (164 / 852),
                 ),
                 StampItem(
                   name: '젤리꼬기',
                   image: 'assets/stamp_fish6.png',
-                  width: 126,
-                  height: 126,
+                  width: screenWidth * (126 / 393),
+                  height: screenHeight * (126 / 852),
                 ),
                 StampItem(
                   name: '',
                   image: 'assets/stamp_fish6.png',
-                  width: 144,
-                  height: 144,
+                  width: screenWidth * (144 / 393),
+                  height: screenHeight * (144 / 852),
                 ),
                 StampItem(
                   name: '',
                   image: 'assets/stamp_fish6.png',
-                  width: 144,
-                  height: 144,
+                  width: screenWidth * (144 / 393),
+                  height: screenHeight * (144 / 852),
                 ),
                 StampItem(
                   name: '',
                   image: 'assets/stamp_fish6.png',
-                  width: 144,
-                  height: 144,
+                  width: screenWidth * (144 / 393),
+                  height: screenHeight * (144 / 852),
                 ),
                 StampItem(
                   name: '',
                   image: 'assets/stamp_fish6.png',
-                  width: 144,
-                  height: 144,
+                  width: screenWidth * (144 / 393),
+                  height: screenHeight * (144 / 852),
                 ),
                 StampItem(
                   name: '',
                   image: 'assets/stamp_fish6.png',
-                  width: 144,
-                  height: 144,
+                  width: screenWidth * (144 / 393),
+                  height: screenHeight * (144 / 852),
                 ),
                 StampItem(
                   name: '',
                   image: 'assets/complete.png',
-                  width: 58,
-                  height: 21,
+                  width: screenWidth * (58 / 393),
+                  height: screenHeight * (21 / 852),
                 ),
               ],
             ),

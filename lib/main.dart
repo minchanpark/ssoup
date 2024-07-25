@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         "/nick_name_page": (BuildContext context) => const NickNamePage(),
         "/home_page": (BuildContext context) => const HomePage(),
       },
-      home: LoginPage(),
+      home: const LoginPage(),
     );
   }
 }
