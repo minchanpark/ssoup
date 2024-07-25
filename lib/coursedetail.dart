@@ -21,8 +21,8 @@ class CourseDetailPage extends StatefulWidget {
     required this.courseLocation,
     required this.courseDuration,
     required this.courseLocationName,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _CourseDetailPageState createState() => _CourseDetailPageState();
@@ -66,7 +66,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
-    Future<void> _pickImage() async {
+    Future<void> pickImage() async {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
       setState(() {
         if (pickedFile != null) {
@@ -75,9 +75,9 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
       });
     }
 
-    Future<void> _submitReview() async {
+    Future<void> submitReview() async {
       if (_review == null || _review!.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Please provide review text'),
         ));
         return;
@@ -85,7 +85,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
 
       final user = _auth.currentUser;
       if (user == null) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('User not logged in'),
         ));
         return;
@@ -122,7 +122,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
       Navigator.of(context).pop();
     }
 
-    double _averageScore(List<DocumentSnapshot> visitor) {
+    double averageScore(List<DocumentSnapshot> visitor) {
       if (visitor.isEmpty) return 0.0;
       double total = 0.0;
       for (var review in visitor) {
@@ -131,18 +131,18 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
       return total / visitor.length;
     }
 
-    void _showReviewDialog() {
+    void showReviewDialog() {
       showDialog(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
-            title: Text('리뷰 작성하기'),
+            title: const Text('리뷰 작성하기'),
             content: SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextField(
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       hintText: '리뷰를 작성하세요',
                     ),
                     maxLines: 3,
@@ -156,12 +156,12 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                   Column(
                     children: [
                       ElevatedButton(
-                        onPressed: _pickImage,
-                        child: Text('이미지 업로드'),
+                        onPressed: pickImage,
+                        child: const Text('이미지 업로드'),
                       ),
                       SizedBox(width: screenWidth * (10 / 393)),
                       _image == null
-                          ? Text(' ')
+                          ? const Text(' ')
                           : Image.file(
                               _image!,
                               width: 50,
@@ -172,7 +172,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                   SizedBox(height: screenHeight * (10 / 852)),
                   Row(
                     children: [
-                      Text('점수'),
+                      const Text('점수'),
                       SizedBox(width: screenWidth * (10 / 393)),
                       DropdownButton<double>(
                         value: _score,
@@ -196,8 +196,8 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
             ),
             actions: [
               ElevatedButton(
-                child: Text('등록'),
-                onPressed: _submitReview,
+                onPressed: submitReview,
+                child: const Text('등록'),
               ),
             ],
           );
@@ -232,7 +232,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
               Padding(
                 padding:
                     EdgeInsets.symmetric(horizontal: screenWidth * (8.0 / 393)),
-                child: TabBar(
+                child: const TabBar(
                   indicatorSize: TabBarIndicatorSize.tab,
                   indicatorColor: Colors.black,
                   labelStyle: medium15,
@@ -243,7 +243,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                 ),
               ),
               SizedBox(height: screenHeight * (10 / 852)),
-              Container(
+              SizedBox(
                 height: MediaQuery.of(context).size.height - 200,
                 child: TabBarView(
                   children: [
@@ -270,7 +270,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                               top: screenHeight * (16 / 852),
                               right: screenWidth * (16 / 393),
                             ),
-                            child: Text(
+                            child: const Text(
                               '코스 경로: 울릉도 선착장 → 봉래폭포→ 내수일출전망대 → 석포일출일몰전망대',
                               style: regular15,
                             ),
@@ -280,15 +280,11 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                           Image.asset('assets/imsi.png'),
                           SizedBox(height: screenHeight * (30 / 852)),
                           Center(
-                            child: Container(
+                            child: SizedBox(
                               width: 350,
                               height: 65,
                               child: ElevatedButton(
                                 onPressed: () {},
-                                child: Text(
-                                  '코스 안내받기',
-                                  style: extrabold20,
-                                ),
                                 style: ElevatedButton.styleFrom(
                                   elevation: 0,
                                   backgroundColor: Colors.white,
@@ -297,6 +293,10 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                                   side: const BorderSide(
                                     color: Color(0xff4468AD),
                                   ),
+                                ),
+                                child: const Text(
+                                  '코스 안내받기',
+                                  style: extrabold20,
                                 ),
                               ),
                             ),
@@ -339,7 +339,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                                             (index) => Icon(
                                               Icons.star,
                                               color: index <
-                                                      _averageScore(visitor)
+                                                      averageScore(visitor)
                                                           .round()
                                                   ? Colors.yellow
                                                   : Colors.grey,
@@ -350,7 +350,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                                         SizedBox(
                                             width: screenWidth * (4 / 393)),
                                         Text(
-                                          _averageScore(visitor)
+                                          averageScore(visitor)
                                               .toStringAsFixed(1),
                                           style: regular15,
                                         ),
@@ -362,23 +362,24 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                                   ),
                                   Divider(
                                     height: screenHeight * (10 / 852),
-                                    color: Color(0xffF3F3F3),
+                                    color: const Color(0xffF3F3F3),
                                   ),
-                                  Text(
+                                  const Text(
                                     "리뷰",
                                     style: medium20,
                                   ),
                                   Divider(
                                     height: screenHeight * (10 / 852),
-                                    color: Color(0xffF3F3F3),
+                                    color: const Color(0xffF3F3F3),
                                   ),
                                   Divider(
                                     height: screenHeight * (10 / 852),
-                                    color: Color(0xffF3F3F3),
+                                    color: const Color(0xffF3F3F3),
                                   ),
                                   ListView.builder(
                                     shrinkWrap: true,
-                                    physics: NeverScrollableScrollPhysics(),
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
                                     itemCount: visitor.length,
                                     itemBuilder: (context, index) {
                                       var review = visitor[index];
@@ -427,8 +428,8 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                           ),
                           Center(
                             child: ElevatedButton(
-                              onPressed: _showReviewDialog,
-                              child: Text('리뷰 작성'),
+                              onPressed: showReviewDialog,
+                              child: const Text('리뷰 작성'),
                             ),
                           ),
                           SizedBox(
