@@ -154,7 +154,7 @@ class HomePage extends StatelessWidget {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              const GoogleMapPage(),
+                                              const BigMapPage(),
                                         ),
                                       );
                                     },
@@ -212,15 +212,7 @@ class HomePage extends StatelessWidget {
                                 SizedBox(width: screenWidth * (10 / 393)),
                                 Expanded(
                                   child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const BigMapPage(),
-                                        ),
-                                      );
-                                    },
+                                    onTap: () {},
                                     child: Card(
                                       color: const Color(0xffD5E3FF),
                                       clipBehavior: Clip.hardEdge,
