@@ -40,7 +40,8 @@ class _CoursePageState extends State<CoursePage> {
               id: doc.id,
               image: doc['courseImageUrl'],
               title: doc['courseName'],
-              location: doc['startLocation'],
+              location: doc['startLocation'].toString(),
+              locationName: doc['startLocationName'],
               duration: '소요시간: ${doc['spendTime']}',
               peopleCount: '누적 참여자 수: ${doc['totalVisitor']}명',
             );
@@ -62,6 +63,7 @@ class _CoursePageState extends State<CoursePage> {
                             courseId: course.id, // courseId 전달
                             courseImage: course.image,
                             courseTitle: course.title,
+                            courseLocationName: course.locationName,
                             courseLocation: course.location,
                             courseDuration: course.duration,
                           ),
@@ -107,7 +109,7 @@ class _CoursePageState extends State<CoursePage> {
                                       SizedBox(
                                         width: screenWidth * (4 / 393),
                                       ),
-                                      Text(course.location, style: light11),
+                                      Text(course.locationName, style: light11),
                                     ],
                                   ),
                                   SizedBox(
@@ -150,6 +152,7 @@ class Course {
   final String image;
   final String title;
   final String location;
+  final String locationName;
   final String duration;
   final String peopleCount;
 
@@ -160,5 +163,6 @@ class Course {
     required this.location,
     required this.duration,
     required this.peopleCount,
+    required this.locationName,
   });
 }

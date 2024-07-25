@@ -12,6 +12,7 @@ class CourseDetailPage extends StatefulWidget {
   final String courseTitle;
   final String courseLocation;
   final String courseDuration;
+  final String courseLocationName;
 
   const CourseDetailPage({
     required this.courseId,
@@ -19,6 +20,7 @@ class CourseDetailPage extends StatefulWidget {
     required this.courseTitle,
     required this.courseLocation,
     required this.courseDuration,
+    required this.courseLocationName,
     Key? key,
   }) : super(key: key);
 
@@ -252,7 +254,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                           Padding(
                             padding: const EdgeInsets.all(20),
                             child: Text(
-                              '출발위치: ' + widget.courseLocation,
+                              '출발위치: ${widget.courseLocationName}',
                               style: regular15,
                             ),
                           ),
