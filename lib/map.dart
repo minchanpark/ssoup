@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math' show cos, sqrt, asin;
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
-
 import 'package:ssoup/constants.dart';
 
 class GoogleMapPage extends StatefulWidget {
@@ -20,12 +18,12 @@ class GoogleMapPage extends StatefulWidget {
 class _GoogleMapPageState extends State<GoogleMapPage> {
   GoogleMapController? _mapController;
   LatLng _currentPosition = const LatLng(36.10155104193711, 129.39063285108818);
-  final Location _location = Location();
   final Set<Marker> _markers = {};
   final LatLng _destinationLocation = const LatLng(36.1022665, 129.3913618);
   final LatLng _startLocation = const LatLng(36.1047753, 129.3876298);
+
   final Set<Polyline> _polylines = {};
-  StreamSubscription<LocationData>? _locationSubscription;
+  StreamSubscription<Position>? _positionStreamSubscription;
 
   Future<void> _getNaverRoute() async {
     final String url =
@@ -71,7 +69,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
         Polyline(
           polylineId: const PolylineId('route'),
           points: polylineCoordinates,
-          color: Colors.black,
+          color: Colors.blue,
           width: 5,
         ),
       );
@@ -89,45 +87,45 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   @override
   void dispose() {
     _mapController?.dispose();
-    _locationSubscription?.cancel();
+    _positionStreamSubscription?.cancel();
     super.dispose();
   }
 
   Future<void> _checkPermissions() async {
     bool serviceEnabled;
-    PermissionStatus permissionGranted;
+    LocationPermission permission;
 
-    serviceEnabled = await _location.serviceEnabled();
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      serviceEnabled = await _location.requestService();
-      if (!serviceEnabled) {
-        return;
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
       }
     }
 
-    permissionGranted = await _location.hasPermission();
-    if (permissionGranted == PermissionStatus.denied) {
-      permissionGranted = await _location.requestPermission();
-      if (permissionGranted != PermissionStatus.granted) {
-        return;
-      }
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
     }
 
-    final currentLocation = await _location.getLocation();
+    final position = await Geolocator.getCurrentPosition();
     if (!mounted) return;
     setState(() {
-      _currentPosition =
-          LatLng(currentLocation.latitude!, currentLocation.longitude!);
+      _currentPosition = LatLng(position.latitude, position.longitude);
       _updateCurrentLocationMarker();
       _mapController?.animateCamera(CameraUpdate.newLatLng(_currentPosition));
     });
 
-    _locationSubscription =
-        _location.onLocationChanged.listen((LocationData currentLocation) {
+    _positionStreamSubscription =
+        Geolocator.getPositionStream().listen((Position position) {
       if (!mounted) return;
       setState(() {
-        _currentPosition =
-            LatLng(currentLocation.latitude!, currentLocation.longitude!);
+        _currentPosition = LatLng(position.latitude, position.longitude);
         _updateCurrentLocationMarker();
         _mapController?.animateCamera(CameraUpdate.newLatLng(_currentPosition));
 
@@ -185,7 +183,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   double _calculateDistance(
       double lat1, double lon1, double lat2, double lon2) {
     const p = 0.017453292519943295; // Math.PI / 180
-    final c = cos;
+    const c = cos;
     final a = 0.5 -
         c((lat2 - lat1) * p) / 2 +
         c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;

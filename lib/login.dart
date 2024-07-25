@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
@@ -39,9 +38,9 @@ Future<void> addUserToFirestore(
 /// 카카오 로그인을 처리하는 함수
 Future<firebase_auth.UserCredential> signInWithKakao() async {
   try {
-    final kakao.OAuthToken? token =
+    final kakao.OAuthToken token =
         await kakao.UserApi.instance.loginWithKakaoAccount();
-    print('Kakao login successful: ${token?.accessToken}');
+    print('Kakao login successful: ${token.accessToken}');
 
     final kakao.User kakaoUser = await kakao.UserApi.instance.me();
     final String email = kakaoUser.kakaoAccount?.email ?? '';
@@ -49,8 +48,8 @@ Future<firebase_auth.UserCredential> signInWithKakao() async {
 
     final credential =
         firebase_auth.OAuthProvider("oidc.oidc.kakao.com").credential(
-      accessToken: token?.accessToken,
-      idToken: token?.idToken,
+      accessToken: token.accessToken,
+      idToken: token.idToken,
     );
 
     final userCredential = await firebase_auth.FirebaseAuth.instance

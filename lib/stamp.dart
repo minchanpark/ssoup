@@ -7,11 +7,14 @@ class StampPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: const Color(0xffA3C2FF),
-        title: Image.asset('assets/6/ssoup.png', width: 77, height: 77),
+        title: Image.asset('assets/6/ssoup.png',
+            width: screenWidth * (77 / 393), height: screenHeight * (77 / 852)),
       ),
       body: Column(
         children: [
@@ -22,7 +25,7 @@ class StampPage extends StatelessWidget {
             ),
             child: Container(
               color: const Color(0xffA3C2FF),
-              height: 200,
+              height: screenHeight * (200 / 852),
               child: Column(
                 children: [
                   Row(
@@ -34,13 +37,19 @@ class StampPage extends StatelessWidget {
                             Center(
                               child: Text(
                                 '김한동님의 스탬프 모아보기',
-                                style: bold23.copyWith(color: Colors.white),
+                                style: bold23.copyWith(
+                                  color: Colors.white,
+                                  fontSize: screenWidth * (23 / 393),
+                                ),
                               ),
                             ),
                             Center(
                               child: Text(
                                 '2024.07.05',
-                                style: regular15.copyWith(color: Colors.white),
+                                style: regular15.copyWith(
+                                  color: Colors.white,
+                                  fontSize: screenWidth * (15 / 393),
+                                ),
                               ),
                             ),
                           ],
@@ -53,11 +62,11 @@ class StampPage extends StatelessWidget {
                     children: [
                       Image.asset(
                         'assets/aaa.png',
-                        width: 150,
+                        width: screenWidth * (150 / 393),
                       ),
                       Image.asset(
                         'assets/mugogi.png',
-                        width: 100,
+                        width: screenWidth * (100 / 393),
                       )
                     ],
                   )
@@ -69,24 +78,24 @@ class StampPage extends StatelessWidget {
             child: GridView.count(
               crossAxisCount: 3,
               padding: const EdgeInsets.all(16),
-              children: const [
+              children: [
                 StampItem(
                   name: '무꼬기',
                   image: 'assets/stamp_fish1.png',
-                  width: 179,
-                  height: 179,
+                  width: screenWidth * (179 / 393),
+                  height: screenHeight * (179 / 852),
                 ),
                 StampItem(
                   name: '꽃부기',
                   image: 'assets/stamp_fish2.png',
-                  width: 144,
-                  height: 144,
+                  width: screenWidth * (144 / 393),
+                  height: screenHeight * (144 / 852),
                 ),
                 StampItem(
                   name: '베비샤크',
                   image: 'assets/stamp_fish3.png',
-                  width: 165,
-                  height: 165,
+                  width: screenWidth * (165 / 393),
+                  height: screenHeight * (165 / 852),
                 ),
                 StampItem(
                   name: '타꼬',
@@ -178,15 +187,18 @@ class StampItem extends StatelessWidget {
               backgroundColor: Colors.white,
               title: Center(
                   child: Text(
-                name + ' 스탬프',
-                style: extrabold24.copyWith(color: const Color(0xff1E528E)),
+                '$name 스탬프',
+                style: extrabold24.copyWith(
+                  color: const Color(0xff1E528E),
+                  fontSize: mediaWidth * (24 / 393),
+                ),
               )),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Container(
-                    width: 280,
-                    height: 200,
+                    width: mediaWidth * (280 / 393),
+                    height: mediaHeight * (200 / 852),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
                       color: const Color(0xffEEF4FF),
@@ -197,35 +209,36 @@ class StampItem extends StatelessWidget {
                       height: (height / 852) * mediaHeight,
                     ),
                   ),
-                  const SizedBox(
-                    height: 30,
+                  SizedBox(
+                    height: mediaWidth * (30 / 852),
                   ),
-                  const Text(
+                  Text(
                     '봉래폭포 플로깅 완료',
-                    style: medium16,
+                    style: medium16.copyWith(fontSize: mediaWidth * (16 / 393)),
                   ),
-                  const SizedBox(
-                    height: 30,
+                  SizedBox(
+                    height: mediaWidth * (30 / 852),
                   ),
-                  const Text(
+                  Text(
                     '일시: 2024.06.27 / 14:27 \n거리: 1.5km',
-                    style: medium15,
+                    style: medium15.copyWith(fontSize: mediaWidth * (15 / 393)),
                   ),
-                  const SizedBox(
-                    height: 30,
+                  SizedBox(
+                    height: mediaWidth * (30 / 852),
                   ),
                   Container(
-                    width: 280,
-                    height: 40,
+                    width: mediaWidth * (280 / 393),
+                    height: mediaHeight * (40 / 852),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       border: Border.all(color: const Color(0xffA3C2FF)),
                       borderRadius: BorderRadius.circular(26),
                     ),
-                    child: const Center(
+                    child: Center(
                         child: Text(
                       '10마리의 해양생물이 고마워하고 있어요!',
-                      style: medium13,
+                      style:
+                          medium13.copyWith(fontSize: mediaWidth * (13 / 393)),
                     )),
                   )
                 ],

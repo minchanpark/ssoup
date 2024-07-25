@@ -59,147 +59,150 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
     }
   }
 
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      }
-    });
-  }
-
-  Future<void> _submitReview() async {
-    if (_review == null || _review!.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Please provide review text'),
-      ));
-      return;
-    }
-
-    final user = _auth.currentUser;
-    if (user == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('User not logged in'),
-      ));
-      return;
-    }
-
-    String? reviewImageUrl;
-    if (_image != null) {
-      final imagePath = 'visitor/${DateTime.now()}.png';
-      final ref = FirebaseStorage.instance.ref().child(imagePath);
-      await ref.putFile(_image!);
-      reviewImageUrl = await ref.getDownloadURL();
-    }
-
-    await _firestore
-        .collection('course')
-        .doc(widget.courseId)
-        .collection('visitor')
-        .doc(user.uid)
-        .set({
-      'uid': user.uid,
-      'username': nickname,
-      'reviewImageUrl': reviewImageUrl,
-      'review': _review,
-      'score': _score,
-      'timestamp': FieldValue.serverTimestamp(),
-    });
-
-    setState(() {
-      _image = null;
-      _review = null;
-      _score = 5.0;
-    });
-
-    Navigator.of(context).pop();
-  }
-
-  double _averageScore(List<DocumentSnapshot> visitor) {
-    if (visitor.isEmpty) return 0.0;
-    double total = 0.0;
-    for (var review in visitor) {
-      total += review['score'];
-    }
-    return total / visitor.length;
-  }
-
-  void _showReviewDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('리뷰 작성하기'),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                TextField(
-                  decoration: InputDecoration(
-                    hintText: '리뷰를 작성하세요',
-                  ),
-                  maxLines: 3,
-                  onChanged: (value) {
-                    setState(() {
-                      _review = value;
-                    });
-                  },
-                ),
-                SizedBox(height: 10),
-                Column(
-                  children: [
-                    ElevatedButton(
-                      onPressed: _pickImage,
-                      child: Text('이미지 업로드'),
-                    ),
-                    SizedBox(width: 10),
-                    _image == null
-                        ? Text(' ')
-                        : Image.file(
-                            _image!,
-                            width: 50,
-                            height: 50,
-                          ),
-                  ],
-                ),
-                SizedBox(height: 10),
-                Row(
-                  children: [
-                    Text('점수'),
-                    SizedBox(width: 10),
-                    DropdownButton<double>(
-                      value: _score,
-                      onChanged: (double? newValue) {
-                        setState(() {
-                          _score = newValue!;
-                        });
-                      },
-                      items: [1, 2, 3, 4, 5]
-                          .map<DropdownMenuItem<double>>((int value) {
-                        return DropdownMenuItem<double>(
-                          value: value.toDouble(),
-                          child: Text(value.toString()),
-                        );
-                      }).toList(),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            ElevatedButton(
-              child: Text('등록'),
-              onPressed: _submitReview,
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
+
+    Future<void> _pickImage() async {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      setState(() {
+        if (pickedFile != null) {
+          _image = File(pickedFile.path);
+        }
+      });
+    }
+
+    Future<void> _submitReview() async {
+      if (_review == null || _review!.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Please provide review text'),
+        ));
+        return;
+      }
+
+      final user = _auth.currentUser;
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('User not logged in'),
+        ));
+        return;
+      }
+
+      String? reviewImageUrl;
+      if (_image != null) {
+        final imagePath = 'visitor/${DateTime.now()}.png';
+        final ref = FirebaseStorage.instance.ref().child(imagePath);
+        await ref.putFile(_image!);
+        reviewImageUrl = await ref.getDownloadURL();
+      }
+
+      await _firestore
+          .collection('course')
+          .doc(widget.courseId)
+          .collection('visitor')
+          .doc(user.uid)
+          .set({
+        'uid': user.uid,
+        'username': nickname,
+        'reviewImageUrl': reviewImageUrl,
+        'review': _review,
+        'score': _score,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+
+      setState(() {
+        _image = null;
+        _review = null;
+        _score = 5.0;
+      });
+
+      Navigator.of(context).pop();
+    }
+
+    double _averageScore(List<DocumentSnapshot> visitor) {
+      if (visitor.isEmpty) return 0.0;
+      double total = 0.0;
+      for (var review in visitor) {
+        total += review['score'];
+      }
+      return total / visitor.length;
+    }
+
+    void _showReviewDialog() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('리뷰 작성하기'),
+            content: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextField(
+                    decoration: InputDecoration(
+                      hintText: '리뷰를 작성하세요',
+                    ),
+                    maxLines: 3,
+                    onChanged: (value) {
+                      setState(() {
+                        _review = value;
+                      });
+                    },
+                  ),
+                  SizedBox(height: screenHeight * (10 / 852)),
+                  Column(
+                    children: [
+                      ElevatedButton(
+                        onPressed: _pickImage,
+                        child: Text('이미지 업로드'),
+                      ),
+                      SizedBox(width: screenWidth * (10 / 393)),
+                      _image == null
+                          ? Text(' ')
+                          : Image.file(
+                              _image!,
+                              width: 50,
+                              height: 50,
+                            ),
+                    ],
+                  ),
+                  SizedBox(height: screenHeight * (10 / 852)),
+                  Row(
+                    children: [
+                      Text('점수'),
+                      SizedBox(width: screenWidth * (10 / 393)),
+                      DropdownButton<double>(
+                        value: _score,
+                        onChanged: (double? newValue) {
+                          setState(() {
+                            _score = newValue!;
+                          });
+                        },
+                        items: [1, 2, 3, 4, 5]
+                            .map<DropdownMenuItem<double>>((int value) {
+                          return DropdownMenuItem<double>(
+                            value: value.toDouble(),
+                            child: Text(value.toString()),
+                          );
+                        }).toList(),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            actions: [
+              ElevatedButton(
+                child: Text('등록'),
+                onPressed: _submitReview,
+              ),
+            ],
+          );
+        },
+      );
+    }
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -225,7 +228,8 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                padding:
+                    EdgeInsets.symmetric(horizontal: screenWidth * (8.0 / 393)),
                 child: TabBar(
                   indicatorSize: TabBarIndicatorSize.tab,
                   indicatorColor: Colors.black,
@@ -236,9 +240,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                   ],
                 ),
               ),
-              SizedBox(
-                height: 8.0,
-              ),
+              SizedBox(height: screenHeight * (10 / 852)),
               Container(
                 height: MediaQuery.of(context).size.height - 200,
                 child: TabBarView(
@@ -255,28 +257,26 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(left: 20),
+                            padding:
+                                EdgeInsets.only(left: screenWidth * (20 / 393)),
                             child:
                                 Text(widget.courseDuration, style: regular15),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(
-                                left: 20, top: 16, right: 16),
+                            padding: EdgeInsets.only(
+                              left: screenWidth * (20 / 393),
+                              top: screenHeight * (16 / 852),
+                              right: screenWidth * (16 / 393),
+                            ),
                             child: Text(
                               '코스 경로: 울릉도 선착장 → 봉래폭포→ 내수일출전망대 → 석포일출일몰전망대',
                               style: regular15,
                             ),
                           ),
-                          SizedBox(
-                            height: 30,
-                          ),
-                          SizedBox(
-                            height: 30,
-                          ),
+                          SizedBox(height: screenHeight * (30 / 852)),
+                          SizedBox(height: screenHeight * (30 / 852)),
                           Image.asset('assets/imsi.png'),
-                          SizedBox(
-                            height: 30,
-                          ),
+                          SizedBox(height: screenHeight * (30 / 852)),
                           Center(
                             child: Container(
                               width: 350,
@@ -288,18 +288,18 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                                   style: extrabold20,
                                 ),
                                 style: ElevatedButton.styleFrom(
-                                    elevation: 0,
-                                    backgroundColor: Colors.white,
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius:
-                                            BorderRadius.circular(12)),
-                                    side: BorderSide(color: Color(0xff4468AD))),
+                                  elevation: 0,
+                                  backgroundColor: Colors.white,
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(12)),
+                                  side: const BorderSide(
+                                    color: Color(0xff4468AD),
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                          SizedBox(
-                            height: 70,
-                          ),
+                          SizedBox(height: screenHeight * (70 / 852)),
                         ],
                       ),
                     ),
@@ -307,9 +307,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
-                            height: 30,
-                          ),
+                          SizedBox(height: screenHeight * (30 / 852)),
                           StreamBuilder<QuerySnapshot>(
                             stream: _firestore
                                 .collection('course')
@@ -319,16 +317,18 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                                 .snapshots(),
                             builder: (context, snapshot) {
                               if (!snapshot.hasData) {
-                                return Center(
-                                    child: CircularProgressIndicator());
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
                               }
                               var visitor = snapshot.data!.docs;
                               return Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 20),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: screenWidth * (20 / 393),
+                                    ),
                                     child: Row(
                                       children: [
                                         Row(
@@ -345,7 +345,8 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width: 4),
+                                        SizedBox(
+                                            width: screenWidth * (4 / 393)),
                                         Text(
                                           _averageScore(visitor)
                                               .toStringAsFixed(1),
@@ -355,10 +356,10 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                                     ),
                                   ),
                                   SizedBox(
-                                    height: 30,
+                                    height: screenHeight * (30 / 852),
                                   ),
                                   Divider(
-                                    height: 10,
+                                    height: screenHeight * (10 / 852),
                                     color: Color(0xffF3F3F3),
                                   ),
                                   Text(
@@ -366,11 +367,11 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                                     style: medium20,
                                   ),
                                   Divider(
-                                    height: 10,
+                                    height: screenHeight * (10 / 852),
                                     color: Color(0xffF3F3F3),
                                   ),
                                   Divider(
-                                    height: 10,
+                                    height: screenHeight * (10 / 852),
                                     color: Color(0xffF3F3F3),
                                   ),
                                   ListView.builder(
@@ -420,7 +421,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                             },
                           ),
                           SizedBox(
-                            height: 10,
+                            height: screenHeight * (10 / 852),
                           ),
                           Center(
                             child: ElevatedButton(
@@ -429,7 +430,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                             ),
                           ),
                           SizedBox(
-                            height: 70,
+                            height: screenHeight * (70 / 852),
                           ),
                         ],
                       ),

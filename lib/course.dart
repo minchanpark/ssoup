@@ -15,6 +15,8 @@ class CoursePage extends StatefulWidget {
 class _CoursePageState extends State<CoursePage> {
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -22,15 +24,15 @@ class _CoursePageState extends State<CoursePage> {
         title: Text(
           '플로깅 코스',
           style: medium20.copyWith(
-            color: Color(0xff1E528E),
-          ),
+              color: const Color(0xff1E528E),
+              fontSize: screenWidth * (20 / 393)),
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance.collection('course').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           var courses = snapshot.data!.docs.map((doc) {
@@ -50,7 +52,7 @@ class _CoursePageState extends State<CoursePage> {
               final course = courses[index];
               return Column(
                 children: [
-                  const SizedBox(height: 10),
+                  SizedBox(height: screenHeight * (10 / 852)),
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
@@ -67,8 +69,10 @@ class _CoursePageState extends State<CoursePage> {
                       );
                     },
                     child: Container(
-                      margin: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 16.0),
+                      margin: EdgeInsets.symmetric(
+                        vertical: screenHeight * (8.0 / 852),
+                        horizontal: screenWidth * (16.0 / 393),
+                      ),
                       decoration: BoxDecoration(
                         border: Border.all(color: const Color(0xff1E528E)),
                         borderRadius: BorderRadius.circular(8.0),
@@ -79,37 +83,49 @@ class _CoursePageState extends State<CoursePage> {
                           children: [
                             Image.network(
                               course.image,
-                              width: 100,
-                              height: 100,
+                              width: screenWidth * (100 / 393),
+                              height: screenHeight * (100 / 852),
                               fit: BoxFit.cover,
                             ),
-                            const SizedBox(width: 16.0),
+                            SizedBox(
+                              width: screenWidth * (16.0 / 393),
+                            ),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(course.title, style: medium15),
-                                  const SizedBox(height: 8.0),
+                                  SizedBox(height: screenHeight * (8.0 / 852)),
                                   Row(
                                     children: [
                                       const Iconify(Zondicons.location,
                                           color: Colors.black),
-                                      const SizedBox(width: 4),
+                                      SizedBox(
+                                        width: screenWidth * (4 / 393),
+                                      ),
                                       const Text("출발 위치:"),
-                                      const SizedBox(width: 4),
+                                      SizedBox(
+                                        width: screenWidth * (4 / 393),
+                                      ),
                                       Text(course.location, style: light11),
                                     ],
                                   ),
-                                  const SizedBox(height: 4.0),
+                                  SizedBox(
+                                    height: screenHeight * (4 / 852),
+                                  ),
                                   Row(
                                     children: [
                                       const Iconify(Zondicons.time,
                                           color: Colors.black),
-                                      const SizedBox(width: 4),
+                                      SizedBox(
+                                        width: screenWidth * (4 / 393),
+                                      ),
                                       Text(course.duration, style: light11),
                                     ],
                                   ),
-                                  const SizedBox(height: 4.0),
+                                  SizedBox(
+                                    width: screenWidth * (4 / 393),
+                                  ),
                                   Text(course.peopleCount, style: regular10),
                                 ],
                               ),
