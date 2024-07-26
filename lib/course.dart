@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
@@ -40,7 +42,8 @@ class _CoursePageState extends State<CoursePage> {
               id: doc.id,
               image: doc['courseImageUrl'],
               title: doc['courseName'],
-              location: doc['startLocation'].toString(),
+              startLocation: doc['startLocation'],
+              endLocation: doc['endLocation'],
               locationName: doc['startLocationName'],
               duration: '소요시간: ${doc['spendTime']}',
               peopleCount: '누적 참여자 수: ${doc['totalVisitor']}명',
@@ -64,7 +67,8 @@ class _CoursePageState extends State<CoursePage> {
                             courseImage: course.image,
                             courseTitle: course.title,
                             courseLocationName: course.locationName,
-                            courseLocation: course.location,
+                            courseStartLocation: course.startLocation,
+                            courseEndLocation: course.endLocation,
                             courseDuration: course.duration,
                           ),
                         ),
@@ -151,7 +155,8 @@ class Course {
   final String id; // 코스 ID 추가
   final String image;
   final String title;
-  final String location;
+  final List startLocation;
+  final List endLocation;
   final String locationName;
   final String duration;
   final String peopleCount;
@@ -160,7 +165,8 @@ class Course {
     required this.id, // 코스 ID 추가
     required this.image,
     required this.title,
-    required this.location,
+    required this.startLocation,
+    required this.endLocation,
     required this.duration,
     required this.peopleCount,
     required this.locationName,

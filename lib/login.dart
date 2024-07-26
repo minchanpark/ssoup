@@ -219,9 +219,6 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       print('Kakao login error: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Kakao login failed: $e')),
-      );
     } finally {
       _showLoading(false);
     }

@@ -4,12 +4,16 @@ import 'dart:math' show cos, sqrt, asin;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 import 'package:ssoup/constants.dart';
 
 class GoogleMapPage extends StatefulWidget {
-  const GoogleMapPage({super.key});
+  final List startLocation;
+  final List endLocation;
+
+  const GoogleMapPage(
+      {super.key, required this.startLocation, required this.endLocation});
 
   @override
   _GoogleMapPageState createState() => _GoogleMapPageState();
@@ -17,115 +21,74 @@ class GoogleMapPage extends StatefulWidget {
 
 class _GoogleMapPageState extends State<GoogleMapPage> {
   GoogleMapController? _mapController;
-  LatLng _currentPosition = const LatLng(36.10155104193711, 129.39063285108818);
+  late LatLng _currentPosition;
+  final Location _location = Location();
   final Set<Marker> _markers = {};
-  final LatLng _destinationLocation = const LatLng(36.1022665, 129.3913618);
-  final LatLng _startLocation = const LatLng(36.1047753, 129.3876298);
-
+  late LatLng _destinationLocation;
+  late LatLng _startLocation;
   final Set<Polyline> _polylines = {};
-  StreamSubscription<Position>? _positionStreamSubscription;
-
-  Future<void> _getNaverRoute() async {
-    final String url =
-        'https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${_startLocation.longitude},${_startLocation.latitude}&goal=${_destinationLocation.longitude},${_destinationLocation.latitude}&option=trafast';
-
-    final response = await http.get(
-      Uri.parse(url),
-      headers: {
-        'X-NCP-APIGW-API-KEY-ID': naverClientId,
-        'X-NCP-APIGW-API-KEY': naverClientSecret,
-      },
-    );
-
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      print('Response Data: $data');
-
-      final List<dynamic>? routes = data['route'] != null
-          ? data['route']['trafast'] ?? data['route']['traoptimal']
-          : null;
-
-      if (routes != null && routes.isNotEmpty) {
-        final points = routes[0]['path'];
-        _setPolylineFromNaverPoints(points);
-      } else {
-        print('No routes found');
-      }
-    } else {
-      print('Failed to load directions: ${response.statusCode}');
-      print('Error Response: ${response.body}');
-    }
-  }
-
-  void _setPolylineFromNaverPoints(List points) {
-    final List<LatLng> polylineCoordinates = points.map<LatLng>((point) {
-      return LatLng(point[1], point[0]);
-    }).toList();
-
-    if (!mounted) return;
-    setState(() {
-      _polylines.clear();
-      _polylines.add(
-        Polyline(
-          polylineId: const PolylineId('route'),
-          points: polylineCoordinates,
-          color: Colors.blue,
-          width: 5,
-        ),
-      );
-    });
-  }
+  StreamSubscription<LocationData>? _locationSubscription;
 
   @override
   void initState() {
     super.initState();
+    _locationInit();
     _checkPermissions();
     _setInitialMarkers();
     _getNaverRoute();
   }
 
+  void _locationInit() {
+    _startLocation = LatLng(widget.startLocation[0], widget.startLocation[1]);
+    _destinationLocation = LatLng(widget.endLocation[0], widget.endLocation[1]);
+    _currentPosition = LatLng(widget.startLocation[0], widget.startLocation[1]);
+    // Debug message to check if locations are initialized
+    print('Initialized Start Location: $_startLocation');
+    print('Initialized Destination Location: $_destinationLocation');
+  }
+
   @override
   void dispose() {
     _mapController?.dispose();
-    _positionStreamSubscription?.cancel();
+    _locationSubscription?.cancel();
     super.dispose();
   }
 
   Future<void> _checkPermissions() async {
     bool serviceEnabled;
-    LocationPermission permission;
+    PermissionStatus permissionGranted;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    serviceEnabled = await _location.serviceEnabled();
     if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error('Location permissions are denied');
+      serviceEnabled = await _location.requestService();
+      if (!serviceEnabled) {
+        return;
       }
     }
 
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
+    permissionGranted = await _location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await _location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return;
+      }
     }
 
-    final position = await Geolocator.getCurrentPosition();
+    final currentLocation = await _location.getLocation();
     if (!mounted) return;
     setState(() {
-      _currentPosition = LatLng(position.latitude, position.longitude);
+      _currentPosition =
+          LatLng(currentLocation.latitude!, currentLocation.longitude!);
       _updateCurrentLocationMarker();
       _mapController?.animateCamera(CameraUpdate.newLatLng(_currentPosition));
     });
 
-    _positionStreamSubscription =
-        Geolocator.getPositionStream().listen((Position position) {
+    _locationSubscription =
+        _location.onLocationChanged.listen((LocationData currentLocation) {
       if (!mounted) return;
       setState(() {
-        _currentPosition = LatLng(position.latitude, position.longitude);
+        _currentPosition =
+            LatLng(currentLocation.latitude!, currentLocation.longitude!);
         _updateCurrentLocationMarker();
         _mapController?.animateCamera(CameraUpdate.newLatLng(_currentPosition));
 
@@ -183,13 +146,64 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   double _calculateDistance(
       double lat1, double lon1, double lat2, double lon2) {
     const p = 0.017453292519943295; // Math.PI / 180
-    const c = cos;
+    final c = cos;
     final a = 0.5 -
         c((lat2 - lat1) * p) / 2 +
         c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
     return 12742 *
         asin(sqrt(a)) *
         1000; // 2 * R; R = 6371 km, convert to meters
+  }
+
+  Future<void> _getNaverRoute() async {
+    final String url =
+        'https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${_startLocation.longitude},${_startLocation.latitude}&goal=${_destinationLocation.longitude},${_destinationLocation.latitude}&option=trafast';
+
+    final response = await http.get(
+      Uri.parse(url),
+      headers: {
+        'X-NCP-APIGW-API-KEY-ID': naverClientId,
+        'X-NCP-APIGW-API-KEY': naverClientSecret,
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      print('Response Data: $data');
+
+      final List<dynamic>? routes = data['route'] != null
+          ? data['route']['trafast'] ?? data['route']['traoptimal']
+          : null;
+
+      if (routes != null && routes.isNotEmpty) {
+        final points = routes[0]['path'];
+        _setPolylineFromNaverPoints(points);
+      } else {
+        print('No routes found');
+      }
+    } else {
+      print('Failed to load directions: ${response.statusCode}');
+      print('Error Response: ${response.body}');
+    }
+  }
+
+  void _setPolylineFromNaverPoints(List points) {
+    final List<LatLng> polylineCoordinates = points.map<LatLng>((point) {
+      return LatLng(point[1], point[0]);
+    }).toList();
+
+    if (!mounted) return;
+    setState(() {
+      _polylines.clear();
+      _polylines.add(
+        Polyline(
+          polylineId: const PolylineId('route'),
+          points: polylineCoordinates,
+          color: Colors.blue,
+          width: 5,
+        ),
+      );
+    });
   }
 
   void _setInitialMarkers() {

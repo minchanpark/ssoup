@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'bigmap.dart';
 import 'course.dart';
-import 'map.dart';
 import 'stamp.dart';
 import 'theme/text.dart';
 
@@ -167,11 +166,8 @@ class HomePage extends StatelessWidget {
                                         ),
                                       );
                                     },
-                                    child: Card(
-                                      color: const Color(0xffD5E3FF),
-                                      child: Image.asset('assets/map.png',
-                                          fit: BoxFit.cover),
-                                    ),
+                                    child: Image.asset('assets/map.png',
+                                        fit: BoxFit.cover),
                                   ),
                                 ),
                                 SizedBox(width: screenWidth * (10 / 393)),
@@ -186,11 +182,8 @@ class HomePage extends StatelessWidget {
                                         ),
                                       );
                                     },
-                                    child: Card(
-                                      color: const Color(0xffD5E3FF),
-                                      child: Image.asset('assets/course.png',
-                                          fit: BoxFit.cover),
-                                    ),
+                                    child: Image.asset('assets/course.png',
+                                        fit: BoxFit.cover),
                                   ),
                                 ),
                               ],
@@ -209,12 +202,9 @@ class HomePage extends StatelessWidget {
                                         ),
                                       );
                                     },
-                                    child: Card(
-                                      color: const Color(0xffD5E3FF),
-                                      child: Image.asset(
-                                        'assets/stamp.png',
-                                        fit: BoxFit.cover,
-                                      ),
+                                    child: Image.asset(
+                                      'assets/stamp.png',
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),
@@ -222,21 +212,17 @@ class HomePage extends StatelessWidget {
                                 Expanded(
                                   child: GestureDetector(
                                     onTap: () {
-                                      Navigator.push(
+                                      /*Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
                                               const GoogleMapPage(),
                                         ),
-                                      );
+                                      );*/
                                     },
-                                    child: Card(
-                                      color: const Color(0xffD5E3FF),
-                                      clipBehavior: Clip.hardEdge,
-                                      child: Image.asset(
-                                        'assets/stalk.png',
-                                        fit: BoxFit.cover,
-                                      ),
+                                    child: Image.asset(
+                                      'assets/stalk.png',
+                                      fit: BoxFit.cover,
                                     ),
                                   ),
                                 ),

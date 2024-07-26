@@ -1,10 +1,14 @@
+/*
+울릉투어 맵에 연결된 맵 페이지
+*/
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math' show cos, sqrt, asin;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart';
+import 'package:location/location.dart';
 import 'package:http/http.dart' as http;
 import 'package:ssoup/constants.dart';
 import 'package:ssoup/theme/text.dart';
@@ -19,9 +23,10 @@ class BigMapPage extends StatefulWidget {
 class _BigMapPageState extends State<BigMapPage> {
   GoogleMapController? _mapController;
   LatLng _ulleungDo = const LatLng(37.49893355978079, 130.86866855621338);
+  final Location _location = Location();
   final Set<Marker> _markers = {};
   final Set<Polyline> _polylines = {};
-  StreamSubscription<Position>? _positionStreamSubscription;
+  StreamSubscription<LocationData>? _locationSubscription;
   final List<LatLng> _trashLocation = [
     const LatLng(37.48647482397748, 130.9019350618274),
     const LatLng(37.45936612018906, 130.87541532279513),
@@ -43,41 +48,45 @@ class _BigMapPageState extends State<BigMapPage> {
   @override
   void dispose() {
     _mapController?.dispose();
-    _positionStreamSubscription?.cancel();
+    _locationSubscription?.cancel();
     super.dispose();
   }
 
   Future<void> _checkPermissions() async {
     bool serviceEnabled;
-    LocationPermission permissionGranted;
+    PermissionStatus permissionGranted;
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    serviceEnabled = await _location.serviceEnabled();
     if (!serviceEnabled) {
-      return;
-    }
-
-    permissionGranted = await Geolocator.checkPermission();
-    if (permissionGranted == LocationPermission.denied) {
-      permissionGranted = await Geolocator.requestPermission();
-      if (permissionGranted != LocationPermission.whileInUse &&
-          permissionGranted != LocationPermission.always) {
+      serviceEnabled = await _location.requestService();
+      if (!serviceEnabled) {
         return;
       }
     }
 
-    final Position currentPosition = await Geolocator.getCurrentPosition();
+    permissionGranted = await _location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await _location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    final currentLocation = await _location.getLocation();
     if (!mounted) return;
     setState(() {
-      _ulleungDo = LatLng(currentPosition.latitude, currentPosition.longitude);
+      _ulleungDo =
+          LatLng(currentLocation.latitude!, currentLocation.longitude!);
       _updateCurrentLocationMarker();
       _mapController?.animateCamera(CameraUpdate.newLatLng(_ulleungDo));
     });
 
-    _positionStreamSubscription =
-        Geolocator.getPositionStream().listen((Position position) {
+    _locationSubscription =
+        _location.onLocationChanged.listen((LocationData currentLocation) {
       if (!mounted) return;
       setState(() {
-        _ulleungDo = LatLng(position.latitude, position.longitude);
+        _ulleungDo =
+            LatLng(currentLocation.latitude!, currentLocation.longitude!);
         _updateCurrentLocationMarker();
         _mapController?.animateCamera(CameraUpdate.newLatLng(_ulleungDo));
       });

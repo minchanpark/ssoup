@@ -1,8 +1,11 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ssoup/map.dart';
 import 'dart:io';
 import 'theme/text.dart';
 
@@ -10,7 +13,8 @@ class CourseDetailPage extends StatefulWidget {
   final String courseId;
   final String courseImage;
   final String courseTitle;
-  final String courseLocation;
+  final List courseStartLocation;
+  final List courseEndLocation;
   final String courseDuration;
   final String courseLocationName;
 
@@ -18,7 +22,8 @@ class CourseDetailPage extends StatefulWidget {
     required this.courseId,
     required this.courseImage,
     required this.courseTitle,
-    required this.courseLocation,
+    required this.courseStartLocation,
+    required this.courseEndLocation,
     required this.courseDuration,
     required this.courseLocationName,
     super.key,
@@ -284,7 +289,18 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                               width: 350,
                               height: 65,
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => GoogleMapPage(
+                                        startLocation:
+                                            widget.courseStartLocation,
+                                        endLocation: widget.courseEndLocation,
+                                      ),
+                                    ),
+                                  );
+                                },
                                 style: ElevatedButton.styleFrom(
                                   elevation: 0,
                                   backgroundColor: Colors.white,
