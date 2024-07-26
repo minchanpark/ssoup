@@ -6,6 +6,8 @@ import 'package:ssoup/home.dart';
 import 'package:ssoup/login.dart';
 import 'package:ssoup/nick_name.dart';
 
+import 'splash.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
@@ -13,7 +15,12 @@ void main() async {
     nativeAppKey: kakaoNativeAppKey,
     javaScriptAppKey: kakaoJavaScriptAppKey,
   );
-  runApp(const MyApp());
+
+  runApp(MaterialApp(debugShowCheckedModeBanner: false, home: splashPage()));
+
+  await Future.delayed(Duration(seconds: 3));
+
+  runApp(MaterialApp(debugShowCheckedModeBanner: false, home: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -26,7 +33,7 @@ class MyApp extends StatelessWidget {
         "/nick_name_page": (BuildContext context) => const NickNamePage(),
         "/home_page": (BuildContext context) => const HomePage(),
       },
-      home: const LoginPage(),
+      home: LoginPage(),
     );
   }
 }

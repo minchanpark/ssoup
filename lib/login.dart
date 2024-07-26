@@ -6,10 +6,10 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
 import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:ssoup/home.dart';
+import 'package:ssoup/theme/text.dart';
 
 import 'nick_name.dart';
 
-/// Firestore에 사용자 정보를 추가하거나 업데이트하는 함수
 Future<void> addUserToFirestore(
     firebase_auth.User user, String email, String name) async {
   final CollectionReference users =
@@ -35,7 +35,6 @@ Future<void> addUserToFirestore(
   }
 }
 
-/// 카카오 로그인을 처리하는 함수
 Future<firebase_auth.UserCredential> signInWithKakao() async {
   try {
     final kakao.OAuthToken token =
@@ -69,7 +68,6 @@ Future<firebase_auth.UserCredential> signInWithKakao() async {
   }
 }
 
-/// 구글 로그인을 처리하는 함수
 Future<firebase_auth.UserCredential> signInWithGoogle() async {
   try {
     await firebase_auth.FirebaseAuth.instance.signOut();
@@ -103,7 +101,6 @@ Future<firebase_auth.UserCredential> signInWithGoogle() async {
   }
 }
 
-/// Firestore에서 닉네임을 확인하는 함수
 Future<bool> checkNickname(firebase_auth.User user) async {
   final DocumentSnapshot snapshot =
       await FirebaseFirestore.instance.collection('user').doc(user.uid).get();
@@ -132,7 +129,6 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  /// 네이버 로그인을 처리하는 함수
   Future<firebase_auth.UserCredential> signInWithNaver() async {
     try {
       final NaverLoginResult result = await FlutterNaverLogin.logIn();
@@ -259,10 +255,22 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
+  static const LinearGradient homeMix = LinearGradient(
+    colors: [
+      Color.fromRGBO(138, 206, 255, 1),
+      Color.fromRGBO(163, 194, 255, 1),
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: homeMix,
+        ),
         child: Stack(
           children: [
             Padding(
@@ -270,67 +278,91 @@ class _LoginPageState extends State<LoginPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  const Text(
-                    'Welcome to Our App',
-                    style: TextStyle(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  const Text(
-                    'Please sign in to continue',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
+                  Container(
+                    width: 234,
+                    child: Image.asset('assets/logo.png'),
                   ),
                   const SizedBox(height: 40.0),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.blue,
+                      backgroundColor: Colors.white,
+                      elevation: 0,
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                        borderRadius: BorderRadius.circular(3),
                       ),
                     ),
                     onPressed: _isLoading ? null : _signInWithGoogle,
-                    child: const Text(
-                      'Sign in with Google',
-                      style: TextStyle(fontSize: 18),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 7,
+                        ),
+                        Image.asset(
+                          'assets/google.png',
+                          width: 25,
+                        ),
+                        SizedBox(
+                          width: 60,
+                        ),
+                        Text('구글 계정으로 시작하기',
+                            style:
+                                regular15.copyWith(color: Color(0xff635546))),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 20.0),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.blue,
+                      backgroundColor: Color(0xffFAE200),
+                      elevation: 0,
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                        borderRadius: BorderRadius.circular(3),
                       ),
                     ),
                     onPressed: _isLoading ? null : _signInWithKakao,
-                    child: const Text(
-                      'Sign in with Kakao',
-                      style: TextStyle(fontSize: 18),
+                    child: Row(
+                      children: [
+                        Image.asset(
+                          'assets/kakao.png',
+                          height: 23,
+                        ),
+                        SizedBox(
+                          width: 53,
+                        ),
+                        Text('카카오 계정으로 시작하기',
+                            style:
+                                regular15.copyWith(color: Color(0xff635546))),
+                      ],
                     ),
                   ),
                   const SizedBox(height: 20.0),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      backgroundColor: Colors.blue,
+                      backgroundColor: Color(0xff00B818),
+                      elevation: 0,
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.0),
+                        borderRadius: BorderRadius.circular(3),
                       ),
                     ),
                     onPressed: _isLoading ? null : _signInWithNaver,
-                    child: const Text(
-                      'Sign in with Naver',
-                      style: TextStyle(fontSize: 18),
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 7,
+                        ),
+                        Image.asset(
+                          'assets/naver.png',
+                          width: 35,
+                        ),
+                        SizedBox(
+                          width: 53,
+                        ),
+                        Text('네이버 계정으로 시작하기',
+                            style: regular15.copyWith(color: Colors.white)),
+                      ],
                     ),
                   ),
                 ],
