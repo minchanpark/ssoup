@@ -36,6 +36,15 @@ class HomePage extends StatelessWidget {
     }
   }
 
+  static const LinearGradient homeMix = LinearGradient(
+    colors: [
+      Color.fromRGBO(138, 206, 255, 1),
+      Color.fromRGBO(163, 194, 255, 1),
+    ],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+  );
+
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -72,7 +81,7 @@ class HomePage extends StatelessWidget {
                           bottomRight: Radius.circular(50),
                         ),
                         child: Container(
-                          color: const Color(0xffA3C2FF),
+                          decoration: BoxDecoration(gradient: homeMix),
                           height: 278,
                           width: double.infinity,
                           child: Padding(
