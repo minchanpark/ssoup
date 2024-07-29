@@ -4,7 +4,7 @@ import 'dart:math' show cos, sqrt, asin;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:location/location.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:ssoup/constants.dart';
 
@@ -22,12 +22,11 @@ class GoogleMapPage extends StatefulWidget {
 class _GoogleMapPageState extends State<GoogleMapPage> {
   GoogleMapController? _mapController;
   late LatLng _currentPosition;
-  final Location _location = Location();
   final Set<Marker> _markers = {};
   late LatLng _destinationLocation;
   late LatLng _startLocation;
   final Set<Polyline> _polylines = {};
-  StreamSubscription<LocationData>? _locationSubscription;
+  StreamSubscription<Position>? _positionStreamSubscription;
 
   @override
   void initState() {
@@ -50,47 +49,39 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   @override
   void dispose() {
     _mapController?.dispose();
-    _locationSubscription?.cancel();
+    _positionStreamSubscription?.cancel();
     super.dispose();
   }
 
   Future<void> _checkPermissions() async {
-    bool serviceEnabled;
-    PermissionStatus permissionGranted;
+    LocationPermission permission;
 
-    serviceEnabled = await _location.serviceEnabled();
-    if (!serviceEnabled) {
-      serviceEnabled = await _location.requestService();
-      if (!serviceEnabled) {
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
         return;
       }
     }
 
-    permissionGranted = await _location.hasPermission();
-    if (permissionGranted == PermissionStatus.denied) {
-      permissionGranted = await _location.requestPermission();
-      if (permissionGranted != PermissionStatus.granted) {
-        return;
-      }
+    if (permission == LocationPermission.deniedForever) {
+      return;
     }
 
-    final currentLocation = await _location.getLocation();
+    final currentPosition = await Geolocator.getCurrentPosition();
     if (!mounted) return;
     setState(() {
       _currentPosition =
-          LatLng(currentLocation.latitude!, currentLocation.longitude!);
+          LatLng(currentPosition.latitude, currentPosition.longitude);
       _updateCurrentLocationMarker();
-      _mapController?.animateCamera(CameraUpdate.newLatLng(_currentPosition));
     });
 
-    _locationSubscription =
-        _location.onLocationChanged.listen((LocationData currentLocation) {
+    _positionStreamSubscription =
+        Geolocator.getPositionStream().listen((Position position) {
       if (!mounted) return;
       setState(() {
-        _currentPosition =
-            LatLng(currentLocation.latitude!, currentLocation.longitude!);
+        _currentPosition = LatLng(position.latitude, position.longitude);
         _updateCurrentLocationMarker();
-        _mapController?.animateCamera(CameraUpdate.newLatLng(_currentPosition));
 
         double distance = _calculateDistance(
           _currentPosition.latitude,
@@ -252,7 +243,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
       ),
       body: GoogleMap(
         initialCameraPosition: CameraPosition(
-          target: _currentPosition,
+          target: _startLocation,
           zoom: 14.0,
         ),
         markers: _markers,
