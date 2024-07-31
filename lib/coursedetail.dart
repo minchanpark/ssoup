@@ -1,12 +1,8 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:ssoup/course_review_page.dart';
 import 'package:ssoup/map.dart';
-import 'dart:io';
 import 'theme/text.dart';
 
 class CourseDetailPage extends StatefulWidget {
@@ -36,10 +32,6 @@ class CourseDetailPage extends StatefulWidget {
 class _CourseDetailPageState extends State<CourseDetailPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final ImagePicker _picker = ImagePicker();
-  File? _image;
-  String? _review;
-  double _score = 5.0;
   String nickname = "";
 
   @override
@@ -71,145 +63,6 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
     double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
 
-    Future<void> pickImage() async {
-      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-      setState(() {
-        if (pickedFile != null) {
-          _image = File(pickedFile.path);
-        }
-      });
-    }
-
-    Future<void> submitReview() async {
-      if (_review == null || _review!.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Please provide review text'),
-        ));
-        return;
-      }
-
-      final user = _auth.currentUser;
-      if (user == null) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('User not logged in'),
-        ));
-        return;
-      }
-
-      String? reviewImageUrl;
-      if (_image != null) {
-        final imagePath = 'visitor/${DateTime.now()}.png';
-        final ref = FirebaseStorage.instance.ref().child(imagePath);
-        await ref.putFile(_image!);
-        reviewImageUrl = await ref.getDownloadURL();
-      }
-
-      await _firestore
-          .collection('course')
-          .doc(widget.courseId)
-          .collection('visitor')
-          .doc(user.uid)
-          .set({
-        'uid': user.uid,
-        'username': nickname,
-        'reviewImageUrl': reviewImageUrl,
-        'review': _review,
-        'score': _score,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-
-      setState(() {
-        _image = null;
-        _review = null;
-        _score = 5.0;
-      });
-
-      Navigator.of(context).pop();
-    }
-
-    double averageScore(List<DocumentSnapshot> visitor) {
-      if (visitor.isEmpty) return 0.0;
-      double total = 0.0;
-      for (var review in visitor) {
-        total += review['score'];
-      }
-      return total / visitor.length;
-    }
-
-    void showReviewDialog() {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('리뷰 작성하기'),
-            content: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextField(
-                    decoration: const InputDecoration(
-                      hintText: '리뷰를 작성하세요',
-                    ),
-                    maxLines: 3,
-                    onChanged: (value) {
-                      setState(() {
-                        _review = value;
-                      });
-                    },
-                  ),
-                  SizedBox(height: screenHeight * (10 / 852)),
-                  Column(
-                    children: [
-                      ElevatedButton(
-                        onPressed: pickImage,
-                        child: const Text('이미지 업로드'),
-                      ),
-                      SizedBox(width: screenWidth * (10 / 393)),
-                      _image == null
-                          ? const Text(' ')
-                          : Image.file(
-                              _image!,
-                              width: 50,
-                              height: 50,
-                            ),
-                    ],
-                  ),
-                  SizedBox(height: screenHeight * (10 / 852)),
-                  Row(
-                    children: [
-                      const Text('점수'),
-                      SizedBox(width: screenWidth * (10 / 393)),
-                      DropdownButton<double>(
-                        value: _score,
-                        onChanged: (double? newValue) {
-                          setState(() {
-                            _score = newValue!;
-                          });
-                        },
-                        items: [1, 2, 3, 4, 5]
-                            .map<DropdownMenuItem<double>>((int value) {
-                          return DropdownMenuItem<double>(
-                            value: value.toDouble(),
-                            child: Text(value.toString()),
-                          );
-                        }).toList(),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              ElevatedButton(
-                onPressed: submitReview,
-                child: const Text('등록'),
-              ),
-            ],
-          );
-        },
-      );
-    }
-
     return DefaultTabController(
       length: 2,
       child: Scaffold(
@@ -217,6 +70,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
         appBar: AppBar(
           backgroundColor: Colors.white,
           elevation: 0,
+          scrolledUnderElevation: 0,
         ),
         body: SingleChildScrollView(
           child: Column(
@@ -321,138 +175,14 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                         ],
                       ),
                     ),
-                    SingleChildScrollView(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          SizedBox(height: screenHeight * (30 / 852)),
-                          StreamBuilder<QuerySnapshot>(
-                            stream: _firestore
-                                .collection('course')
-                                .doc(widget.courseId)
-                                .collection('visitor')
-                                .orderBy('timestamp', descending: true)
-                                .snapshots(),
-                            builder: (context, snapshot) {
-                              if (!snapshot.hasData) {
-                                return const Center(
-                                  child: CircularProgressIndicator(),
-                                );
-                              }
-                              var visitor = snapshot.data!.docs;
-                              return Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: screenWidth * (20 / 393),
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Row(
-                                          children: List.generate(
-                                            5,
-                                            (index) => Icon(
-                                              Icons.star,
-                                              color: index <
-                                                      averageScore(visitor)
-                                                          .round()
-                                                  ? Colors.yellow
-                                                  : Colors.grey,
-                                              size: 20,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                            width: screenWidth * (4 / 393)),
-                                        Text(
-                                          averageScore(visitor)
-                                              .toStringAsFixed(1),
-                                          style: regular15,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: screenHeight * (30 / 852),
-                                  ),
-                                  Divider(
-                                    height: screenHeight * (10 / 852),
-                                    color: const Color(0xffF3F3F3),
-                                  ),
-                                  const Text(
-                                    "리뷰",
-                                    style: medium20,
-                                  ),
-                                  Divider(
-                                    height: screenHeight * (10 / 852),
-                                    color: const Color(0xffF3F3F3),
-                                  ),
-                                  Divider(
-                                    height: screenHeight * (10 / 852),
-                                    color: const Color(0xffF3F3F3),
-                                  ),
-                                  ListView.builder(
-                                    shrinkWrap: true,
-                                    physics:
-                                        const NeverScrollableScrollPhysics(),
-                                    itemCount: visitor.length,
-                                    itemBuilder: (context, index) {
-                                      var review = visitor[index];
-                                      return ListTile(
-                                        leading:
-                                            review['reviewImageUrl'] != null
-                                                ? Image.network(
-                                                    review['reviewImageUrl'])
-                                                : null,
-                                        title: Text(
-                                          review['review'],
-                                          style: regular15,
-                                        ),
-                                        subtitle: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: List.generate(
-                                                5,
-                                                (starIndex) => Icon(
-                                                  Icons.star,
-                                                  color: starIndex <
-                                                          review['score']
-                                                              .toInt()
-                                                      ? Colors.yellow
-                                                      : Colors.grey,
-                                                ),
-                                              ),
-                                            ),
-                                            Text(
-                                              '${review['username']}',
-                                              style: regular13,
-                                            ),
-                                          ],
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ],
-                              );
-                            },
-                          ),
-                          SizedBox(
-                            height: screenHeight * (10 / 852),
-                          ),
-                          Center(
-                            child: ElevatedButton(
-                              onPressed: showReviewDialog,
-                              child: const Text('리뷰 작성'),
-                            ),
-                          ),
-                          SizedBox(
-                            height: screenHeight * (70 / 852),
-                          ),
-                        ],
-                      ),
+                    CourseReviewPage(
+                      courseId: widget.courseId,
+                      courseDuration: widget.courseDuration,
+                      courseEndLocation: widget.courseEndLocation,
+                      courseImage: widget.courseImage,
+                      courseLocationName: widget.courseLocationName,
+                      courseTitle: widget.courseTitle,
+                      courseStartLocation: widget.courseStartLocation,
                     ),
                   ],
                 ),

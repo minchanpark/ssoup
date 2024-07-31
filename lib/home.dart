@@ -169,100 +169,75 @@ class HomePage extends StatelessWidget {
                       SizedBox(
                         height: screenHeight * (50 / 852),
                       ),
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: screenWidth * (20 / 393),
-                        ),
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const BigMapPage(),
-                                        ),
-                                      );
-                                    },
-                                    child: Image.asset(
-                                      'assets/map.png',
-                                      fit: BoxFit.fill,
-                                      width: screenWidth * (161 / 393),
-                                      height: screenHeight * (198 / 852),
+                      Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const BigMapPage(),
                                     ),
-                                  ),
+                                  );
+                                },
+                                child: Image.asset(
+                                  'assets/map.png',
+                                  width: 161,
+                                  height: 198,
                                 ),
-                                SizedBox(width: screenWidth * (10 / 393)),
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const CoursePage(),
-                                        ),
-                                      );
-                                    },
-                                    child: Image.asset(
-                                      'assets/course.png',
-                                      fit: BoxFit.fill,
-                                      width: screenWidth * (161 / 393),
-                                      height: screenHeight * (198 / 852),
+                              ),
+                              SizedBox(width: screenWidth * (21 / 393)),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const CoursePage(),
                                     ),
-                                  ),
+                                  );
+                                },
+                                child: Image.asset(
+                                  'assets/course.png',
+                                  width: 161,
+                                  height: 198,
                                 ),
-                              ],
-                            ),
-                            SizedBox(height: screenHeight * (30 / 852)),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const StampPage(),
-                                        ),
-                                      );
-                                    },
-                                    child: Image.asset(
-                                      'assets/stamp.png',
-                                      width: screenWidth * (161 / 393),
-                                      height: screenHeight * (198 / 852),
-                                      fit: BoxFit.fill,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: screenHeight * (25 / 852)),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const StampPage(),
                                     ),
-                                  ),
+                                  );
+                                },
+                                child: Image.asset(
+                                  'assets/stamp.png',
+                                  width: 161,
+                                  height: 198,
                                 ),
-                                SizedBox(width: screenWidth * (10 / 393)),
-                                Expanded(
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      // Navigator.push(
-                                      // context,
-                                      // MaterialPageRoute(
-                                      // builder: (context) =>
-                                      // const GoogleMapPage(),
-                                      // );
-                                    },
-                                    child: Image.asset(
-                                      'assets/stalk.png',
-                                      fit: BoxFit.fill,
-                                      width: screenWidth * (161 / 393),
-                                      height: screenHeight * (198 / 852),
-                                    ),
-                                  ),
+                              ),
+                              SizedBox(width: screenWidth * (21 / 393)),
+                              GestureDetector(
+                                onTap: () {},
+                                child: Image.asset(
+                                  'assets/stalk.png',
+                                  width: 161,
+                                  height: 198,
                                 ),
-                              ],
-                            ),
-                          ],
-                        ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                       SizedBox(
                         height: screenHeight * (50 / 852),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'theme/color.dart';
 import 'theme/text.dart';
 
 class StampPage extends StatelessWidget {
@@ -12,6 +13,7 @@ class StampPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         backgroundColor: const Color(0xffA3C2FF),
         title: Image.asset(
           'assets/6/ssoup.png',
@@ -27,7 +29,8 @@ class StampPage extends StatelessWidget {
               bottomRight: Radius.elliptical(200, 70),
             ),
             child: Container(
-              color: const Color(0xffA3C2FF),
+              //color: const Color(0xffA3C2FF),
+              decoration: const BoxDecoration(gradient: AppColor.homeMix),
               height: screenHeight * (250 / 852),
               child: Column(
                 children: [

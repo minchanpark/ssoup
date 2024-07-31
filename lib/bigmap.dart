@@ -291,6 +291,7 @@ class _BigMapPageState extends State<BigMapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        scrolledUnderElevation: 0,
         title: const Text(
           '울릉투어 맵',
           style: regular23,
