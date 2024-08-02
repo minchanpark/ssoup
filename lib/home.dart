@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'bigmap.dart';
-import 'course.dart';
+import 'package:ssoup/theme/color.dart';
+import 'about_map/bigmap.dart';
+import 'course/course.dart';
 import 'stamp.dart';
 import 'theme/text.dart';
 
@@ -35,15 +36,6 @@ class HomePage extends StatelessWidget {
     }
   }
 
-  static const LinearGradient homeMix = LinearGradient(
-    colors: [
-      Color.fromRGBO(138, 206, 255, 1),
-      Color.fromRGBO(163, 194, 255, 1),
-    ],
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-  );
-
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -70,7 +62,6 @@ class HomePage extends StatelessWidget {
               final double totalKm = userData['totalKm'] ?? 0.0;
 
               return SingleChildScrollView(
-                scrollDirection: Axis.vertical,
                 child: Center(
                   child: Column(
                     children: [
@@ -80,7 +71,8 @@ class HomePage extends StatelessWidget {
                           bottomRight: Radius.circular(50),
                         ),
                         child: Container(
-                          decoration: const BoxDecoration(gradient: homeMix),
+                          decoration:
+                              const BoxDecoration(gradient: AppColor.homeMix),
                           height: screenHeight * (278 / 852),
                           width: screenWidth,
                           child: Padding(

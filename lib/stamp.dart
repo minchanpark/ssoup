@@ -12,70 +12,99 @@ class StampPage extends StatelessWidget {
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        backgroundColor: const Color(0xffA3C2FF),
-        title: Image.asset(
-          'assets/6/ssoup.png',
-          width: screenWidth * (77 / 393),
-          height: screenHeight * (77 / 852),
-        ),
-      ),
       body: Column(
         children: [
           ClipRRect(
             borderRadius: const BorderRadius.only(
-              bottomLeft: Radius.elliptical(200, 70),
-              bottomRight: Radius.elliptical(200, 70),
+              bottomLeft: Radius.elliptical(200, 80),
+              bottomRight: Radius.elliptical(200, 80),
             ),
             child: Container(
-              //color: const Color(0xffA3C2FF),
-              decoration: const BoxDecoration(gradient: AppColor.homeMix),
-              height: screenHeight * (250 / 852),
-              child: Column(
+              decoration: const BoxDecoration(
+                gradient: AppColor.homeMix,
+              ),
+              width: double.infinity,
+              height: screenHeight * (320 / 852),
+              child: Stack(
                 children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Center(
-                              child: Text(
-                                '김한동님의 스탬프 모아보기',
-                                style: bold23.copyWith(
-                                  color: Colors.white,
-                                  fontSize: screenWidth * (23 / 393),
-                                ),
-                              ),
-                            ),
-                            Center(
-                              child: Text(
-                                '2024.07.05',
-                                style: regular15.copyWith(
-                                  color: Colors.white,
-                                  fontSize: screenWidth * (15 / 393),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                  Positioned(
+                    top: screenHeight * (62 / 852),
+                    child: SizedBox(
+                      width: 73,
+                      height: 68,
+                      child: IconButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          icon: const Icon(
+                            Icons.arrow_back_ios,
+                            color: Color(0xffffffff),
+                          )),
+                    ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset(
-                        'assets/aaa.png',
-                        width: screenWidth * (150 / 393),
+                  Positioned(
+                    top: screenHeight * (54 / 852),
+                    left: screenWidth * (159 / 393),
+                    child: Image.asset(
+                      'assets/6/ssoup.png',
+                      width: 77,
+                      height: 77,
+                    ),
+                  ),
+                  Positioned(
+                    top: screenHeight * (129 / 852),
+                    left: screenWidth * (60 / 393),
+                    child: Text(
+                      '김한동님의 스탬프 모아보기',
+                      style: bold23.copyWith(
+                        color: Colors.white,
+                        fontSize: screenWidth * (23 / 393),
                       ),
-                      Image.asset(
-                        'assets/mugogi.png',
-                        width: screenWidth * (100 / 393),
-                      )
-                    ],
-                  )
+                    ),
+                  ),
+                  Positioned(
+                    top: screenHeight * (167 / 852),
+                    left: screenWidth * (157 / 393),
+                    child: Text(
+                      '2024.07.05',
+                      style: regular15.copyWith(
+                        color: Colors.white,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: screenHeight * (201 / 852),
+                    left: screenWidth * (60 / 393),
+                    child: Stack(
+                      children: [
+                        Image.asset(
+                          'assets/aaa.png',
+                          width: 193,
+                        ),
+                        Positioned(
+                            top: screenHeight * (14 / 852),
+                            left: screenWidth * (13 / 393),
+                            child: Text(
+                              '플로깅 인증하고 스탬프를 모아\n제 친구들을 구해주세요!',
+                              textAlign: TextAlign.center,
+                              style: regular13.copyWith(
+                                height: 1.38,
+                                letterSpacing: -0.32,
+                              ),
+                            )),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    top: screenHeight * (97 / 852),
+                    left: screenWidth * (134 / 393),
+                    child: Image.asset(
+                      'assets/mugogi.png',
+                      width: screenWidth * (308 / 393),
+                      height: screenHeight * (271 / 852),
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -211,8 +240,8 @@ class StampItem extends StatelessWidget {
                     ),
                     child: Image.asset(
                       image,
-                      width: (width / 393) * mediaWidth,
-                      height: (height / 852) * mediaHeight,
+                      width: width,
+                      height: height,
                     ),
                   ),
                   SizedBox(

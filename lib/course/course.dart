@@ -3,7 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/zondicons.dart';
 import 'coursedetail.dart';
-import 'theme/text.dart';
+import '../theme/text.dart';
 
 class CoursePage extends StatefulWidget {
   const CoursePage({super.key});

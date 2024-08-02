@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:ssoup/course_review_page.dart';
-import 'package:ssoup/map.dart';
-import 'theme/text.dart';
+import 'package:ssoup/course/course_review_page.dart';
+import 'package:ssoup/about_map/map.dart';
+import '../theme/text.dart';
 
 class CourseDetailPage extends StatefulWidget {
   final String courseId;
@@ -30,32 +28,9 @@ class CourseDetailPage extends StatefulWidget {
 }
 
 class _CourseDetailPageState extends State<CourseDetailPage> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  final FirebaseAuth _auth = FirebaseAuth.instance;
-  String nickname = "";
-
   @override
   void initState() {
     super.initState();
-    _fetchNickname();
-  }
-
-  Future<void> _fetchNickname() async {
-    final user = _auth.currentUser;
-    if (user != null) {
-      try {
-        DocumentSnapshot documentSnapshot =
-            await _firestore.collection('user').doc(user.uid).get();
-
-        setState(() {
-          nickname = documentSnapshot['nick_name'];
-        });
-      } catch (e) {
-        print("Error fetching nickname: $e");
-      }
-    } else {
-      print("User not logged in");
-    }
   }
 
   @override

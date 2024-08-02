@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
 import 'package:ssoup/constants.dart';
+import 'package:ssoup/course/photo_review.dart';
 import 'package:ssoup/home.dart';
 import 'package:ssoup/login.dart';
 import 'package:ssoup/nick_name.dart';
@@ -16,11 +17,12 @@ void main() async {
     javaScriptAppKey: kakaoJavaScriptAppKey,
   );
 
-  runApp(MaterialApp(debugShowCheckedModeBanner: false, home: splashPage()));
+  runApp(
+      const MaterialApp(debugShowCheckedModeBanner: false, home: splashPage()));
 
-  await Future.delayed(Duration(seconds: 3));
+  await Future.delayed(const Duration(seconds: 3));
 
-  runApp(MaterialApp(debugShowCheckedModeBanner: false, home: const MyApp()));
+  runApp(const MaterialApp(debugShowCheckedModeBanner: false, home: MyApp()));
 }
 
 class MyApp extends StatelessWidget {
@@ -34,7 +36,7 @@ class MyApp extends StatelessWidget {
         "/nick_name_page": (BuildContext context) => const NickNamePage(),
         "/home_page": (BuildContext context) => const HomePage(),
       },
-      home: LoginPage(),
+      home: const LoginPage(),
     );
   }
 }

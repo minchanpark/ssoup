@@ -5,9 +5,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:ssoup/course/photo_review.dart';
 
-import 'theme/color.dart';
-import 'theme/text.dart';
+import '../theme/color.dart';
+import '../theme/text.dart';
 
 class CourseReviewPage extends StatefulWidget {
   final String courseId;
@@ -39,6 +40,30 @@ class _CourseReviewPageState extends State<CourseReviewPage> {
   String nickname = "";
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final ImagePicker _picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchNickname();
+  }
+
+  Future<void> _fetchNickname() async {
+    final user = _auth.currentUser;
+    if (user != null) {
+      try {
+        DocumentSnapshot documentSnapshot =
+            await _firestore.collection('user').doc(user.uid).get();
+
+        setState(() {
+          nickname = documentSnapshot['nick_name'];
+        });
+      } catch (e) {
+        print("Error fetching nickname: $e");
+      }
+    } else {
+      print("User not logged in");
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -337,48 +362,60 @@ class _CourseReviewPageState extends State<CourseReviewPage> {
                                 ),
                               )
                             : (visitor.length > 2)
-                                ? Stack(
-                                    children: [
-                                      Container(
-                                        decoration: BoxDecoration(
-                                          border: Border.all(
-                                              color: AppColor.button),
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                        ),
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                          child: Image.network(
-                                            visitor[2]['reviewImageUrl'],
-                                            width: 105,
-                                            height: 102,
-                                            fit: BoxFit.fill,
+                                ? GestureDetector(
+                                    onTap: () {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PhotoReviewPage(
+                                                    courseId: widget.courseId,
+                                                  )));
+                                    },
+                                    child: Stack(
+                                      children: [
+                                        Container(
+                                          decoration: BoxDecoration(
+                                            border: Border.all(
+                                                color: AppColor.button),
+                                            borderRadius:
+                                                BorderRadius.circular(8.0),
+                                          ),
+                                          child: ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(8.0),
+                                            child: Image.network(
+                                              visitor[2]['reviewImageUrl'],
+                                              width: 105,
+                                              height: 102,
+                                              fit: BoxFit.fill,
+                                            ),
                                           ),
                                         ),
-                                      ),
-                                      Container(
-                                        width: 105,
-                                        height: 102,
-                                        decoration: BoxDecoration(
-                                          color: const Color.fromRGBO(
-                                              0, 0, 0, 0.5),
-                                          borderRadius:
-                                              BorderRadius.circular(8.0),
-                                        ),
-                                      ),
-                                      Positioned(
-                                        left: screenWidth * (22 / 393),
-                                        top: screenHeight * (40 / 852),
-                                        child: Text(
-                                          '+ 더보기',
-                                          style: medium15.copyWith(
-                                            color: const Color(0xffffffff),
-                                            fontSize: screenWidth * (15 / 393),
+                                        Container(
+                                          width: 105,
+                                          height: 102,
+                                          decoration: BoxDecoration(
+                                            color: const Color.fromRGBO(
+                                                0, 0, 0, 0.5),
+                                            borderRadius:
+                                                BorderRadius.circular(8.0),
                                           ),
                                         ),
-                                      ),
-                                    ],
+                                        Positioned(
+                                          left: screenWidth * (22 / 393),
+                                          top: screenHeight * (40 / 852),
+                                          child: Text(
+                                            '+ 더보기',
+                                            style: medium15.copyWith(
+                                              color: const Color(0xffffffff),
+                                              fontSize:
+                                                  screenWidth * (15 / 393),
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   )
                                 : Container(),
                       ],
@@ -424,10 +461,8 @@ class _CourseReviewPageState extends State<CourseReviewPage> {
                                         width: screenWidth * (105 / 393),
                                         height: screenHeight * (102 / 852),
                                       ),
-                                SizedBox(
-                                    width: screenWidth *
-                                        (12 /
-                                            393)), // Spacing between image and text
+                                SizedBox(width: screenWidth * (12 / 393)),
+                                // Spacing between image and text
                                 Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
