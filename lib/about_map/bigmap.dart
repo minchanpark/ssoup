@@ -7,6 +7,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:ssoup/constants.dart';
+import 'package:ssoup/theme/color.dart';
 import 'package:ssoup/theme/text.dart';
 
 class BigMapPage extends StatefulWidget {
@@ -18,8 +19,11 @@ class BigMapPage extends StatefulWidget {
 
 class _BigMapPageState extends State<BigMapPage> {
   GoogleMapController? _mapController;
-  LatLng _ulleungDo = const LatLng(37.49893355978079, 130.86866855621338);
-  final Set<Marker> _markers = {};
+  final LatLng _ulleungDo = const LatLng(37.49893355978079, 130.86866855621338);
+  final Set<Marker> _allMarkers = {};
+  final Set<Marker> _currentMarkers = {};
+  final Set<Marker> _touristMarkers = {};
+  final Set<Marker> _trashMarkers = {};
   final Set<Polyline> _polylines = {};
   StreamSubscription<Position>? _positionStreamSubscription;
   final List<LatLng> _trashLocation = [
@@ -31,13 +35,16 @@ class _BigMapPageState extends State<BigMapPage> {
   final LatLng _startLocation =
       const LatLng(37.47423184776412, 130.89445743384988);
 
+  String _selectedFilter = 'all';
+
   @override
   void initState() {
     super.initState();
-    _checkPermissions();
     _fetchLocationsFromFirestore();
-    _addStartLocationMarker(); // 추가된 시작 위치 마커를 생성하는 함수 호출
-    _addTrashMarkers(); // 추가된 쓰레기통 마커를 생성하는 함수 호출
+    _addStartLocationMarker();
+    _addTrashMarkers();
+    _updateCurrentLocationMarker();
+    _currentMarkers.addAll(_touristMarkers);
   }
 
   @override
@@ -47,55 +54,15 @@ class _BigMapPageState extends State<BigMapPage> {
     super.dispose();
   }
 
-  Future<void> _checkPermissions() async {
-    LocationPermission permission;
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return;
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      return;
-    }
-
-    final currentPosition = await Geolocator.getCurrentPosition();
-    if (!mounted) return;
-    setState(() {
-      _ulleungDo = LatLng(currentPosition.latitude, currentPosition.longitude);
-      _updateCurrentLocationMarker();
-      // Removing this line to avoid camera position update
-      // _mapController?.animateCamera(CameraUpdate.newLatLng(_ulleungDo));
-    });
-
-    _positionStreamSubscription =
-        Geolocator.getPositionStream().listen((Position position) {
-      if (!mounted) return;
-      setState(() {
-        _ulleungDo = LatLng(position.latitude, position.longitude);
-        _updateCurrentLocationMarker();
-        // Removing this line to avoid camera position update
-        // _mapController?.animateCamera(CameraUpdate.newLatLng(_ulleungDo));
-      });
-    });
-  }
-
   void _updateCurrentLocationMarker() {
-    if (!mounted) return;
-    setState(() {
-      _markers.removeWhere((marker) => marker.markerId == const MarkerId('cL'));
-      _markers.add(
-        Marker(
-          markerId: const MarkerId('cL'),
-          position: _ulleungDo,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-          infoWindow: const InfoWindow(title: 'Current Location'),
-        ),
-      );
-    });
+    final Marker currentLocationMarker = Marker(
+      markerId: const MarkerId('cL'),
+      position: _ulleungDo,
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      infoWindow: const InfoWindow(title: 'Current Location'),
+    );
+    _currentMarkers.add(currentLocationMarker);
+    _allMarkers.add(currentLocationMarker);
   }
 
   Future<void> _fetchLocationsFromFirestore() async {
@@ -110,49 +77,48 @@ class _BigMapPageState extends State<BigMapPage> {
         final String name = data['locationName'];
         final String information = data['information'];
 
-        _markers.add(
-          Marker(
-            markerId: MarkerId(doc.id),
-            position: location,
-            onTap: () {
-              _showMarkerInfoDialog(name, information);
-            },
-          ),
+        final Marker touristMarker = Marker(
+          markerId: MarkerId(doc.id),
+          position: location,
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          onTap: () {
+            _showMarkerInfoDialog(name, information);
+          },
         );
+        _touristMarkers.add(touristMarker);
+        _allMarkers.add(touristMarker);
       }
+      _currentMarkers.addAll(_touristMarkers);
     });
   }
 
   void _addStartLocationMarker() {
-    setState(() {
-      _markers.add(
-        Marker(
-          markerId: const MarkerId('startLocation'),
-          position: _startLocation,
-          icon:
-              BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-          infoWindow: const InfoWindow(title: 'Start Location'),
-        ),
-      );
-    });
+    final Marker startLocationMarker = Marker(
+      markerId: const MarkerId('startLocation'),
+      position: _startLocation,
+      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+      infoWindow: const InfoWindow(title: 'Start Location'),
+    );
+    _touristMarkers.add(startLocationMarker);
+    _allMarkers.add(startLocationMarker);
   }
 
   void _addTrashMarkers() {
     setState(() {
       for (var location in _trashLocation) {
-        _markers.add(
-          Marker(
-            markerId: MarkerId(location.toString()),
-            position: location,
-            icon: BitmapDescriptor.defaultMarkerWithHue(
-                BitmapDescriptor.hueBlue), // 파란색 마커 설정
-            infoWindow: const InfoWindow(title: 'Trash Bin'),
-            onTap: () {
-              _getNaverRoute(location);
-            },
-          ),
+        final Marker trashMarker = Marker(
+          markerId: MarkerId(location.toString()),
+          position: location,
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+          infoWindow: const InfoWindow(title: 'Trash Bin'),
+          onTap: () {
+            _getNaverRoute(location);
+          },
         );
+        _trashMarkers.add(trashMarker);
+        _allMarkers.add(trashMarker);
       }
+      _currentMarkers.addAll(_trashMarkers);
     });
   }
 
@@ -287,6 +253,21 @@ class _BigMapPageState extends State<BigMapPage> {
     controller.setMapStyle(style);
   }
 
+  void _filterMarkers(String filter) {
+    setState(() {
+      _selectedFilter = filter;
+      _currentMarkers.clear();
+      if (filter == 'all') {
+        _currentMarkers.addAll(_touristMarkers);
+        _currentMarkers.addAll(_trashMarkers);
+      } else if (filter == 'tourist') {
+        _currentMarkers.addAll(_touristMarkers);
+      } else if (filter == 'trash') {
+        _currentMarkers.addAll(_trashMarkers);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -298,19 +279,81 @@ class _BigMapPageState extends State<BigMapPage> {
         ),
         backgroundColor: const Color(0xffC6EBFE),
       ),
-      body: GoogleMap(
-        initialCameraPosition: CameraPosition(
-          target: _ulleungDo,
-          zoom: 11.8,
-        ),
-        markers: _markers,
-        onMapCreated: (GoogleMapController controller) {
-          _mapController = controller;
-          _setMapStyle(controller);
-        },
-        myLocationEnabled: true,
-        myLocationButtonEnabled: true,
-        polylines: _polylines,
+      body: Column(
+        children: [
+          Container(
+            color: const Color(0xffC6EBFE),
+            child: Padding(
+              padding: EdgeInsets.only(top: 20),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ChoiceChip(
+                    label: const Text(
+                      '전체지도',
+                      style: regular15,
+                    ),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    selected: _selectedFilter == 'all',
+                    onSelected: (bool selected) {
+                      _filterMarkers('all');
+                    },
+                    selectedColor: AppColor.primary,
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        side: BorderSide(color: Color(0xffC6EBFE))),
+                    showCheckmark: false,
+                  ),
+                  ChoiceChip(
+                    label: const Text('관광지', style: regular15),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    selected: _selectedFilter == 'tourist',
+                    onSelected: (bool selected) {
+                      _filterMarkers('tourist');
+                    },
+                    selectedColor: AppColor.primary,
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        side: BorderSide(color: Color(0xffC6EBFE))),
+                    showCheckmark: false,
+                  ),
+                  ChoiceChip(
+                    label: const Text('쓰레기통', style: regular15),
+                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    selected: _selectedFilter == 'trash',
+                    onSelected: (bool selected) {
+                      _filterMarkers('trash');
+                    },
+                    selectedColor: AppColor.primary,
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                        side: BorderSide(color: Color(0xffC6EBFE))),
+                    showCheckmark: false,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Expanded(
+            child: GoogleMap(
+              initialCameraPosition: CameraPosition(
+                target: _ulleungDo,
+                zoom: 11.8,
+              ),
+              markers: _currentMarkers,
+              onMapCreated: (GoogleMapController controller) {
+                _mapController = controller;
+                _setMapStyle(controller);
+              },
+              myLocationEnabled: true,
+              myLocationButtonEnabled: true,
+              polylines: _polylines,
+            ),
+          ),
+        ],
       ),
     );
   }
