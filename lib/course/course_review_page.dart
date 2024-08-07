@@ -9,6 +9,7 @@ import 'package:ssoup/course/photo_review.dart';
 
 import '../theme/color.dart';
 import '../theme/text.dart';
+import 'review_create_page.dart';
 
 class CourseReviewPage extends StatefulWidget {
   final String courseId;
@@ -403,8 +404,8 @@ class _CourseReviewPageState extends State<CourseReviewPage> {
                                           ),
                                         ),
                                         Positioned(
-                                          left: screenWidth * (22 / 393),
-                                          top: screenHeight * (40 / 852),
+                                          left: 22,
+                                          top: 40,
                                           child: Text(
                                             '+ 더보기',
                                             style: medium15.copyWith(
@@ -558,7 +559,13 @@ class _CourseReviewPageState extends State<CourseReviewPage> {
           ),
           Center(
             child: ElevatedButton(
-              onPressed: showReviewDialog,
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const ReviewCreatePage()));
+              },
+              //showReviewDialog,
               child: const Text('리뷰 작성'),
             ),
           ),

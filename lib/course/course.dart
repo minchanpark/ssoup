@@ -20,6 +20,7 @@ class _CoursePageState extends State<CoursePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        iconTheme: const IconThemeData(color: Color(0xff1E528E)),
         scrolledUnderElevation: 0,
         backgroundColor: Colors.white,
         title: Text(
