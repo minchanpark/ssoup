@@ -46,56 +46,6 @@ class _ReviewCreatePageState extends State<ReviewCreatePage> {
     super.dispose();
   }
 
-  Future<void> submitReview() async {
-    if (reviewController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Please provide review text'),
-      ));
-      return;
-    }
-
-    final user = _auth.currentUser;
-    if (user == null) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('User not logged in'),
-      ));
-      return;
-    }
-
-    String? reviewImageUrl;
-    if (_image != null) {
-      final imagePath = 'visitor/${DateTime.now()}.png';
-      final ref = FirebaseStorage.instance.ref().child(imagePath);
-      await ref.putFile(_image!);
-      reviewImageUrl = await ref.getDownloadURL();
-    }
-
-    await _firestore
-        .collection('course')
-        .doc(widget.courseId)
-        .collection('visitor')
-        .doc(user.uid)
-        .set({
-      'uid': user.uid,
-      'username': nickname,
-      'reviewImageUrl': reviewImageUrl,
-      'review': reviewController.text,
-      'score': rating,
-      'timestamp': FieldValue.serverTimestamp(),
-    });
-
-    Navigator.pop(context);
-  }
-
-  Future<void> pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      }
-    });
-  }
-
   Future<void> _fetchNickname() async {
     final user = _auth.currentUser;
     if (user != null) {
@@ -113,160 +63,269 @@ class _ReviewCreatePageState extends State<ReviewCreatePage> {
     }
   }
 
-  Widget _buildStarRating() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(
-        5,
-        (index) => IconButton(
-          onPressed: () {
-            setState(() {
-              rating = index + 1;
-            });
-          },
-          icon: Icon(
-            Icons.star,
-            color: index < rating ? AppColor.button : Colors.grey,
-            size: 35,
-          ),
-        ),
-      ),
-    );
-  }
+  @override
+  Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+    double screenHeight = MediaQuery.of(context).size.height;
 
-  Widget _buildReviewField(double screenWidth, double screenHeight) {
-    return Padding(
-      padding: EdgeInsets.only(left: screenWidth * 0.066),
-      child: Stack(
-        children: [
-          Container(
-            width: screenWidth * 0.873,
-            height: screenHeight * 0.226,
-            padding: EdgeInsets.only(left: screenWidth * 0.033),
+    Future<void> submitReview() async {
+      if (reviewController.text.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Please provide review text'),
+        ));
+        return;
+      }
+
+      final user = _auth.currentUser;
+      if (user == null) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('User not logged in'),
+        ));
+        return;
+      }
+
+      String? reviewImageUrl;
+      if (_image != null) {
+        final imagePath = 'visitor/${DateTime.now()}.png';
+        final ref = FirebaseStorage.instance.ref().child(imagePath);
+        await ref.putFile(_image!);
+        reviewImageUrl = await ref.getDownloadURL();
+      }
+
+      await _firestore
+          .collection('course')
+          .doc(widget.courseId)
+          .collection('visitor')
+          .doc(user.uid)
+          .set({
+        'uid': user.uid,
+        'username': nickname,
+        'reviewImageUrl': reviewImageUrl,
+        'review': reviewController.text,
+        'score': rating,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
+      Navigator.pop(context);
+    }
+
+    void reviewPopup() {
+      showDialog<String>(
+        context: context,
+        builder: (BuildContext context) => Dialog(
+          child: Container(
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.black, width: 0.5),
-              borderRadius: BorderRadius.circular(9),
-            ),
-            child: TextFormField(
-              controller: reviewController,
-              cursorColor: const Color(0xff50A2FF),
-              maxLines: null,
-              keyboardType: TextInputType.multiline,
-              decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: '$nickname님의 리뷰는 다른 참여자분들에게 큰 도움이 될 수 있어요.',
-                hintStyle: const TextStyle(
-                  color: Color.fromRGBO(0, 0, 0, 0.6),
-                  fontFamily: 'S-Core Dream',
-                  fontSize: 11,
-                ),
-              ),
-            ),
-          ),
-          Positioned(
-            top: screenHeight * 0.196,
-            left: screenWidth * 0.761,
-            child: Text(
-              '$currentLength/$maxLength',
-              style: const TextStyle(
-                color: Colors.grey,
-                fontSize: 8,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildImagePickerButton(double screenWidth, double screenHeight) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: screenWidth * 0.873,
-          height: screenHeight * 0.043,
-          child: ElevatedButton(
-            onPressed: pickImage,
-            style: ButtonStyle(
-              elevation: const WidgetStatePropertyAll(0),
-              backgroundColor: const WidgetStatePropertyAll(Colors.white),
-              shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(
-                  side: const BorderSide(width: 1, color: Color(0xFF4FA2FF)),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-              ),
-            ),
-            child: Row(
+                color: Colors.white,
+                shape: BoxShape.rectangle,
+                borderRadius: BorderRadius.circular(15)),
+            width: 343,
+            height: 160,
+            child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Icon(
-                  LucideIcons.camera,
-                  color: Color(0xFF4FA2FF),
-                ),
-                SizedBox(width: screenWidth * 0.01),
+                SizedBox(height: screenHeight * (38 / 852)),
                 Text(
-                  '사진 첨부하기',
-                  style: medium13.copyWith(
-                    color: const Color(0xFF4FA2FF),
-                    fontSize: 13,
+                  '리뷰가 성공적으로 등록되었어요.',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 18,
                     fontFamily: 'S-Core Dream',
-                    fontWeight: FontWeight.w600,
-                    height: 0.12,
+                    fontWeight: FontWeight.w500,
                     letterSpacing: -0.32,
+                  ),
+                ),
+                Text(
+                  '소중한 후기 감사해요 !',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 12,
+                    fontFamily: 'S-Core Dream',
+                    fontWeight: FontWeight.w200,
+                    letterSpacing: -0.32,
+                  ),
+                ),
+                SizedBox(height: screenHeight * (22 / 852)),
+                Divider(),
+                TextButton(
+                  onPressed: () {
+                    submitReview();
+                    Navigator.pop(context);
+                  },
+                  child: const Text(
+                    '확인',
+                    style: TextStyle(
+                      color: Color(0xFF007BFF),
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ],
             ),
           ),
         ),
-      ],
-    );
-  }
+      );
+    }
 
-  Widget _buildSubmitButton(double screenWidth, double screenHeight) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        SizedBox(
-          width: screenWidth * 0.874,
-          height: screenHeight * 0.059,
-          child: ElevatedButton(
-            onPressed: submitReview,
-            style: ButtonStyle(
-              elevation: const WidgetStatePropertyAll(0),
-              backgroundColor: const WidgetStatePropertyAll(
-                Color(0xFF4FA2FF),
-              ),
-              shape: WidgetStatePropertyAll(
-                RoundedRectangleBorder(
-                  side: const BorderSide(width: 1, color: Color(0xFF4FA2FF)),
-                  borderRadius: BorderRadius.circular(6),
-                ),
-              ),
-            ),
-            child: Text(
-              '리뷰 등록하기',
-              style: medium13.copyWith(
-                color: const Color(0xFFFFFFFF),
-                fontSize: 15,
-                fontFamily: 'S-Core Dream',
-                fontWeight: FontWeight.w600,
-                height: 0.09,
-                letterSpacing: -0.32,
-              ),
+    Future<void> pickImage() async {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      setState(() {
+        if (pickedFile != null) {
+          _image = File(pickedFile.path);
+        }
+      });
+    }
+
+    Widget _buildStarRating() {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: List.generate(
+          5,
+          (index) => IconButton(
+            onPressed: () {
+              setState(() {
+                rating = index + 1;
+              });
+            },
+            icon: Icon(
+              Icons.star,
+              color: index < rating ? AppColor.button : Colors.grey,
+              size: 35,
             ),
           ),
         ),
-      ],
-    );
-  }
+      );
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    Widget _buildReviewField(double screenWidth, double screenHeight) {
+      return Padding(
+        padding: EdgeInsets.only(left: screenWidth * 0.066),
+        child: Stack(
+          children: [
+            Container(
+              width: screenWidth * 0.873,
+              height: screenHeight * 0.226,
+              padding: EdgeInsets.only(left: screenWidth * 0.033),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.black, width: 0.5),
+                borderRadius: BorderRadius.circular(9),
+              ),
+              child: TextFormField(
+                controller: reviewController,
+                cursorColor: const Color(0xff50A2FF),
+                maxLines: null,
+                keyboardType: TextInputType.multiline,
+                decoration: InputDecoration(
+                  border: InputBorder.none,
+                  hintText: '$nickname님의 리뷰는 다른 참여자분들에게 큰 도움이 될 수 있어요.',
+                  hintStyle: const TextStyle(
+                    color: Color.fromRGBO(0, 0, 0, 0.6),
+                    fontFamily: 'S-Core Dream',
+                    fontSize: 11,
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              top: screenHeight * 0.196,
+              left: screenWidth * 0.761,
+              child: Text(
+                '$currentLength/$maxLength',
+                style: const TextStyle(
+                  color: Colors.grey,
+                  fontSize: 8,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    Widget _buildImagePickerButton(double screenWidth, double screenHeight) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: screenWidth * 0.873,
+            height: screenHeight * 0.043,
+            child: ElevatedButton(
+              onPressed: pickImage,
+              style: ButtonStyle(
+                elevation: const WidgetStatePropertyAll(0),
+                backgroundColor: const WidgetStatePropertyAll(Colors.white),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    side: const BorderSide(width: 1, color: Color(0xFF4FA2FF)),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    LucideIcons.camera,
+                    color: Color(0xFF4FA2FF),
+                  ),
+                  SizedBox(width: screenWidth * 0.01),
+                  Text(
+                    '사진 첨부하기',
+                    style: medium13.copyWith(
+                      color: const Color(0xFF4FA2FF),
+                      fontSize: 13,
+                      fontFamily: 'S-Core Dream',
+                      fontWeight: FontWeight.w600,
+                      height: 0.12,
+                      letterSpacing: -0.32,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    Widget _buildSubmitButton(double screenWidth, double screenHeight) {
+      return Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SizedBox(
+            width: screenWidth * 0.874,
+            height: screenHeight * 0.059,
+            child: ElevatedButton(
+              onPressed: reviewPopup,
+              style: ButtonStyle(
+                elevation: const WidgetStatePropertyAll(0),
+                backgroundColor: const WidgetStatePropertyAll(
+                  Color(0xFF4FA2FF),
+                ),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    side: const BorderSide(width: 1, color: Color(0xFF4FA2FF)),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
+              ),
+              child: Text(
+                '리뷰 등록하기',
+                style: medium13.copyWith(
+                  color: const Color(0xFFFFFFFF),
+                  fontSize: 15,
+                  fontFamily: 'S-Core Dream',
+                  fontWeight: FontWeight.w600,
+                  height: 0.09,
+                  letterSpacing: -0.32,
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
 
     return Scaffold(
       backgroundColor: Colors.white,
