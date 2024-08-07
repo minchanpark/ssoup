@@ -122,7 +122,7 @@ class _ReviewCreatePageState extends State<ReviewCreatePage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                SizedBox(height: screenHeight * (38 / 852)),
+                SizedBox(height: screenHeight * (28 / 852)),
                 Text(
                   '리뷰가 성공적으로 등록되었어요.',
                   textAlign: TextAlign.center,
