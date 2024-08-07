@@ -1,12 +1,7 @@
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:ssoup/course/photo_review.dart';
-
 import '../theme/color.dart';
 import '../theme/text.dart';
 import 'review_create_page.dart';
@@ -35,12 +30,9 @@ class CourseReviewPage extends StatefulWidget {
 
 class _CourseReviewPageState extends State<CourseReviewPage> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  File? _image;
-  String? _review;
-  double _score = 5.0;
+
   String nickname = "";
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final ImagePicker _picker = ImagePicker();
 
   @override
   void initState() {
@@ -78,136 +70,6 @@ class _CourseReviewPageState extends State<CourseReviewPage> {
         total += review['score'];
       }
       return total / visitor.length;
-    }
-
-    Future<void> pickImage() async {
-      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-      setState(() {
-        if (pickedFile != null) {
-          _image = File(pickedFile.path);
-        }
-      });
-    }
-
-    Future<void> submitReview() async {
-      if (_review == null || _review!.isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Please provide review text'),
-        ));
-        return;
-      }
-
-      final user = _auth.currentUser;
-      if (user == null) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('User not logged in'),
-        ));
-        return;
-      }
-
-      String? reviewImageUrl;
-      if (_image != null) {
-        final imagePath = 'visitor/${DateTime.now()}.png';
-        final ref = FirebaseStorage.instance.ref().child(imagePath);
-        await ref.putFile(_image!);
-        reviewImageUrl = await ref.getDownloadURL();
-      }
-
-      await _firestore
-          .collection('course')
-          .doc(widget.courseId)
-          .collection('visitor')
-          .doc(user.uid)
-          .set({
-        'uid': user.uid,
-        'username': nickname,
-        'reviewImageUrl': reviewImageUrl,
-        'review': _review,
-        'score': _score,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-
-      setState(() {
-        _image = null;
-        _review = null;
-        _score = 5.0;
-      });
-
-      Navigator.of(context).pop();
-    }
-
-    void showReviewDialog() {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('리뷰 작성하기'),
-            content: SingleChildScrollView(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  TextField(
-                    decoration: const InputDecoration(
-                      hintText: '리뷰를 작성하세요',
-                    ),
-                    maxLines: 3,
-                    onChanged: (value) {
-                      setState(() {
-                        _review = value;
-                      });
-                    },
-                  ),
-                  SizedBox(height: screenHeight * (10 / 852)),
-                  Column(
-                    children: [
-                      ElevatedButton(
-                        onPressed: pickImage,
-                        child: const Text('이미지 업로드'),
-                      ),
-                      SizedBox(width: screenWidth * (10 / 393)),
-                      _image == null
-                          ? const Text(' ')
-                          : Image.file(
-                              _image!,
-                              width: 50,
-                              height: 50,
-                            ),
-                    ],
-                  ),
-                  SizedBox(height: screenHeight * (10 / 852)),
-                  Row(
-                    children: [
-                      const Text('점수'),
-                      SizedBox(width: screenWidth * (10 / 393)),
-                      DropdownButton<double>(
-                        value: _score,
-                        onChanged: (double? newValue) {
-                          setState(() {
-                            _score = newValue!;
-                          });
-                        },
-                        items: [1, 2, 3, 4, 5]
-                            .map<DropdownMenuItem<double>>((int value) {
-                          return DropdownMenuItem<double>(
-                            value: value.toDouble(),
-                            child: Text(value.toString()),
-                          );
-                        }).toList(),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            actions: [
-              ElevatedButton(
-                onPressed: submitReview,
-                child: const Text('등록'),
-              ),
-            ],
-          );
-        },
-      );
     }
 
     return SingleChildScrollView(
@@ -563,9 +425,10 @@ class _CourseReviewPageState extends State<CourseReviewPage> {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => const ReviewCreatePage()));
+                        builder: (context) => ReviewCreatePage(
+                              courseId: widget.courseId,
+                            )));
               },
-              //showReviewDialog,
               child: const Text('리뷰 작성'),
             ),
           ),
