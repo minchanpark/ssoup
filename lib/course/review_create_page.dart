@@ -123,7 +123,7 @@ class _ReviewCreatePageState extends State<ReviewCreatePage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(height: screenHeight * (28 / 852)),
-                Text(
+                const Text(
                   '리뷰가 성공적으로 등록되었어요.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -134,7 +134,7 @@ class _ReviewCreatePageState extends State<ReviewCreatePage> {
                     letterSpacing: -0.32,
                   ),
                 ),
-                Text(
+                const Text(
                   '소중한 후기 감사해요 !',
                   textAlign: TextAlign.center,
                   style: TextStyle(
@@ -146,7 +146,7 @@ class _ReviewCreatePageState extends State<ReviewCreatePage> {
                   ),
                 ),
                 SizedBox(height: screenHeight * (22 / 852)),
-                Divider(),
+                const Divider(),
                 TextButton(
                   onPressed: () {
                     submitReview();
@@ -177,7 +177,7 @@ class _ReviewCreatePageState extends State<ReviewCreatePage> {
       });
     }
 
-    Widget _buildStarRating() {
+    Widget buildStarRating() {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(
@@ -198,7 +198,7 @@ class _ReviewCreatePageState extends State<ReviewCreatePage> {
       );
     }
 
-    Widget _buildReviewField(double screenWidth, double screenHeight) {
+    Widget buildReviewField(double screenWidth, double screenHeight) {
       return Padding(
         padding: EdgeInsets.only(left: screenWidth * 0.066),
         child: Stack(
@@ -243,7 +243,7 @@ class _ReviewCreatePageState extends State<ReviewCreatePage> {
       );
     }
 
-    Widget _buildImagePickerButton(double screenWidth, double screenHeight) {
+    Widget buildImagePickerButton(double screenWidth, double screenHeight) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -289,7 +289,7 @@ class _ReviewCreatePageState extends State<ReviewCreatePage> {
       );
     }
 
-    Widget _buildSubmitButton(double screenWidth, double screenHeight) {
+    Widget buildSubmitButton(double screenWidth, double screenHeight) {
       return Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -377,7 +377,7 @@ class _ReviewCreatePageState extends State<ReviewCreatePage> {
                           ),
                         ),
                       ),
-                      _buildStarRating(),
+                      buildStarRating(),
                       Divider(
                         indent: screenWidth * 0.064,
                         endIndent: screenWidth * 0.064,
@@ -399,9 +399,9 @@ class _ReviewCreatePageState extends State<ReviewCreatePage> {
                           ),
                         ),
                       ),
-                      _buildReviewField(screenWidth, screenHeight),
+                      buildReviewField(screenWidth, screenHeight),
                       SizedBox(height: screenHeight * 0.016),
-                      _buildImagePickerButton(screenWidth, screenHeight),
+                      buildImagePickerButton(screenWidth, screenHeight),
                       if (_image != null)
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -419,7 +419,7 @@ class _ReviewCreatePageState extends State<ReviewCreatePage> {
                         ),
                       const Spacer(),
                       if (_image != null)
-                        _buildSubmitButton(screenWidth, screenHeight),
+                        buildSubmitButton(screenWidth, screenHeight),
                       const SizedBox(height: 45),
                     ],
                   ),
