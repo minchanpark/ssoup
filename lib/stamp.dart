@@ -18,6 +18,7 @@ class _StampPageState extends State<StampPage> {
   String formattedDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
 
   List<Map<String, dynamic>> stamps = [];
+  String nickName = "";
 
   @override
   void initState() {
@@ -31,8 +32,10 @@ class _StampPageState extends State<StampPage> {
 
       DocumentSnapshot userDoc =
           await FirebaseFirestore.instance.collection('user').doc(uid).get();
+
+      nickName = userDoc['nickName'];
+
       List<dynamic> stampIds = userDoc['stampId'];
-      String nickName = userDoc['nickName'];
 
       for (String stampId in stampIds) {
         DocumentSnapshot stampDoc = await FirebaseFirestore.instance
@@ -105,7 +108,7 @@ class _StampPageState extends State<StampPage> {
                     top: screenHeight * (129 / 852),
                     left: screenWidth * (60 / 393),
                     child: Text(
-                      '님의 스탬프 모아보기',
+                      '$nickName님의 스탬프 모아보기',
                       style: bold23.copyWith(
                         color: Colors.white,
                         fontSize: screenWidth * (23 / 393),
