@@ -32,6 +32,7 @@ class _StampPageState extends State<StampPage> {
       DocumentSnapshot userDoc =
           await FirebaseFirestore.instance.collection('user').doc(uid).get();
       List<dynamic> stampIds = userDoc['stampId'];
+      String nickName = userDoc['nickName'];
 
       for (String stampId in stampIds) {
         DocumentSnapshot stampDoc = await FirebaseFirestore.instance
@@ -104,7 +105,7 @@ class _StampPageState extends State<StampPage> {
                     top: screenHeight * (129 / 852),
                     left: screenWidth * (60 / 393),
                     child: Text(
-                      '김한동님의 스탬프 모아보기',
+                      '님의 스탬프 모아보기',
                       style: bold23.copyWith(
                         color: Colors.white,
                         fontSize: screenWidth * (23 / 393),

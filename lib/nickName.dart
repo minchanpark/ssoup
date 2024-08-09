@@ -36,15 +36,13 @@ class _NickNamePageState extends State<NickNamePage> {
       final DocumentSnapshot snapshot = await users.doc(user.uid).get();
 
       if (snapshot.exists) {
-        // Update the existing user data with the new nickname
-        final updatedUserData = {'nick_name': nickName};
+        final updatedUserData = {'nickName': nickName};
         await users.doc(user.uid).update(updatedUserData);
         print('Nickname updated in Firestore: $updatedUserData');
       } else {
-        // Create a new user document with the nickname
         final newUserData = {
           'uid': user.uid,
-          'nick_name': nickName,
+          'nickName': nickName,
         };
         await users.doc(user.uid).set(newUserData);
         print('New user data with nickname added to Firestore: $newUserData');

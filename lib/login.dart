@@ -8,7 +8,7 @@ import 'package:flutter_naver_login/flutter_naver_login.dart';
 import 'package:ssoup/home.dart';
 import 'package:ssoup/theme/text.dart';
 
-import 'nick_name.dart';
+import 'nickName.dart';
 
 Future<void> addUserToFirestore(
     firebase_auth.User user, String email, String name) async {
@@ -28,7 +28,8 @@ Future<void> addUserToFirestore(
       'totalSpot': 0,
       'totalStamp': 0,
       'totalKm': 0.0,
-      'nick_name': '',
+      'nickName': '',
+      'stampId': '',
     };
     await users.doc(user.uid).set(newUserData);
     print('New user data added to Firestore: $newUserData');
@@ -106,7 +107,7 @@ Future<bool> checkNickname(firebase_auth.User user) async {
       await FirebaseFirestore.instance.collection('user').doc(user.uid).get();
 
   if (snapshot.exists && snapshot.data() != null) {
-    return snapshot['nick_name'] != '';
+    return snapshot['nickName'] != '';
   }
   return false;
 }

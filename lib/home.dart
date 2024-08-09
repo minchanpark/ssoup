@@ -29,7 +29,7 @@ class HomePage extends StatelessWidget {
           .doc(user!.uid)
           .get();
 
-      return documentSnapshot['nick_name'];
+      return documentSnapshot['nickName'];
     } catch (e) {
       print("Error fetching nickname: $e");
       return "Error";
@@ -88,7 +88,7 @@ class HomePage extends StatelessWidget {
                                       height: screenHeight * (63 / 852),
                                     ),
                                     Text(
-                                      '${snapshot.data!["nick_name"]}님의 플로깅 현황',
+                                      '${snapshot.data!["nickName"]}님의 플로깅 현황',
                                       style: extrabold24.copyWith(
                                         color: const Color(0xff1E528E),
                                         fontSize: screenWidth *
@@ -142,7 +142,7 @@ class HomePage extends StatelessWidget {
                                         ),
                                       ),
                                       Text(
-                                        '${snapshot.data!["nick_name"]}님은 총 $totalStamp번의\n 플로깅을 인증했어요!',
+                                        '${snapshot.data!["nickName"]}님은 총 $totalStamp번의\n 플로깅을 인증했어요!',
                                         style: medium15.copyWith(
                                           color: Colors.white,
                                           fontSize: screenWidth *
