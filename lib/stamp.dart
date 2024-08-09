@@ -1,10 +1,59 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'theme/color.dart';
 import 'theme/text.dart';
 
-class StampPage extends StatelessWidget {
+class StampPage extends StatefulWidget {
   const StampPage({super.key});
+
+  @override
+  _StampPageState createState() => _StampPageState();
+}
+
+class _StampPageState extends State<StampPage> {
+  final now = DateTime.now();
+  String formattedDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
+
+  List<Map<String, dynamic>> stamps = [];
+
+  @override
+  void initState() {
+    super.initState();
+    fetchStampData();
+  }
+
+  Future<void> fetchStampData() async {
+    try {
+      String uid = FirebaseAuth.instance.currentUser!.uid;
+
+      DocumentSnapshot userDoc =
+          await FirebaseFirestore.instance.collection('user').doc(uid).get();
+      List<dynamic> stampIds = userDoc['stampId'];
+
+      for (String stampId in stampIds) {
+        DocumentSnapshot stampDoc = await FirebaseFirestore.instance
+            .collection('stamp')
+            .doc(stampId)
+            .get();
+        if (stampDoc.exists) {
+          Map<String, dynamic> stampData =
+              stampDoc.data() as Map<String, dynamic>;
+          stamps.add({
+            'name': stampData['stampName'],
+            'image': stampData['stampImageUrl'],
+            'location': stampData['location'],
+          });
+        }
+      }
+
+      setState(() {});
+    } catch (e) {
+      print('Error fetching stamp data: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +115,7 @@ class StampPage extends StatelessWidget {
                     top: screenHeight * (167 / 852),
                     left: screenWidth * (157 / 393),
                     child: Text(
-                      '2024.07.05',
+                      '$formattedDate',
                       style: regular15.copyWith(
                         color: Colors.white,
                         fontSize: 15,
@@ -113,80 +162,15 @@ class StampPage extends StatelessWidget {
             child: GridView.count(
               crossAxisCount: 3,
               padding: const EdgeInsets.all(16),
-              children: [
-                StampItem(
-                  name: '무꼬기',
-                  image: 'assets/stamp_fish1.png',
-                  width: screenWidth * (179 / 393),
-                  height: screenHeight * (179 / 852),
-                ),
-                StampItem(
-                  name: '꽃부기',
-                  image: 'assets/stamp_fish2.png',
+              children: stamps.map((stamp) {
+                return StampItem(
+                  name: stamp['name'],
+                  image: stamp['image'],
+                  location: stamp['location'],
                   width: screenWidth * (144 / 393),
                   height: screenHeight * (144 / 852),
-                ),
-                StampItem(
-                  name: '베비샤크',
-                  image: 'assets/stamp_fish3.png',
-                  width: screenWidth * (165 / 393),
-                  height: screenHeight * (165 / 852),
-                ),
-                StampItem(
-                  name: '타꼬',
-                  image: 'assets/stamp_fish4.png',
-                  width: screenWidth * (119 / 393),
-                  height: screenHeight * (119 / 852),
-                ),
-                StampItem(
-                  name: '꾸래미',
-                  image: 'assets/stamp_fish5.png',
-                  width: screenWidth * (164 / 393),
-                  height: screenHeight * (164 / 852),
-                ),
-                StampItem(
-                  name: '젤리꼬기',
-                  image: 'assets/stamp_fish6.png',
-                  width: screenWidth * (126 / 393),
-                  height: screenHeight * (126 / 852),
-                ),
-                StampItem(
-                  name: '',
-                  image: 'assets/stamp_fish6.png',
-                  width: screenWidth * (144 / 393),
-                  height: screenHeight * (144 / 852),
-                ),
-                StampItem(
-                  name: '',
-                  image: 'assets/stamp_fish6.png',
-                  width: screenWidth * (144 / 393),
-                  height: screenHeight * (144 / 852),
-                ),
-                StampItem(
-                  name: '',
-                  image: 'assets/stamp_fish6.png',
-                  width: screenWidth * (144 / 393),
-                  height: screenHeight * (144 / 852),
-                ),
-                StampItem(
-                  name: '',
-                  image: 'assets/stamp_fish6.png',
-                  width: screenWidth * (144 / 393),
-                  height: screenHeight * (144 / 852),
-                ),
-                StampItem(
-                  name: '',
-                  image: 'assets/stamp_fish6.png',
-                  width: screenWidth * (144 / 393),
-                  height: screenHeight * (144 / 852),
-                ),
-                StampItem(
-                  name: '',
-                  image: 'assets/complete.png',
-                  width: screenWidth * (58 / 393),
-                  height: screenHeight * (21 / 852),
-                ),
-              ],
+                );
+              }).toList(),
             ),
           ),
         ],
@@ -198,6 +182,7 @@ class StampPage extends StatelessWidget {
 class StampItem extends StatelessWidget {
   final String name;
   final String image;
+  final String location;
   final double width;
   final double height;
 
@@ -205,6 +190,7 @@ class StampItem extends StatelessWidget {
     super.key,
     required this.name,
     required this.image,
+    required this.location,
     required this.width,
     required this.height,
   });
@@ -238,7 +224,7 @@ class StampItem extends StatelessWidget {
                       borderRadius: BorderRadius.circular(30),
                       color: const Color(0xffEEF4FF),
                     ),
-                    child: Image.asset(
+                    child: Image.network(
                       image,
                       width: width,
                       height: height,
@@ -248,7 +234,7 @@ class StampItem extends StatelessWidget {
                     height: mediaWidth * (30 / 852),
                   ),
                   Text(
-                    '봉래폭포 플로깅 완료',
+                    '$location 플로깅 완료',
                     style: medium16.copyWith(fontSize: mediaWidth * (16 / 393)),
                   ),
                   SizedBox(
@@ -300,7 +286,7 @@ class StampItem extends StatelessWidget {
           CircleAvatar(
             radius: 40,
             backgroundColor: const Color(0xffEEF4FF),
-            child: Image.asset(
+            child: Image.network(
               image,
               width: (width / 393) * mediaWidth,
               height: (height / 852) * mediaHeight,
