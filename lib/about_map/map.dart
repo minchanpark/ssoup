@@ -235,11 +235,53 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
     });
   }
 
+  void _setMapStyle(GoogleMapController controller) async {
+    const String style = '''[
+    {
+      "featureType": "all",
+      "elementType": "labels",
+      "stylers": [
+        { "visibility": "on" }
+      ]
+    },
+    {
+      "featureType": "landscape",
+      "elementType": "geometry",
+      "stylers": [
+        { "color": "#ffffff" }
+      ]
+    },
+    {
+      "featureType": "water",
+      "elementType": "geometry",
+      "stylers": [
+        { "color": "#C6EBFE" }
+      ]
+    },
+    {
+      "featureType": "road",
+      "elementType": "geometry",
+      "stylers": [
+        { "visibility": "simplified" },
+        { "color": "#cccccc" }
+      ]
+    },
+    {
+      "featureType": "poi",
+      "elementType": "geometry",
+      "stylers": [
+        { "color": "#ffffff" }
+      ]
+    }
+  ]''';
+    controller.setMapStyle(style);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Google Map Page'),
+        backgroundColor: Colors.white,
       ),
       body: GoogleMap(
         initialCameraPosition: CameraPosition(
@@ -249,6 +291,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
         markers: _markers,
         onMapCreated: (GoogleMapController controller) {
           _mapController = controller;
+          _setMapStyle(controller);
         },
         myLocationEnabled: true,
         myLocationButtonEnabled: true,
