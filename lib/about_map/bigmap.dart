@@ -26,12 +26,6 @@ class _BigMapPageState extends State<BigMapPage> {
   final Set<Marker> _trashMarkers = {};
   final Set<Polyline> _polylines = {};
   StreamSubscription<Position>? _positionStreamSubscription;
-  final List<LatLng> _trashLocation = [
-    const LatLng(37.48647482397748, 130.9019350618274),
-    const LatLng(37.45936612018906, 130.87541532279513),
-    const LatLng(37.47034039061454, 130.88337429094736),
-    const LatLng(37.48250373184974, 130.90788817561878),
-  ];
   final LatLng _startLocation =
       const LatLng(37.47423184776412, 130.89445743384988);
 
@@ -40,9 +34,9 @@ class _BigMapPageState extends State<BigMapPage> {
   @override
   void initState() {
     super.initState();
-    _fetchLocationsFromFirestore();
+    _getLocationsFromFB();
     _addStartLocationMarker();
-    _addTrashMarkers();
+    _getTrashLocationsFromFB();
     _updateCurrentLocationMarker();
     _currentMarkers.addAll(_touristMarkers);
   }
@@ -65,7 +59,7 @@ class _BigMapPageState extends State<BigMapPage> {
     _allMarkers.add(currentLocationMarker);
   }
 
-  Future<void> _fetchLocationsFromFirestore() async {
+  Future<void> _getLocationsFromFB() async {
     final QuerySnapshot snapshot =
         await FirebaseFirestore.instance.collection('locationMap').get();
 
@@ -103,11 +97,18 @@ class _BigMapPageState extends State<BigMapPage> {
     _allMarkers.add(startLocationMarker);
   }
 
-  void _addTrashMarkers() {
+  Future<void> _getTrashLocationsFromFB() async {
+    final QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection('trashMap').get();
+
     setState(() {
-      for (var location in _trashLocation) {
+      for (var doc in snapshot.docs) {
+        final data = doc.data() as Map<String, dynamic>;
+        final LatLng location =
+            LatLng(data['location'][0], data['location'][1]);
+
         final Marker trashMarker = Marker(
-          markerId: MarkerId(location.toString()),
+          markerId: MarkerId(doc.id),
           position: location,
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
           infoWindow: const InfoWindow(title: 'Trash Bin'),
