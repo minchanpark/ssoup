@@ -26,19 +26,21 @@ class _BigMapPageState extends State<BigMapPage> {
   final Set<Marker> _trashMarkers = {};
   final Set<Polyline> _polylines = {};
   StreamSubscription<Position>? _positionStreamSubscription;
-  final LatLng _startLocation =
-      const LatLng(37.47423184776412, 130.89445743384988);
+  LatLng? _currentLocation;
 
   String _selectedFilter = 'all';
 
   @override
   void initState() {
     super.initState();
-    _getLocationsFromFB();
-    _addStartLocationMarker();
-    _getTrashLocationsFromFB();
-    _updateCurrentLocationMarker();
-    _currentMarkers.addAll(_touristMarkers);
+    _determinePosition().then((position) {
+      setState(() {
+        _currentLocation = LatLng(position.latitude, position.longitude);
+        _addCurrentLocationMarker();
+        _getLocationsFromFB();
+        _getTrashLocationsFromFB();
+      });
+    });
   }
 
   @override
@@ -48,10 +50,37 @@ class _BigMapPageState extends State<BigMapPage> {
     super.dispose();
   }
 
-  void _updateCurrentLocationMarker() {
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    return await Geolocator.getCurrentPosition();
+  }
+
+  void _addCurrentLocationMarker() {
+    if (_currentLocation == null) return;
+
     final Marker currentLocationMarker = Marker(
-      markerId: const MarkerId('cL'),
-      position: _ulleungDo,
+      markerId: const MarkerId('currentLocation'),
+      position: _currentLocation!,
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
       infoWindow: const InfoWindow(title: 'Current Location'),
     );
@@ -63,9 +92,13 @@ class _BigMapPageState extends State<BigMapPage> {
     final QuerySnapshot snapshot =
         await FirebaseFirestore.instance.collection('locationMap').get();
 
+    print("Number of documents: ${snapshot.docs.length}");
+
     setState(() {
       for (var doc in snapshot.docs) {
         final data = doc.data() as Map<String, dynamic>;
+        print("Data: $data");
+
         final LatLng location =
             LatLng(data['location'][0], data['location'][1]);
         final String name = data['locationName'];
@@ -84,17 +117,6 @@ class _BigMapPageState extends State<BigMapPage> {
       }
       _currentMarkers.addAll(_touristMarkers);
     });
-  }
-
-  void _addStartLocationMarker() {
-    final Marker startLocationMarker = Marker(
-      markerId: const MarkerId('startLocation'),
-      position: _startLocation,
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-      infoWindow: const InfoWindow(title: 'Start Location'),
-    );
-    _touristMarkers.add(startLocationMarker);
-    _allMarkers.add(startLocationMarker);
   }
 
   Future<void> _getTrashLocationsFromFB() async {
@@ -124,8 +146,10 @@ class _BigMapPageState extends State<BigMapPage> {
   }
 
   Future<void> _getNaverRoute(LatLng destination) async {
+    if (_currentLocation == null) return;
+
     final String url =
-        'https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${_startLocation.longitude},${_startLocation.latitude}&goal=${destination.longitude},${destination.latitude}&option=trafast';
+        'https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${_currentLocation!.longitude},${_currentLocation!.latitude}&goal=${destination.longitude},${destination.latitude}&option=trafast';
 
     final response = await http.get(
       Uri.parse(url),
@@ -147,8 +171,8 @@ class _BigMapPageState extends State<BigMapPage> {
         final points = routes[0]['path'];
         _setPolylineFromNaverPoints(points);
         _calculateDistance(
-          _startLocation.latitude,
-          _startLocation.longitude,
+          _currentLocation!.latitude,
+          _currentLocation!.longitude,
           destination.latitude,
           destination.longitude,
         );
@@ -285,7 +309,7 @@ class _BigMapPageState extends State<BigMapPage> {
           Container(
             color: const Color(0xffC6EBFE),
             child: Padding(
-              padding: EdgeInsets.only(top: 20),
+              padding: const EdgeInsets.only(top: 20),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
@@ -294,7 +318,8 @@ class _BigMapPageState extends State<BigMapPage> {
                       '전체지도',
                       style: regular15,
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
                     selected: _selectedFilter == 'all',
                     onSelected: (bool selected) {
                       _filterMarkers('all');
@@ -303,12 +328,13 @@ class _BigMapPageState extends State<BigMapPage> {
                     backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
-                        side: BorderSide(color: Color(0xffC6EBFE))),
+                        side: const BorderSide(color: Color(0xffC6EBFE))),
                     showCheckmark: false,
                   ),
                   ChoiceChip(
                     label: const Text('관광지', style: regular15),
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
                     selected: _selectedFilter == 'tourist',
                     onSelected: (bool selected) {
                       _filterMarkers('tourist');
@@ -317,12 +343,13 @@ class _BigMapPageState extends State<BigMapPage> {
                     backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
-                        side: BorderSide(color: Color(0xffC6EBFE))),
+                        side: const BorderSide(color: Color(0xffC6EBFE))),
                     showCheckmark: false,
                   ),
                   ChoiceChip(
                     label: const Text('쓰레기통', style: regular15),
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
                     selected: _selectedFilter == 'trash',
                     onSelected: (bool selected) {
                       _filterMarkers('trash');
@@ -331,7 +358,7 @@ class _BigMapPageState extends State<BigMapPage> {
                     backgroundColor: Colors.white,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
-                        side: BorderSide(color: Color(0xffC6EBFE))),
+                        side: const BorderSide(color: Color(0xffC6EBFE))),
                     showCheckmark: false,
                   ),
                 ],

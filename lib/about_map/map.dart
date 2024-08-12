@@ -1,10 +1,12 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math' show cos, sqrt, asin;
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:ssoup/constants.dart';
 
@@ -91,47 +93,84 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
         );
 
         if (distance <= 30) {
-          _showArrivalPopup(context);
+          _showArrivalPopup(context, _destinationLocation);
         }
       });
     });
   }
 
-  Future<Map<String, dynamic>> _fetchNotificationData() async {
+  Future<Map<String, dynamic>?> _fetchStampData(String stampUid) async {
     DocumentSnapshot snapshot = await FirebaseFirestore.instance
         .collection('stamp')
-        .doc('Tu1FQ3Q9hwZeCtGe67xQ')
+        .doc(stampUid)
         .get();
-    return snapshot.data() as Map<String, dynamic>;
+    return snapshot.data() as Map<String, dynamic>?;
   }
 
-  void _showArrivalPopup(BuildContext context) async {
-    Map<String, dynamic> stampDetail = await _fetchNotificationData();
+  Future<void> _showArrivalPopup(
+      BuildContext context, LatLng _destinationLocation) async {
+    double destinationLatitude = _destinationLocation.latitude;
+    double destinationLongitude = _destinationLocation.longitude;
 
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text(stampDetail['stampName']),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Image.network(stampDetail['stampImageUrl']),
-              Text(stampDetail['location']),
-              Text(stampDetail['km']),
-            ],
-          ),
-          actions: <Widget>[
-            TextButton(
-              child: Text('확인'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
+    // locationMap에서 목적지 좌표와 일치하는 문서가 있는지 확인
+    QuerySnapshot locationSnapshot = await FirebaseFirestore.instance
+        .collection('locationMap')
+        .where('location',
+            isEqualTo: [destinationLatitude, destinationLongitude]).get();
+
+    if (locationSnapshot.docs.isNotEmpty) {
+      // 일치하는 첫 번째 문서 가져오기
+      var locationDoc = locationSnapshot.docs.first;
+      String stampUid = locationDoc['stampUid'];
+
+      // 스탬프 데이터 가져오기
+      Map<String, dynamic>? stampDetail = await _fetchStampData(stampUid);
+
+      if (stampDetail != null) {
+        // 현재 사용자의 docId를 가져옵니다. 여기서는 user 컬렉션의 docId가 현재 사용자의 ID라고 가정합니다.
+        String userDocId = FirebaseAuth.instance.currentUser?.uid ?? "";
+        ; // 현재 사용자의 docId로 변경해야 합니다.
+
+        // user 컬렉션에서 해당 문서에 stampUid 추가
+        await FirebaseFirestore.instance
+            .collection('user')
+            .doc(userDocId)
+            .update({
+          'stampId': FieldValue.arrayUnion([stampUid]),
+        }).catchError((error) {
+          print("Failed to update stampId: $error");
+        });
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(stampDetail['stampName']),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Image.network(stampDetail['stampImageUrl']),
+                  Text(stampDetail['location']),
+                ],
+              ),
+              actions: <Widget>[
+                TextButton(
+                  child: Text('확인'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                ),
+              ],
+            );
+          },
         );
-      },
-    );
+      } else {
+        print("stampUid: $stampUid에 대한 스탬프 정보를 찾을 수 없습니다.");
+      }
+    } else {
+      print(
+          "좌표에 대한 위치를 찾을 수 없습니다: $destinationLatitude, $destinationLongitude");
+    }
   }
 
   double _calculateDistance(
