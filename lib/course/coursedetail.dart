@@ -144,32 +144,36 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
           Image.asset('assets/imsi.png'),
           SizedBox(height: screenHeight * 0.035),
           Center(
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => GoogleMapPage(
-                      startLocation: widget.courseStartLocation,
-                      endLocation: widget.courseEndLocation,
-                      location1: widget.courseLocation1,
-                      location2: widget.courseLocation2,
+            child: SizedBox(
+              width: 350,
+              height: 65,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => GoogleMapPage(
+                        startLocation: widget.courseStartLocation,
+                        endLocation: widget.courseEndLocation,
+                        location1: widget.courseLocation1,
+                        location2: widget.courseLocation2,
+                      ),
                     ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  side: const BorderSide(
+                    color: Color(0xff4468AD),
                   ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                side: const BorderSide(
-                  color: Color(0xff4468AD),
                 ),
-              ),
-              child: const Text(
-                '코스 안내받기',
-                style: extrabold20,
+                child: const Text(
+                  '코스 안내받기',
+                  style: extrabold20,
+                ),
               ),
             ),
           ),
