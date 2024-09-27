@@ -4,11 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
-import 'package:flutter_naver_login/flutter_naver_login.dart';
-import 'package:ssoup/home.dart';
-import 'package:ssoup/theme/text.dart';
-
-import 'nickName.dart';
+import 'package:ssoup/home_navigationbar.dart';
+import 'home.dart';
+import 'nick_name.dart';
+import 'theme/text.dart';
 
 Future<void> addUserToFirestore(
     firebase_auth.User user, String email, String name) async {
@@ -121,55 +120,11 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool _isLoading = false;
-  String? accesToken;
-  String? tokenType;
 
   void _showLoading(bool show) {
     setState(() {
       _isLoading = show;
     });
-  }
-
-  Future<firebase_auth.UserCredential> signInWithNaver() async {
-    try {
-      final NaverLoginResult result = await FlutterNaverLogin.logIn();
-      NaverAccessToken res = await FlutterNaverLogin.currentAccessToken;
-      setState(() {
-        accesToken = res.accessToken;
-        tokenType = res.tokenType;
-      });
-
-      if (result.status == NaverLoginStatus.loggedIn) {
-        final String accessToken = res.accessToken;
-        final String email = result.account.email;
-        final String name = result.account.name;
-
-        final credential =
-            firebase_auth.OAuthProvider("oidc.naver.com").credential(
-          accessToken: accessToken,
-        );
-
-        final userCredential = await firebase_auth.FirebaseAuth.instance
-            .signInWithCredential(credential);
-        final firebase_auth.User user = userCredential.user!;
-
-        print('Firebase user authenticated: ${user.uid}');
-        await addUserToFirestore(user, email, name);
-
-        return userCredential;
-      } else {
-        throw firebase_auth.FirebaseAuthException(
-          code: 'ERROR_NAVER_LOGIN_FAILED',
-          message: 'Failed to login with Naver',
-        );
-      }
-    } catch (error) {
-      print("Naver login failed: $error");
-      throw firebase_auth.FirebaseAuthException(
-        code: 'ERROR_NAVER_LOGIN_FAILED',
-        message: 'Failed to login with Naver: $error',
-      );
-    }
   }
 
   Future<void> _signInWithGoogle() async {
@@ -182,7 +137,8 @@ class _LoginPageState extends State<LoginPage> {
       if (hasNickname) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          MaterialPageRoute(
+              builder: (context) => const HomePageNavigationBar()),
         );
       } else {
         Navigator.pushReplacement(
@@ -210,7 +166,8 @@ class _LoginPageState extends State<LoginPage> {
       if (hasNickname) {
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          MaterialPageRoute(
+              builder: (context) => const HomePageNavigationBar()),
         );
       } else {
         Navigator.pushReplacement(
@@ -220,34 +177,6 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       print('Kakao login error: $e');
-    } finally {
-      _showLoading(false);
-    }
-  }
-
-  Future<void> _signInWithNaver() async {
-    _showLoading(true);
-    try {
-      final userCredential = await signInWithNaver();
-      final user = userCredential.user!;
-      final hasNickname = await checkNickname(user);
-
-      if (hasNickname) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const NickNamePage()),
-        );
-      }
-    } catch (e) {
-      print('Naver login error: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Naver login failed: $e')),
-      );
     } finally {
       _showLoading(false);
     }
@@ -266,7 +195,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: homeMix,
         ),
         child: Stack(
@@ -293,26 +222,26 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: _isLoading ? null : _signInWithGoogle,
                     child: Row(
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           width: 7,
                         ),
                         Image.asset(
                           'assets/google.png',
                           width: 25,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 60,
                         ),
                         Text('구글 계정으로 시작하기',
-                            style:
-                                regular15.copyWith(color: Color(0xff635546))),
+                            style: regular15.copyWith(
+                                color: const Color(0xff635546))),
                       ],
                     ),
                   ),
                   const SizedBox(height: 20.0),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xffFAE200),
+                      backgroundColor: const Color(0xffFAE200),
                       elevation: 0,
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
@@ -326,40 +255,12 @@ class _LoginPageState extends State<LoginPage> {
                           'assets/kakao.png',
                           height: 23,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 53,
                         ),
                         Text('카카오 계정으로 시작하기',
-                            style:
-                                regular15.copyWith(color: Color(0xff635546))),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 20.0),
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Color(0xff00B818),
-                      elevation: 0,
-                      minimumSize: const Size(double.infinity, 50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                    ),
-                    onPressed: _isLoading ? null : _signInWithNaver,
-                    child: Row(
-                      children: [
-                        SizedBox(
-                          width: 7,
-                        ),
-                        Image.asset(
-                          'assets/naver.png',
-                          width: 35,
-                        ),
-                        SizedBox(
-                          width: 53,
-                        ),
-                        Text('네이버 계정으로 시작하기',
-                            style: regular15.copyWith(color: Colors.white)),
+                            style: regular15.copyWith(
+                                color: const Color(0xff635546))),
                       ],
                     ),
                   ),

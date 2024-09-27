@@ -18,48 +18,32 @@ class BigMapPage extends StatefulWidget {
 }
 
 class _BigMapPageState extends State<BigMapPage> {
-  GoogleMapController? _mapController;
   final LatLng _ulleungDo = const LatLng(37.49893355978079, 130.86866855621338);
-  final Set<Marker> _allMarkers = {};
   final Set<Marker> _currentMarkers = {};
   final Set<Marker> _touristMarkers = {};
   final Set<Marker> _trashMarkers = {};
   final Set<Polyline> _polylines = {};
-  StreamSubscription<Position>? _positionStreamSubscription;
   LatLng? _currentLocation;
-
   String _selectedFilter = 'all';
 
   @override
   void initState() {
     super.initState();
+    _getLocationsFromFB();
+    _getTrashLocationsFromFB();
     _determinePosition().then((position) {
       setState(() {
         _currentLocation = LatLng(position.latitude, position.longitude);
         _addCurrentLocationMarker();
-        _getLocationsFromFB();
-        _getTrashLocationsFromFB();
       });
     });
   }
 
-  @override
-  void dispose() {
-    _mapController?.dispose();
-    _positionStreamSubscription?.cancel();
-    super.dispose();
-  }
-
   Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return Future.error('Location services are disabled.');
 
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
+    LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
@@ -84,71 +68,62 @@ class _BigMapPageState extends State<BigMapPage> {
       icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
       infoWindow: const InfoWindow(title: 'Current Location'),
     );
-    _currentMarkers.add(currentLocationMarker);
-    _allMarkers.add(currentLocationMarker);
+    setState(() {
+      _currentMarkers.add(currentLocationMarker);
+    });
   }
 
   Future<void> _getLocationsFromFB() async {
-    final QuerySnapshot snapshot =
+    final snapshot =
         await FirebaseFirestore.instance.collection('locationMap').get();
+    for (var doc in snapshot.docs) {
+      final data = doc.data() as Map<String, dynamic>;
+      final LatLng location = LatLng(data['location'][0], data['location'][1]);
+      final String name = data['locationName'];
+      final String information = data['information'];
 
-    print("Number of documents: ${snapshot.docs.length}");
-
-    setState(() {
-      for (var doc in snapshot.docs) {
-        final data = doc.data() as Map<String, dynamic>;
-        print("Data: $data");
-
-        final LatLng location =
-            LatLng(data['location'][0], data['location'][1]);
-        final String name = data['locationName'];
-        final String information = data['information'];
-
-        final Marker touristMarker = Marker(
-          markerId: MarkerId(doc.id),
-          position: location,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-          onTap: () {
-            _showMarkerInfoDialog(name, information);
-          },
-        );
+      final Marker touristMarker = Marker(
+        markerId: MarkerId(doc.id),
+        position: location,
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+        onTap: () {
+          _showMarkerInfoDialog(name, information);
+        },
+      );
+      setState(() {
         _touristMarkers.add(touristMarker);
-        _allMarkers.add(touristMarker);
-      }
-      _currentMarkers.addAll(_touristMarkers);
-    });
+        _currentMarkers.add(touristMarker);
+      });
+    }
   }
 
   Future<void> _getTrashLocationsFromFB() async {
-    final QuerySnapshot snapshot =
+    final snapshot =
         await FirebaseFirestore.instance.collection('trashMap').get();
+    for (var doc in snapshot.docs) {
+      final data = doc.data() as Map<String, dynamic>;
+      final LatLng location = LatLng(data['location'][0], data['location'][1]);
 
-    setState(() {
-      for (var doc in snapshot.docs) {
-        final data = doc.data() as Map<String, dynamic>;
-        final LatLng location =
-            LatLng(data['location'][0], data['location'][1]);
-
-        final Marker trashMarker = Marker(
-          markerId: MarkerId(doc.id),
-          position: location,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-          infoWindow: const InfoWindow(title: 'Trash Bin'),
-          onTap: () {
-            _getNaverRoute(location);
-          },
-        );
+      final Marker trashMarker = Marker(
+        markerId: MarkerId(doc.id),
+        position: location,
+        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
+        infoWindow: const InfoWindow(title: 'Trash Bin'),
+        onTap: () {
+          _getNaverRoute(location);
+        },
+      );
+      setState(() {
         _trashMarkers.add(trashMarker);
-        _allMarkers.add(trashMarker);
-      }
-      _currentMarkers.addAll(_trashMarkers);
-    });
+        _currentMarkers.add(trashMarker);
+      });
+    }
   }
 
   Future<void> _getNaverRoute(LatLng destination) async {
     if (_currentLocation == null) return;
 
-    final String url =
+    final url =
         'https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${_currentLocation!.longitude},${_currentLocation!.latitude}&goal=${destination.longitude},${destination.latitude}&option=trafast';
 
     final response = await http.get(
@@ -161,11 +136,8 @@ class _BigMapPageState extends State<BigMapPage> {
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);
-      print('Response Data: $data');
-
-      final List<dynamic>? routes = data['route'] != null
-          ? data['route']['trafast'] ?? data['route']['traoptimal']
-          : null;
+      final List<dynamic>? routes =
+          data['route']?['trafast'] ?? data['route']?['traoptimal'];
 
       if (routes != null && routes.isNotEmpty) {
         final points = routes[0]['path'];
@@ -181,16 +153,14 @@ class _BigMapPageState extends State<BigMapPage> {
       }
     } else {
       print('Failed to load directions: ${response.statusCode}');
-      print('Error Response: ${response.body}');
     }
   }
 
   void _setPolylineFromNaverPoints(List points) {
-    final List<LatLng> polylineCoordinates = points.map<LatLng>((point) {
+    final polylineCoordinates = points.map<LatLng>((point) {
       return LatLng(point[1], point[0]);
     }).toList();
 
-    if (!mounted) return;
     setState(() {
       _polylines.clear();
       _polylines.add(
@@ -237,7 +207,7 @@ class _BigMapPageState extends State<BigMapPage> {
   }
 
   void _setMapStyle(GoogleMapController controller) async {
-    const String style = '''[
+    const style = '''[
     {
       "featureType": "all",
       "elementType": "labels",
@@ -314,52 +284,34 @@ class _BigMapPageState extends State<BigMapPage> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   ChoiceChip(
-                    label: const Text(
-                      '전체지도',
-                      style: regular15,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
+                    label: const Text('전체지도', style: regular15),
                     selected: _selectedFilter == 'all',
                     onSelected: (bool selected) {
                       _filterMarkers('all');
                     },
                     selectedColor: AppColor.primary,
                     backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        side: const BorderSide(color: Color(0xffC6EBFE))),
-                    showCheckmark: false,
+                    shape: _chipShape(),
                   ),
                   ChoiceChip(
                     label: const Text('관광지', style: regular15),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
                     selected: _selectedFilter == 'tourist',
                     onSelected: (bool selected) {
                       _filterMarkers('tourist');
                     },
                     selectedColor: AppColor.primary,
                     backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        side: const BorderSide(color: Color(0xffC6EBFE))),
-                    showCheckmark: false,
+                    shape: _chipShape(),
                   ),
                   ChoiceChip(
                     label: const Text('쓰레기통', style: regular15),
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 16, vertical: 12),
                     selected: _selectedFilter == 'trash',
                     onSelected: (bool selected) {
                       _filterMarkers('trash');
                     },
                     selectedColor: AppColor.primary,
                     backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                        side: const BorderSide(color: Color(0xffC6EBFE))),
-                    showCheckmark: false,
+                    shape: _chipShape(),
                   ),
                 ],
               ),
@@ -373,7 +325,6 @@ class _BigMapPageState extends State<BigMapPage> {
               ),
               markers: _currentMarkers,
               onMapCreated: (GoogleMapController controller) {
-                _mapController = controller;
                 _setMapStyle(controller);
               },
               myLocationEnabled: true,
@@ -383,6 +334,13 @@ class _BigMapPageState extends State<BigMapPage> {
           ),
         ],
       ),
+    );
+  }
+
+  RoundedRectangleBorder _chipShape() {
+    return RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(30),
+      side: const BorderSide(color: Color(0xffC6EBFE)),
     );
   }
 }

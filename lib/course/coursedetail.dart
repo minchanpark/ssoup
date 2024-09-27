@@ -11,6 +11,8 @@ class CourseDetailPage extends StatefulWidget {
   final List courseEndLocation;
   final String courseDuration;
   final String courseLocationName;
+  final List courseLocation1;
+  final List courseLocation2;
 
   const CourseDetailPage({
     required this.courseId,
@@ -20,6 +22,8 @@ class CourseDetailPage extends StatefulWidget {
     required this.courseEndLocation,
     required this.courseDuration,
     required this.courseLocationName,
+    required this.courseLocation1,
+    required this.courseLocation2,
     super.key,
   });
 
@@ -28,11 +32,6 @@ class CourseDetailPage extends StatefulWidget {
 }
 
 class _CourseDetailPageState extends State<CourseDetailPage> {
-  @override
-  void initState() {
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -61,8 +60,8 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                     ),
                   ),
                   Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: screenWidth * (8.0 / 393)),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: screenWidth * 0.02),
                     child: const TabBar(
                       indicatorSize: TabBarIndicatorSize.tab,
                       indicatorColor: Colors.black,
@@ -73,82 +72,12 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                       ],
                     ),
                   ),
-                  SizedBox(height: screenHeight * (10 / 852)),
+                  SizedBox(height: screenHeight * 0.012),
                   SizedBox(
                     height: MediaQuery.of(context).size.height - 200,
                     child: TabBarView(
                       children: [
-                        SingleChildScrollView(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(20),
-                                child: Text(
-                                  '출발위치: ${widget.courseLocationName}',
-                                  style: regular15,
-                                ),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    left: screenWidth * (20 / 393)),
-                                child: Text(widget.courseDuration,
-                                    style: regular15),
-                              ),
-                              Padding(
-                                padding: EdgeInsets.only(
-                                  left: screenWidth * (20 / 393),
-                                  top: screenHeight * (16 / 852),
-                                  right: screenWidth * (16 / 393),
-                                ),
-                                child: const Text(
-                                  '코스 경로: 울릉도 선착장 → 봉래폭포→ 내수일출전망대 → 석포일출일몰전망대',
-                                  style: regular15,
-                                ),
-                              ),
-                              SizedBox(height: screenHeight * (30 / 852)),
-                              SizedBox(height: screenHeight * (30 / 852)),
-                              Image.asset('assets/imsi.png'),
-                              SizedBox(height: screenHeight * (30 / 852)),
-                              Center(
-                                child: SizedBox(
-                                  width: 350,
-                                  height: 65,
-                                  child: ElevatedButton(
-                                    onPressed: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => GoogleMapPage(
-                                            startLocation:
-                                                widget.courseStartLocation,
-                                            endLocation:
-                                                widget.courseEndLocation,
-                                          ),
-                                        ),
-                                      );
-                                    },
-                                    style: ElevatedButton.styleFrom(
-                                      elevation: 0,
-                                      backgroundColor: Colors.white,
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(12)),
-                                      side: const BorderSide(
-                                        color: Color(0xff4468AD),
-                                      ),
-                                    ),
-                                    child: const Text(
-                                      '코스 안내받기',
-                                      style: extrabold20,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: screenHeight * (70 / 852)),
-                            ],
-                          ),
-                        ),
+                        _buildCourseInfo(screenWidth, screenHeight),
                         CourseReviewPage(
                           courseId: widget.courseId,
                           courseDuration: widget.courseDuration,
@@ -164,24 +93,88 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                 ],
               ),
               Positioned(
-                  top: screenHeight * (54 / 852),
-                  left: screenWidth * (5 / 393),
-                  child: SizedBox(
-                    width: screenWidth * (56 / 393),
-                    height: screenHeight * (54 / 852),
-                    child: IconButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        icon: const Icon(
-                          Icons.arrow_back_ios,
-                          color: Color(0xffffffff),
-                          size: 30,
-                        )),
-                  ))
+                top: screenHeight * 0.063,
+                left: screenWidth * 0.013,
+                child: IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(
+                    Icons.arrow_back_ios,
+                    color: Colors.white,
+                    size: 30,
+                  ),
+                ),
+              )
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  // 코스 정보 섹션 빌드
+  Widget _buildCourseInfo(double screenWidth, double screenHeight) {
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Text(
+              '출발위치: ${widget.courseLocationName}',
+              style: regular15,
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.only(left: screenWidth * 0.05),
+            child: Text(widget.courseDuration, style: regular15),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: screenWidth * 0.04,
+              vertical: screenHeight * 0.02,
+            ),
+            child: const Text(
+              '코스 경로: 울릉도 선착장 → 봉래폭포 → 내수일출전망대 → 석포일출일몰전망대',
+              style: regular15,
+            ),
+          ),
+          SizedBox(height: screenHeight * 0.035),
+          Image.asset('assets/imsi.png'),
+          SizedBox(height: screenHeight * 0.035),
+          Center(
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GoogleMapPage(
+                      startLocation: widget.courseStartLocation,
+                      endLocation: widget.courseEndLocation,
+                      location1: widget.courseLocation1,
+                      location2: widget.courseLocation2,
+                    ),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                elevation: 0,
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                side: const BorderSide(
+                  color: Color(0xff4468AD),
+                ),
+              ),
+              child: const Text(
+                '코스 안내받기',
+                style: extrabold20,
+              ),
+            ),
+          ),
+          SizedBox(height: screenHeight * 0.082),
+        ],
       ),
     );
   }

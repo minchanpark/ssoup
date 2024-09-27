@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'theme/color.dart';
 import 'theme/text.dart';
 
@@ -14,9 +13,7 @@ class StampPage extends StatefulWidget {
 }
 
 class _StampPageState extends State<StampPage> {
-  final now = DateTime.now();
-  String formattedDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
-
+  final String formattedDate = DateFormat('yyyy.MM.dd').format(DateTime.now());
   List<Map<String, dynamic>> stamps = [];
   String nickName = "";
 
@@ -29,12 +26,10 @@ class _StampPageState extends State<StampPage> {
   Future<void> fetchStampData() async {
     try {
       String uid = FirebaseAuth.instance.currentUser!.uid;
-
       DocumentSnapshot userDoc =
           await FirebaseFirestore.instance.collection('user').doc(uid).get();
 
       nickName = userDoc['nickName'];
-
       List<dynamic> stampIds = userDoc['stampId'];
 
       for (String stampId in stampIds) {
@@ -81,21 +76,6 @@ class _StampPageState extends State<StampPage> {
               child: Stack(
                 children: [
                   Positioned(
-                    top: screenHeight * (62 / 852),
-                    child: SizedBox(
-                      width: 73,
-                      height: 68,
-                      child: IconButton(
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          icon: const Icon(
-                            Icons.arrow_back_ios,
-                            color: Color(0xffffffff),
-                          )),
-                    ),
-                  ),
-                  Positioned(
                     top: screenHeight * (54 / 852),
                     left: screenWidth * (159 / 393),
                     child: Image.asset(
@@ -119,7 +99,7 @@ class _StampPageState extends State<StampPage> {
                     top: screenHeight * (167 / 852),
                     left: screenWidth * (157 / 393),
                     child: Text(
-                      '$formattedDate',
+                      formattedDate,
                       style: regular15.copyWith(
                         color: Colors.white,
                         fontSize: 15,
@@ -136,16 +116,17 @@ class _StampPageState extends State<StampPage> {
                           width: 193,
                         ),
                         Positioned(
-                            top: screenHeight * (14 / 852),
-                            left: screenWidth * (13 / 393),
-                            child: Text(
-                              '플로깅 인증하고 스탬프를 모아\n제 친구들을 구해주세요!',
-                              textAlign: TextAlign.center,
-                              style: regular13.copyWith(
-                                height: 1.38,
-                                letterSpacing: -0.32,
-                              ),
-                            )),
+                          top: screenHeight * (14 / 852),
+                          left: screenWidth * (13 / 393),
+                          child: Text(
+                            '플로깅 인증하고 스탬프를 모아\n제 친구들을 구해주세요!',
+                            textAlign: TextAlign.center,
+                            style: regular13.copyWith(
+                              height: 1.38,
+                              letterSpacing: -0.32,
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -211,13 +192,14 @@ class StampItem extends StatelessWidget {
             return AlertDialog(
               backgroundColor: Colors.white,
               title: Center(
-                  child: Text(
-                '$name 스탬프',
-                style: extrabold24.copyWith(
-                  color: const Color(0xff1E528E),
-                  fontSize: mediaWidth * (24 / 393),
+                child: Text(
+                  '$name 스탬프',
+                  style: extrabold24.copyWith(
+                    color: const Color(0xff1E528E),
+                    fontSize: mediaWidth * (24 / 393),
+                  ),
                 ),
-              )),
+              ),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
@@ -234,23 +216,17 @@ class StampItem extends StatelessWidget {
                       height: height,
                     ),
                   ),
-                  SizedBox(
-                    height: mediaWidth * (30 / 852),
-                  ),
+                  SizedBox(height: mediaWidth * (30 / 852)),
                   Text(
                     '$location 플로깅 완료',
                     style: medium16.copyWith(fontSize: mediaWidth * (16 / 393)),
                   ),
-                  SizedBox(
-                    height: mediaWidth * (30 / 852),
-                  ),
+                  SizedBox(height: mediaWidth * (30 / 852)),
                   Text(
                     '일시: 2024.06.27 / 14:27 \n거리: 1.5km',
                     style: medium15.copyWith(fontSize: mediaWidth * (15 / 393)),
                   ),
-                  SizedBox(
-                    height: mediaWidth * (30 / 852),
-                  ),
+                  SizedBox(height: mediaWidth * (30 / 852)),
                   Container(
                     width: mediaWidth * (280 / 393),
                     height: mediaHeight * (40 / 852),
@@ -260,12 +236,13 @@ class StampItem extends StatelessWidget {
                       borderRadius: BorderRadius.circular(26),
                     ),
                     child: Center(
-                        child: Text(
-                      '10마리의 해양생물이 고마워하고 있어요!',
-                      style:
-                          medium13.copyWith(fontSize: mediaWidth * (13 / 393)),
-                    )),
-                  )
+                      child: Text(
+                        '10마리의 해양생물이 고마워하고 있어요!',
+                        style: medium13.copyWith(
+                            fontSize: mediaWidth * (13 / 393)),
+                      ),
+                    ),
+                  ),
                 ],
               ),
               actions: [
@@ -292,8 +269,8 @@ class StampItem extends StatelessWidget {
             backgroundColor: const Color(0xffEEF4FF),
             child: Image.network(
               image,
-              width: (width / 393) * mediaWidth,
-              height: (height / 852) * mediaHeight,
+              width: width,
+              height: height,
             ),
           ),
           const SizedBox(height: 8),

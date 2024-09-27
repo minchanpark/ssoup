@@ -11,8 +11,8 @@ class NickNamePage extends StatefulWidget {
 }
 
 class _NickNamePageState extends State<NickNamePage> {
-  TextEditingController nickNameController = TextEditingController();
-  bool nickName = false;
+  final TextEditingController nickNameController = TextEditingController();
+  bool isNickNameFilled = false;
 
   @override
   void initState() {
@@ -22,30 +22,26 @@ class _NickNamePageState extends State<NickNamePage> {
 
   void _checkNickNameInput() {
     setState(() {
-      nickName = nickNameController.text.isNotEmpty;
+      isNickNameFilled = nickNameController.text.isNotEmpty;
     });
   }
 
   Future<void> addNickNameToFirestore(String nickName) async {
-    final firebase_auth.User? user =
-        firebase_auth.FirebaseAuth.instance.currentUser;
+    final user = firebase_auth.FirebaseAuth.instance.currentUser;
 
     if (user != null) {
-      final CollectionReference users =
-          FirebaseFirestore.instance.collection('user');
-      final DocumentSnapshot snapshot = await users.doc(user.uid).get();
+      final users = FirebaseFirestore.instance.collection('user');
+      final snapshot = await users.doc(user.uid).get();
 
       if (snapshot.exists) {
-        final updatedUserData = {'nickName': nickName};
-        await users.doc(user.uid).update(updatedUserData);
-        print('Nickname updated in Firestore: $updatedUserData');
+        await users.doc(user.uid).update({'nickName': nickName});
+        print('Nickname updated in Firestore: $nickName');
       } else {
-        final newUserData = {
+        await users.doc(user.uid).set({
           'uid': user.uid,
           'nickName': nickName,
-        };
-        await users.doc(user.uid).set(newUserData);
-        print('New user data with nickname added to Firestore: $newUserData');
+        });
+        print('New user data with nickname added to Firestore: $nickName');
       }
     } else {
       print('No user is currently signed in.');
@@ -54,19 +50,17 @@ class _NickNamePageState extends State<NickNamePage> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
-    double screenHeight = MediaQuery.of(context).size.height;
+    final screenWidth = MediaQuery.of(context).size.width;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(
-                left: screenWidth * (25 / 393),
-                top: screenHeight * (110 / 852),
-                bottom: screenHeight * (26 / 852),
-                right: screenWidth * (43.6 / 393),
+              padding: EdgeInsets.symmetric(
+                horizontal: screenWidth * 0.06,
+                vertical: screenHeight * 0.13,
               ),
               child: const Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -79,9 +73,7 @@ class _NickNamePageState extends State<NickNamePage> {
                       color: AppColor.mainText,
                     ),
                   ),
-                  SizedBox(
-                    height: 4,
-                  ),
+                  SizedBox(height: 4),
                   Text(
                     "한번 설정한 닉네임은 수정할 수 없으니 신중하게 설정하세요!",
                     style: TextStyle(
@@ -101,10 +93,7 @@ class _NickNamePageState extends State<NickNamePage> {
                   controller: nickNameController,
                   cursorColor: Colors.blue,
                   textAlign: TextAlign.start,
-                  cursorHeight: 15,
-                  style: const TextStyle(
-                    fontSize: 15.0,
-                  ),
+                  style: const TextStyle(fontSize: 15),
                   decoration: InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5),
@@ -121,24 +110,21 @@ class _NickNamePageState extends State<NickNamePage> {
                 ),
               ),
             ),
-            SizedBox(
-              height: screenHeight * (191.78 / 852),
-            ),
+            SizedBox(height: screenHeight * 0.22),
             Image.asset(
               "assets/nickname_fish.png",
-              width: screenWidth * (127.225 / 393),
-              height: screenHeight * (167.221 / 852),
+              width: screenWidth * 0.32,
+              height: screenHeight * 0.2,
             ),
-            SizedBox(
-              height: screenHeight * (73 / 852),
-            ),
+            SizedBox(height: screenHeight * 0.09),
             Opacity(
-              opacity: nickName ? 1.0 : 0.6,
+              opacity: isNickNameFilled ? 1.0 : 0.6,
               child: ElevatedButton(
-                onPressed: nickName
+                onPressed: isNickNameFilled
                     ? () {
                         addNickNameToFirestore(nickNameController.text);
-                        Navigator.pushNamed(context, '/home_page');
+                        Navigator.pushNamed(
+                            context, '/home_page_navigationBar');
                       }
                     : null,
                 style: ElevatedButton.styleFrom(
@@ -148,30 +134,24 @@ class _NickNamePageState extends State<NickNamePage> {
                     borderRadius: BorderRadius.circular(15),
                   ),
                   fixedSize: Size(
-                    screenWidth * (277 / 393),
-                    screenHeight * (57 / 852),
+                    screenWidth * 0.7,
+                    screenHeight * 0.067,
                   ),
                 ),
-                child: const Center(
-                  child: Text(
-                    "시작하기",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: AppColor.white,
-                      fontSize: 16,
-                      fontFamily: 'SCDream5',
-                      fontWeight: FontWeight.w500,
-                    ),
+                child: const Text(
+                  "시작하기",
+                  style: TextStyle(
+                    color: AppColor.white,
+                    fontSize: 16,
+                    fontFamily: 'SCDream5',
+                    fontWeight: FontWeight.w500,
                   ),
                 ),
               ),
             ),
-            SizedBox(
-              height: screenHeight * (65 / 852),
-            ),
+            SizedBox(height: screenHeight * 0.08),
             const Text(
               "버전 0.1",
-              textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 10,
                 fontWeight: FontWeight.w300,

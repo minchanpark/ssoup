@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'theme/text.dart';
 
-class splashPage extends StatelessWidget {
-  const splashPage({Key? key}) : super(key: key);
+class SplashPage extends StatelessWidget {
+  const SplashPage({super.key});
 
   static const LinearGradient homeMix = LinearGradient(
     colors: [
@@ -20,13 +20,13 @@ class splashPage extends StatelessWidget {
       body: Center(
         child: Container(
           width: double.infinity,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: homeMix,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              Container(
+              SizedBox(
                 width: 234,
                 child: Image.asset('assets/logo.png'),
               ),

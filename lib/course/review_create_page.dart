@@ -53,7 +53,7 @@ class _ReviewCreatePageState extends State<ReviewCreatePage> {
         DocumentSnapshot documentSnapshot =
             await _firestore.collection('user').doc(user.uid).get();
         setState(() {
-          nickname = documentSnapshot['nick_name'];
+          nickname = documentSnapshot['nickName'];
         });
       } catch (e) {
         print("Error fetching nickname: $e");

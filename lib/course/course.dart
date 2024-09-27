@@ -47,6 +47,8 @@ class _CoursePageState extends State<CoursePage> {
               locationName: doc['startLocationName'],
               duration: '소요시간: ${doc['spendTime']}',
               peopleCount: '누적 참여자 수: ${doc['totalVisitor']}명',
+              location1: doc['location1'],
+              location2: doc['location2'],
             );
           }).toList();
 
@@ -54,6 +56,8 @@ class _CoursePageState extends State<CoursePage> {
             itemCount: courses.length,
             itemBuilder: (context, index) {
               final course = courses[index];
+              print(course.location1);
+              print(course.location2);
               return Column(
                 children: [
                   SizedBox(height: screenHeight * (10 / 852)),
@@ -70,6 +74,8 @@ class _CoursePageState extends State<CoursePage> {
                             courseStartLocation: course.startLocation,
                             courseEndLocation: course.endLocation,
                             courseDuration: course.duration,
+                            courseLocation1: course.location1,
+                            courseLocation2: course.location2,
                           ),
                         ),
                       );
@@ -160,8 +166,12 @@ class Course {
   final String locationName;
   final String duration;
   final String peopleCount;
+  final List location1;
+  final List location2;
 
   Course({
+    required this.location1,
+    required this.location2,
     required this.id, // 코스 ID 추가
     required this.image,
     required this.title,
