@@ -4,8 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
-import 'package:ssoup/home_navigationbar.dart';
-import 'home.dart';
+import 'package:ssoup/about_home/home_navigationbar.dart';
 import 'nick_name.dart';
 import 'theme/text.dart';
 

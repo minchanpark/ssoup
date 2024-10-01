@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:bitcoin_icons/bitcoin_icons.dart';
-import 'package:fluentui_system_icons/fluentui_system_icons.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:iconify_flutter/iconify_flutter.dart';
+import 'package:iconify_flutter/icons/ph.dart';
+import 'package:iconify_flutter/icons/et.dart';
 import 'package:ssoup/about_map/bigmap.dart';
-import 'package:ssoup/home.dart';
+import 'package:ssoup/about_home/home.dart';
 import 'package:ssoup/stamp.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class HomePageNavigationBar extends StatelessWidget {
   const HomePageNavigationBar({super.key});
@@ -30,6 +32,7 @@ class _NavigationExampleState extends State<NavigationExample> {
 
   @override
   Widget build(BuildContext context) {
+    double appHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
@@ -42,6 +45,7 @@ class _NavigationExampleState extends State<NavigationExample> {
         ),
         child: NavigationBarTheme(
           data: NavigationBarThemeData(
+            height: (91 / 934) * appHeight,
             labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
               (Set<WidgetState> states) {
                 final isSelected = states.contains(WidgetState.selected);
@@ -54,6 +58,7 @@ class _NavigationExampleState extends State<NavigationExample> {
             ),
           ),
           child: NavigationBar(
+            indicatorColor: Colors.transparent,
             backgroundColor: Colors.white,
             onDestinationSelected: (int index) {
               setState(() {
@@ -68,26 +73,35 @@ class _NavigationExampleState extends State<NavigationExample> {
                 icon: Icon(BitcoinIcons.home_outline, size: 31),
                 label: '홈',
               ),
-              const NavigationDestination(
-                icon: Icon(FluentIcons.stamp_32_light, size: 31),
-                selectedIcon: Icon(
-                  FluentIcons.stamp_32_light,
+              NavigationDestination(
+                icon: SvgPicture.asset(
+                  'assets/fluent-stamp-32-light.svg',
+                  width: 31,
+                  height: 31,
+                ),
+                selectedIcon: SvgPicture.asset(
+                  'assets/fluent-stamp-32-light.svg',
+                  width: 31,
+                  height: 31,
                   color: Colors.blue,
-                  size: 31,
                 ),
                 label: '스탬프',
               ),
               const NavigationDestination(
-                icon: Icon(Icons.map_outlined, size: 31),
+                icon: Iconify(Et.map, size: 31),
+                selectedIcon: Iconify(
+                  Et.map,
+                  size: 31,
+                  color: Colors.blue,
+                ),
                 label: '지도',
               ),
-              NavigationDestination(
-                icon:
-                    Icon(PhosphorIcons.taxi(PhosphorIconsStyle.thin), size: 31),
-                selectedIcon: Icon(
-                  PhosphorIcons.taxi(PhosphorIconsStyle.thin),
-                  color: Colors.blue,
+              const NavigationDestination(
+                icon: Iconify(Ph.taxi_thin, size: 31),
+                selectedIcon: Iconify(
+                  Ph.taxi_thin,
                   size: 31,
+                  color: Colors.blue,
                 ),
                 label: '이동수단',
               ),
