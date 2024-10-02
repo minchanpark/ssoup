@@ -79,7 +79,7 @@ class _StampPageState extends State<StampPage> {
                     top: screenHeight * (54 / 852),
                     left: screenWidth * (159 / 393),
                     child: Image.asset(
-                      'assets/6/ssoup.png',
+                      'assets/ssoup.png',
                       width: 77,
                       height: 77,
                     ),

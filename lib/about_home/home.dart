@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/ph.dart';
-import 'package:ssoup/about_home/setting_page.dart';
 import 'package:ssoup/theme/text.dart';
 import 'custom_progress_bar.dart';
 
@@ -36,10 +35,7 @@ class HomePage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const SettingsPage()));
+              Navigator.pushNamed(context, '/setting_page');
             },
             icon: SvgPicture.asset(
               'assets/setting_line_light.svg',
@@ -53,7 +49,7 @@ class HomePage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            SizedBox(height: (22 / 934) * appHeight),
+            SizedBox(height: (22 / 852) * appHeight),
             const CustomProgressBar(),
             Image.asset('assets/ul.png'),
             // 버튼 섹션
@@ -63,10 +59,11 @@ class HomePage extends StatelessWidget {
               child: Column(
                 children: [
                   // 울릉도 관광명소 버튼
-                  ElevatedButton(
+                  OutlinedButton(
                     style: ElevatedButton.styleFrom(
-                      overlayColor: Colors.white,
-                      backgroundColor: const Color(0xff8ECCFC),
+                      overlayColor: Colors.blue,
+                      side:
+                          const BorderSide(color: Color(0xff79BFF4), width: 2),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
@@ -125,7 +122,7 @@ class HomePage extends StatelessWidget {
                             width: 76,
                             height: 26,
                             decoration: ShapeDecoration(
-                              color: Colors.white,
+                              color: const Color(0xff8ECCFC),
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12),
                               ),
@@ -146,17 +143,20 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                   ),
-                  SizedBox(height: (19 / 934) * appHeight),
+                  SizedBox(height: (19 / 852) * appHeight),
                   // 울릉도 플로깅 버튼
                   OutlinedButton(
                     style: OutlinedButton.styleFrom(
                       overlayColor: Colors.blue,
-                      side: const BorderSide(color: Color(0xff79BFF4)),
+                      side:
+                          const BorderSide(color: Color(0xff79BFF4), width: 2),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, "/plogging_page");
+                    },
                     child: SizedBox(
                       width: 342,
                       height: 84,
@@ -165,7 +165,8 @@ class HomePage extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              Iconify(Ph.person_simple_walk_light, size: 34),
+                              const Iconify(Ph.person_simple_walk_light,
+                                  size: 34),
                               const SizedBox(width: 17),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -227,7 +228,7 @@ class HomePage extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: (42 / 934) * appHeight),
+            SizedBox(height: (42 / 852) * appHeight),
           ],
         ),
       ),

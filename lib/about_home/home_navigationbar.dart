@@ -8,31 +8,20 @@ import 'package:ssoup/about_home/home.dart';
 import 'package:ssoup/stamp.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class HomePageNavigationBar extends StatelessWidget {
+import '../transport_page.dart';
+
+class HomePageNavigationBar extends StatefulWidget {
   const HomePageNavigationBar({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(useMaterial3: true),
-      home: const NavigationExample(),
-    );
-  }
+  State<HomePageNavigationBar> createState() => _HomePageNavigationBarState();
 }
 
-class NavigationExample extends StatefulWidget {
-  const NavigationExample({super.key});
-
-  @override
-  State<NavigationExample> createState() => _NavigationExampleState();
-}
-
-class _NavigationExampleState extends State<NavigationExample> {
+class _HomePageNavigationBarState extends State<HomePageNavigationBar> {
   int currentPageIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    double appHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
@@ -45,14 +34,16 @@ class _NavigationExampleState extends State<NavigationExample> {
         ),
         child: NavigationBarTheme(
           data: NavigationBarThemeData(
-            height: (91 / 934) * appHeight,
             labelTextStyle: WidgetStateProperty.resolveWith<TextStyle>(
               (Set<WidgetState> states) {
                 final isSelected = states.contains(WidgetState.selected);
                 return TextStyle(
-                  color: isSelected ? Colors.blue : const Color(0xFF9D9D9D),
+                  color: isSelected
+                      ? const Color(0xff1a86ff)
+                      : const Color(0xFF9D9D9D),
                   fontSize: 15,
                   fontWeight: FontWeight.w200,
+                  letterSpacing: -0.32,
                 );
               },
             ),
@@ -69,8 +60,12 @@ class _NavigationExampleState extends State<NavigationExample> {
             destinations: <Widget>[
               const NavigationDestination(
                 selectedIcon: Icon(BitcoinIcons.home_outline,
-                    color: Colors.blue, size: 31),
-                icon: Icon(BitcoinIcons.home_outline, size: 31),
+                    color: Color(0xff1a86ff), size: 31),
+                icon: Icon(
+                  BitcoinIcons.home_outline,
+                  size: 31,
+                  color: Color(0xff9d9d9d),
+                ),
                 label: '홈',
               ),
               NavigationDestination(
@@ -78,30 +73,39 @@ class _NavigationExampleState extends State<NavigationExample> {
                   'assets/fluent-stamp-32-light.svg',
                   width: 31,
                   height: 31,
+                  color: const Color(0xff9d9d9d),
                 ),
                 selectedIcon: SvgPicture.asset(
                   'assets/fluent-stamp-32-light.svg',
                   width: 31,
                   height: 31,
-                  color: Colors.blue,
+                  color: const Color(0xff1a86ff),
                 ),
                 label: '스탬프',
               ),
               const NavigationDestination(
-                icon: Iconify(Et.map, size: 31),
+                icon: Iconify(
+                  Et.map,
+                  size: 31,
+                  color: Color(0xff9d9d9d),
+                ),
                 selectedIcon: Iconify(
                   Et.map,
                   size: 31,
-                  color: Colors.blue,
+                  color: Color(0xff1a86ff),
                 ),
                 label: '지도',
               ),
               const NavigationDestination(
-                icon: Iconify(Ph.taxi_thin, size: 31),
+                icon: Iconify(
+                  Ph.taxi_thin,
+                  size: 31,
+                  color: Color(0xff9d9d9d),
+                ),
                 selectedIcon: Iconify(
                   Ph.taxi_thin,
                   size: 31,
-                  color: Colors.blue,
+                  color: Color(0xff1a86ff),
                 ),
                 label: '이동수단',
               ),
@@ -113,7 +117,7 @@ class _NavigationExampleState extends State<NavigationExample> {
         const HomePage(),
         const StampPage(),
         const BigMapPage(),
-        Container(),
+        const TransportationPage(),
       ][currentPageIndex],
     );
   }

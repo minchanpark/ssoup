@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:iconify_flutter/iconify_flutter.dart';
-import 'package:iconify_flutter/icons/zondicons.dart';
-import 'coursedetail.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'ploggingdetail.dart';
 import '../theme/text.dart';
 
-class CoursePage extends StatefulWidget {
-  const CoursePage({super.key});
+class PloggingPage extends StatefulWidget {
+  const PloggingPage({super.key});
 
   @override
-  _CoursePageState createState() => _CoursePageState();
+  _PloggingPageState createState() => _PloggingPageState();
 }
 
-class _CoursePageState extends State<CoursePage> {
+class _PloggingPageState extends State<PloggingPage> {
   @override
   Widget build(BuildContext context) {
     double screenWidth = MediaQuery.of(context).size.width;
@@ -20,13 +19,13 @@ class _CoursePageState extends State<CoursePage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        iconTheme: const IconThemeData(color: Color(0xff1E528E)),
+        iconTheme: const IconThemeData(color: Color(0xff484646)),
         scrolledUnderElevation: 0,
         backgroundColor: Colors.white,
         title: Text(
-          '플로깅 코스',
+          '플로깅 장소',
           style: medium20.copyWith(
-              color: const Color(0xff1E528E),
+              color: const Color(0xff484646),
               fontSize: screenWidth * (20 / 393)),
         ),
       ),
@@ -45,7 +44,7 @@ class _CoursePageState extends State<CoursePage> {
               startLocation: doc['startLocation'],
               endLocation: doc['endLocation'],
               locationName: doc['startLocationName'],
-              duration: '소요시간: ${doc['spendTime']}',
+              duration: '${doc['spendTime']}',
               peopleCount: '누적 참여자 수: ${doc['totalVisitor']}명',
               location1: doc['location1'],
               location2: doc['location2'],
@@ -56,8 +55,7 @@ class _CoursePageState extends State<CoursePage> {
             itemCount: courses.length,
             itemBuilder: (context, index) {
               final course = courses[index];
-              print(course.location1);
-              print(course.location2);
+
               return Column(
                 children: [
                   SizedBox(height: screenHeight * (10 / 852)),
@@ -82,63 +80,84 @@ class _CoursePageState extends State<CoursePage> {
                     },
                     child: Container(
                       margin: EdgeInsets.symmetric(
-                        vertical: screenHeight * (8.0 / 852),
-                        horizontal: screenWidth * (16.0 / 393),
+                        vertical: (13.0 / 852) * screenHeight,
+                        horizontal: (25.0 / 393) * screenWidth,
                       ),
                       decoration: BoxDecoration(
-                        border: Border.all(color: const Color(0xff1E528E)),
-                        borderRadius: BorderRadius.circular(8.0),
+                        border: Border.all(color: const Color(0xffB7CFFF)),
+                        borderRadius: BorderRadius.circular(4.0),
                       ),
                       child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: const EdgeInsets.all(10.0),
                         child: Row(
                           children: [
                             Image.network(
                               course.image,
-                              width: screenWidth * (100 / 393),
-                              height: screenHeight * (100 / 852),
+                              width: (78 / 393) * screenWidth,
+                              height: 78,
                               fit: BoxFit.cover,
                             ),
-                            SizedBox(
-                              width: screenWidth * (16.0 / 393),
-                            ),
+                            SizedBox(width: screenWidth * (9.0 / 393)),
                             Expanded(
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(course.title, style: medium15),
-                                  SizedBox(height: screenHeight * (8.0 / 852)),
+                                  Text(
+                                    course.title,
+                                    style: medium15.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      letterSpacing: -0.32,
+                                    ),
+                                  ),
+                                  SizedBox(height: screenHeight * (5.0 / 852)),
                                   Row(
                                     children: [
-                                      const Iconify(Zondicons.location,
-                                          color: Colors.black),
-                                      SizedBox(
-                                        width: screenWidth * (4 / 393),
+                                      SvgPicture.asset(
+                                        'assets/system-uicons_location.svg',
+                                        width: 18,
+                                        height: 18,
+                                        color: const Color(0xff000000),
                                       ),
-                                      const Text("출발 위치:"),
-                                      SizedBox(
-                                        width: screenWidth * (4 / 393),
+                                      SizedBox(width: screenWidth * (3 / 393)),
+                                      Expanded(
+                                        child: Text(
+                                          course.locationName,
+                                          style: light11.copyWith(
+                                            fontSize: (11 / 393) * screenWidth,
+                                            fontWeight: FontWeight.w300,
+                                            height: 1.1,
+                                            letterSpacing: -0.32,
+                                          ),
+                                        ),
                                       ),
-                                      Text(course.locationName, style: light11),
                                     ],
                                   ),
-                                  SizedBox(
-                                    height: screenHeight * (4 / 852),
-                                  ),
+                                  SizedBox(height: screenHeight * (5 / 852)),
                                   Row(
                                     children: [
-                                      const Iconify(Zondicons.time,
-                                          color: Colors.black),
-                                      SizedBox(
-                                        width: screenWidth * (4 / 393),
+                                      SvgPicture.asset(
+                                        'assets/ph_star.svg',
+                                        width: 18,
+                                        height: 18,
+                                        color: const Color(0xff000000),
                                       ),
-                                      Text(course.duration, style: light11),
+                                      SizedBox(width: screenWidth * (3 / 393)),
+                                      FutureBuilder<QuerySnapshot>(
+                                        future: FirebaseFirestore.instance
+                                            .collection('course')
+                                            .doc(course.id)
+                                            .collection('visitor')
+                                            .get(),
+                                        builder: (context, snapshot) {
+                                          int reviewCount =
+                                              snapshot.data?.size ?? 0;
+                                          return Text("리뷰 $reviewCount개",
+                                              style: light11);
+                                        },
+                                      ),
                                     ],
                                   ),
-                                  SizedBox(
-                                    width: screenWidth * (4 / 393),
-                                  ),
-                                  Text(course.peopleCount, style: regular10),
+                                  SizedBox(width: screenWidth * (4 / 393)),
                                 ],
                               ),
                             ),

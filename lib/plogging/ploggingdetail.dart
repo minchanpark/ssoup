@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:ssoup/course/course_review_page.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:ssoup/plogging/plogging_review_page.dart';
 import 'package:ssoup/about_map/map.dart';
 import '../theme/text.dart';
 
@@ -50,6 +51,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                   Image.network(
                     widget.courseImage,
                     width: double.infinity,
+                    height: (374 / 852) * screenHeight,
                     fit: BoxFit.cover,
                   ),
                   Padding(
@@ -74,7 +76,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                   ),
                   SizedBox(height: screenHeight * 0.012),
                   SizedBox(
-                    height: MediaQuery.of(context).size.height - 200,
+                    height: (440 / 852) * screenHeight,
                     child: TabBarView(
                       children: [
                         _buildCourseInfo(screenWidth, screenHeight),
@@ -115,71 +117,112 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
 
   // 코스 정보 섹션 빌드
   Widget _buildCourseInfo(double screenWidth, double screenHeight) {
-    return SingleChildScrollView(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(20),
-            child: Text(
-              '출발위치: ${widget.courseLocationName}',
-              style: regular15,
-            ),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: EdgeInsets.only(
+            left: (29 / 393) * screenWidth,
+            top: (32 / 852) * screenHeight,
+            bottom: (14 / 852) * screenHeight,
           ),
-          Padding(
-            padding: EdgeInsets.only(left: screenWidth * 0.05),
-            child: Text(widget.courseDuration, style: regular15),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: screenWidth * 0.04,
-              vertical: screenHeight * 0.02,
-            ),
-            child: const Text(
-              '코스 경로: 울릉도 선착장 → 봉래폭포 → 내수일출전망대 → 석포일출일몰전망대',
-              style: regular15,
-            ),
-          ),
-          SizedBox(height: screenHeight * 0.035),
-          Image.asset('assets/imsi.png'),
-          SizedBox(height: screenHeight * 0.035),
-          Center(
-            child: SizedBox(
-              width: 350,
-              height: 65,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => GoogleMapPage(
-                        startLocation: widget.courseStartLocation,
-                        endLocation: widget.courseEndLocation,
-                        location1: widget.courseLocation1,
-                        location2: widget.courseLocation2,
-                      ),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  backgroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  side: const BorderSide(
-                    color: Color(0xff4468AD),
+          child: Row(
+            children: [
+              SvgPicture.asset(
+                'assets/system-uicons_location.svg',
+                width: 23,
+                height: 23,
+                color: const Color(0xff000000),
+              ),
+              Text(
+                '주소: ',
+                style: medium15.copyWith(
+                  fontWeight: FontWeight.w500,
+                  height: 0.09,
+                  letterSpacing: -0.32,
+                ),
+              ),
+              Expanded(
+                child: Text(
+                  widget.courseLocationName,
+                  style: regular15.copyWith(
+                    fontSize: (15 / 393) * screenWidth,
+                    fontWeight: FontWeight.w300,
+                    letterSpacing: -0.32,
                   ),
                 ),
-                child: const Text(
-                  '코스 안내받기',
-                  style: extrabold20,
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.only(
+            left: (29 / 393) * screenWidth,
+          ),
+          child: Row(
+            children: [
+              SvgPicture.asset(
+                'assets/time.svg',
+                width: 23,
+                height: 23,
+                color: const Color(0xff000000),
+              ),
+              Text(
+                "관광시간: ",
+                style: medium15.copyWith(
+                  fontWeight: FontWeight.w500,
+                  height: 0.09,
+                  letterSpacing: -0.32,
                 ),
+              ),
+              Text(
+                widget.courseDuration,
+                style: regular15.copyWith(
+                  fontWeight: FontWeight.w300,
+                  height: 0.09,
+                  letterSpacing: -0.32,
+                ),
+              )
+            ],
+          ),
+        ),
+        Spacer(),
+        Center(
+          child: SizedBox(
+            width: 350,
+            height: 65,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => GoogleMapPage(
+                      startLocation: widget.courseStartLocation,
+                      endLocation: widget.courseEndLocation,
+                      location1: widget.courseLocation1,
+                      location2: widget.courseLocation2,
+                    ),
+                  ),
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                elevation: 0,
+                backgroundColor: Colors.white,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12)),
+                side: const BorderSide(
+                  color: Color(0xff4468AD),
+                ),
+              ),
+              child: const Text(
+                '장소 안내받기',
+                style: extrabold20,
               ),
             ),
           ),
-          SizedBox(height: screenHeight * 0.082),
-        ],
-      ),
+        ),
+        SizedBox(height: (42 / 852) * screenHeight),
+      ],
     );
   }
 }

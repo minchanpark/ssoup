@@ -36,7 +36,7 @@ class CustomProgressBar extends StatelessWidget {
                 // Progress bar background
                 Container(
                   width: (256 / 393) * appWidth, // 반응형 너비
-                  height: (26 / 934) * appHeight, // 반응형 높이
+                  height: (26 / 852) * appHeight, // 반응형 높이
                   decoration: ShapeDecoration(
                     shape: RoundedRectangleBorder(
                       side:
@@ -48,7 +48,7 @@ class CustomProgressBar extends StatelessWidget {
                 // Filled portion of progress bar
                 Container(
                   width: (222 / 393) * appWidth, // 반응형 너비
-                  height: (16 / 934) * appHeight, // 반응형 높이
+                  height: (16 / 852) * appHeight, // 반응형 높이
                   decoration: ShapeDecoration(
                     color: const Color(0xFF8ECCFC),
                     shape: RoundedRectangleBorder(
@@ -59,7 +59,7 @@ class CustomProgressBar extends StatelessWidget {
                 // White portion of progress bar
                 Container(
                   width: (101 / 393) * appWidth, // 반응형 너비
-                  height: (10 / 934) * appHeight, // 반응형 높이
+                  height: (10 / 852) * appHeight, // 반응형 높이
                   decoration: ShapeDecoration(
                     color: Colors.white,
                     shape: RoundedRectangleBorder(

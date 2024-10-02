@@ -50,8 +50,6 @@
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
-		<key>NSExceptionDomains</key>
-		<dict/>
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>We need access to the camera to take pictures</string>
@@ -99,5 +97,7 @@
 	<string>ssoup</string>
 	<key>naverServiceAppUrlScheme</key>
 	<string>ssoupurlscheme</string>
+	<key>NSAppleIDUsageDescription</key>
+	<string>애플 계정으로 로그인하기 위해 사용합니다.</string>
 </dict>
 </plist>

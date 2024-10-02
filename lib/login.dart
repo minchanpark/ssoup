@@ -4,8 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
+import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:ssoup/about_home/home_navigationbar.dart';
 import 'nick_name.dart';
+import 'theme/color.dart';
 import 'theme/text.dart';
 
 Future<void> addUserToFirestore(
@@ -100,6 +102,40 @@ Future<firebase_auth.UserCredential> signInWithGoogle() async {
   }
 }
 
+Future<firebase_auth.UserCredential> signInWithApple() async {
+  try {
+    final appleCredential = await SignInWithApple.getAppleIDCredential(
+      scopes: [
+        AppleIDAuthorizationScopes.email,
+        AppleIDAuthorizationScopes.fullName,
+      ],
+    );
+
+    final oauthCredential = firebase_auth.OAuthProvider("apple.com").credential(
+      idToken: appleCredential.identityToken,
+      accessToken: appleCredential.authorizationCode,
+    );
+
+    final userCredential = await firebase_auth.FirebaseAuth.instance
+        .signInWithCredential(oauthCredential);
+    final firebase_auth.User user = userCredential.user!;
+
+    final email = appleCredential.email ?? user.email ?? '';
+    final name =
+        (appleCredential.givenName ?? '') + (appleCredential.familyName ?? '');
+
+    await addUserToFirestore(user, email, name);
+
+    return userCredential;
+  } catch (error) {
+    print("Apple login failed: $error");
+    throw firebase_auth.FirebaseAuthException(
+      code: 'ERROR_APPLE_LOGIN_FAILED',
+      message: 'Failed to login with Apple: $error',
+    );
+  }
+}
+
 Future<bool> checkNickname(firebase_auth.User user) async {
   final DocumentSnapshot snapshot =
       await FirebaseFirestore.instance.collection('user').doc(user.uid).get();
@@ -181,21 +217,41 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  static const LinearGradient homeMix = LinearGradient(
-    colors: [
-      Color.fromRGBO(138, 206, 255, 1),
-      Color.fromRGBO(163, 194, 255, 1),
-    ],
-    begin: Alignment.topCenter,
-    end: Alignment.bottomCenter,
-  );
+  Future<void> _signInWithApple() async {
+    _showLoading(true);
+    try {
+      final userCredential = await signInWithApple();
+      final user = userCredential.user!;
+      final hasNickname = await checkNickname(user);
+
+      if (hasNickname) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => const HomePageNavigationBar()),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const NickNamePage()),
+        );
+      }
+    } catch (e) {
+      print('Apple login error: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Apple login failed: $e')),
+      );
+    } finally {
+      _showLoading(false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(
-          gradient: homeMix,
+          gradient: AppColor.homeMix,
         ),
         child: Stack(
           children: [
@@ -260,6 +316,29 @@ class _LoginPageState extends State<LoginPage> {
                         Text('카카오 계정으로 시작하기',
                             style: regular15.copyWith(
                                 color: const Color(0xff635546))),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 20.0),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      elevation: 0,
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                    ),
+                    onPressed: _isLoading ? null : _signInWithApple,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.apple, size: 28, color: Colors.white),
+                        const SizedBox(width: 10),
+                        Text(
+                          'Apple로 로그인',
+                          style: regular15.copyWith(color: Colors.white),
+                        ),
                       ],
                     ),
                   ),

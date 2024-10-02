@@ -1,7 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:ssoup/course/photo_review.dart';
+import 'package:ssoup/plogging/photo_review.dart';
+import '../about_map/map.dart';
 import '../theme/color.dart';
 import '../theme/text.dart';
 import 'review_create_page.dart';
@@ -33,6 +34,7 @@ class _CourseReviewPageState extends State<CourseReviewPage> {
 
   String nickname = "";
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  List location_list = [1.1, 0.1];
 
   @override
   void initState() {
@@ -369,7 +371,7 @@ class _CourseReviewPageState extends State<CourseReviewPage> {
                                         SizedBox(
                                             height: screenHeight * (12 / 852)),
                                         Text(
-                                          widget.courseLocationName,
+                                          widget.courseTitle,
                                           style: medium15,
                                         ),
                                         SizedBox(
@@ -420,20 +422,41 @@ class _CourseReviewPageState extends State<CourseReviewPage> {
             height: screenHeight * (10 / 852),
           ),
           Center(
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
+            child: SizedBox(
+              width: 350,
+              height: 65,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => ReviewCreatePage(
-                              courseId: widget.courseId,
-                            )));
-              },
-              child: const Text('리뷰 작성'),
+                      builder: (context) => GoogleMapPage(
+                        startLocation: widget.courseStartLocation,
+                        endLocation: widget.courseEndLocation,
+                        location1: location_list,
+                        location2: location_list,
+                      ),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  side: const BorderSide(
+                    color: Color(0xff4468AD),
+                  ),
+                ),
+                child: const Text(
+                  '장소 안내받기',
+                  style: extrabold20,
+                ),
+              ),
             ),
           ),
           SizedBox(
-            height: screenHeight * (70 / 852),
+            height: screenHeight * (42 / 852),
           ),
         ],
       ),
