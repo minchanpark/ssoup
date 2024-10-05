@@ -12,8 +12,6 @@ class CourseDetailPage extends StatefulWidget {
   final List courseEndLocation;
   final String courseDuration;
   final String courseLocationName;
-  final List courseLocation1;
-  final List courseLocation2;
 
   const CourseDetailPage({
     required this.courseId,
@@ -23,8 +21,6 @@ class CourseDetailPage extends StatefulWidget {
     required this.courseEndLocation,
     required this.courseDuration,
     required this.courseLocationName,
-    required this.courseLocation1,
-    required this.courseLocation2,
     super.key,
   });
 
@@ -51,7 +47,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                   Image.network(
                     widget.courseImage,
                     width: double.infinity,
-                    height: (374 / 852) * screenHeight,
+                    height: (341 / 852) * screenHeight,
                     fit: BoxFit.cover,
                   ),
                   Padding(
@@ -76,18 +72,15 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
                   ),
                   SizedBox(height: screenHeight * 0.012),
                   SizedBox(
-                    height: (440 / 852) * screenHeight,
+                    height: (340 / 852) * screenHeight,
                     child: TabBarView(
                       children: [
                         _buildCourseInfo(screenWidth, screenHeight),
                         CourseReviewPage(
                           courseId: widget.courseId,
-                          courseDuration: widget.courseDuration,
-                          courseEndLocation: widget.courseEndLocation,
                           courseImage: widget.courseImage,
                           courseLocationName: widget.courseLocationName,
                           courseTitle: widget.courseTitle,
-                          courseStartLocation: widget.courseStartLocation,
                         ),
                       ],
                     ),
@@ -111,6 +104,42 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
             ],
           ),
         ),
+        bottomNavigationBar: BottomAppBar(
+          color: Colors.white,
+          child: Center(
+            child: SizedBox(
+              width: 350,
+              height: 65,
+              child: ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => GoogleMapPage(
+                        startLocation: widget.courseStartLocation,
+                        endLocation: widget.courseEndLocation,
+                        courseId: widget.courseId,
+                      ),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  elevation: 0,
+                  backgroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  side: const BorderSide(
+                    color: Color(0xff4468AD),
+                  ),
+                ),
+                child: const Text(
+                  '장소 안내받기',
+                  style: extrabold20,
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -122,7 +151,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
       children: [
         Padding(
           padding: EdgeInsets.only(
-            left: (29 / 393) * screenWidth,
+            left: (20 / 393) * screenWidth,
             top: (32 / 852) * screenHeight,
             bottom: (14 / 852) * screenHeight,
           ),
@@ -157,7 +186,7 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
         ),
         Padding(
           padding: EdgeInsets.only(
-            left: (29 / 393) * screenWidth,
+            left: (20 / 393) * screenWidth,
           ),
           child: Row(
             children: [
@@ -186,42 +215,6 @@ class _CourseDetailPageState extends State<CourseDetailPage> {
             ],
           ),
         ),
-        Spacer(),
-        Center(
-          child: SizedBox(
-            width: 350,
-            height: 65,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => GoogleMapPage(
-                      startLocation: widget.courseStartLocation,
-                      endLocation: widget.courseEndLocation,
-                      location1: widget.courseLocation1,
-                      location2: widget.courseLocation2,
-                    ),
-                  ),
-                );
-              },
-              style: ElevatedButton.styleFrom(
-                elevation: 0,
-                backgroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12)),
-                side: const BorderSide(
-                  color: Color(0xff4468AD),
-                ),
-              ),
-              child: const Text(
-                '장소 안내받기',
-                style: extrabold20,
-              ),
-            ),
-          ),
-        ),
-        SizedBox(height: (42 / 852) * screenHeight),
       ],
     );
   }

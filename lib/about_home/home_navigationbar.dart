@@ -21,6 +21,12 @@ class _HomePageNavigationBarState extends State<HomePageNavigationBar> {
   int currentPageIndex = 0;
 
   @override
+  void initState() {
+    super.initState();
+    currentPageIndex = 0;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       bottomNavigationBar: Container(

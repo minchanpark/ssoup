@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:iconify_flutter/iconify_flutter.dart';
 import 'package:iconify_flutter/icons/ph.dart';
+import 'package:ssoup/location/tour_list.dart';
 import 'package:ssoup/theme/text.dart';
 import 'custom_progress_bar.dart';
 
@@ -18,16 +19,18 @@ class HomePage extends StatelessWidget {
         backgroundColor: Colors.white,
         scrolledUnderElevation: 0,
         elevation: 0,
+        toolbarHeight: 70,
         title: Row(
           children: [
             const SizedBox(width: 10),
-            Text(
-              '내가 그린 울릉(로고)',
-              style: medium20.copyWith(
-                fontSize: 20,
-                height: 0.21,
-                letterSpacing: -0.32,
-                fontWeight: FontWeight.w500,
+            Container(
+              width: 76,
+              height: 48,
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/logo.png'),
+                  fit: BoxFit.fill,
+                ),
               ),
             ),
           ],
@@ -68,7 +71,12 @@ class HomePage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => const TourListPage()));
+                    },
                     child: SizedBox(
                       width: 342,
                       height: 84,

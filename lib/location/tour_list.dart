@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'plogging_detail.dart';
+
 import '../theme/text.dart';
 
-class PloggingPage extends StatefulWidget {
-  const PloggingPage({super.key});
+class TourListPage extends StatefulWidget {
+  const TourListPage({super.key});
 
   @override
-  _PloggingPageState createState() => _PloggingPageState();
+  _TourListPageState createState() => _TourListPageState();
 }
 
-class _PloggingPageState extends State<PloggingPage> {
+class _TourListPageState extends State<TourListPage> {
   @override
   void initState() {
     // TODO: implement initState
@@ -29,55 +29,51 @@ class _PloggingPageState extends State<PloggingPage> {
         scrolledUnderElevation: 0,
         backgroundColor: Colors.white,
         title: Text(
-          '플로깅 장소',
+          '관광 명소',
           style: medium20.copyWith(
               color: const Color(0xff484646),
               fontSize: screenWidth * (20 / 393)),
         ),
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance.collection('course').snapshots(),
+        stream:
+            FirebaseFirestore.instance.collection('locationMap').snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return const Center(child: CircularProgressIndicator());
           }
 
           var courses = snapshot.data!.docs.map((doc) {
-            return Course(
+            return TourList(
               id: doc.id,
-              image: doc['courseImageUrl'],
-              title: doc['courseName'],
-              startLocation: doc['startLocation'],
-              endLocation: doc['endLocation'],
-              locationName: doc['startLocationName'],
-              duration: '${doc['spendTime']}',
+              image: doc['imageUrl'],
+              location: doc['location'],
+              locationName: doc['locationName'],
+              address: doc['address'],
             );
           }).toList();
 
           return ListView.builder(
             itemCount: courses.length,
             itemBuilder: (context, index) {
-              final course = courses[index];
+              final tour = courses[index];
 
               return Column(
                 children: [
                   SizedBox(height: screenHeight * (10 / 852)),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
+                      /*Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CourseDetailPage(
-                            courseId: course.id, // courseId 전달
-                            courseImage: course.image,
-                            courseTitle: course.title,
-                            courseLocationName: course.locationName,
-                            courseStartLocation: course.startLocation,
-                            courseEndLocation: course.endLocation,
-                            courseDuration: course.duration,
+                          builder: (context) => TourDetailPage(
+                            courseId: tour.id, // courseId 전달
+                            courseImage: tour.image,
+                            courseLocationName: tour.locationName,
+                            location: tour.location,
                           ),
                         ),
-                      );
+                      );*/
                     },
                     child: Container(
                       margin: EdgeInsets.symmetric(
@@ -93,7 +89,7 @@ class _PloggingPageState extends State<PloggingPage> {
                         child: Row(
                           children: [
                             Image.network(
-                              course.image,
+                              tour.image,
                               width: (78 / 393) * screenWidth,
                               height: 78,
                               fit: BoxFit.cover,
@@ -104,7 +100,7 @@ class _PloggingPageState extends State<PloggingPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    course.title,
+                                    tour.locationName,
                                     style: medium15.copyWith(
                                       fontWeight: FontWeight.w500,
                                       letterSpacing: -0.32,
@@ -122,7 +118,7 @@ class _PloggingPageState extends State<PloggingPage> {
                                       SizedBox(width: screenWidth * (3 / 393)),
                                       Expanded(
                                         child: Text(
-                                          course.locationName,
+                                          tour.address,
                                           style: light11.copyWith(
                                             fontSize: (11 / 393) * screenWidth,
                                             fontWeight: FontWeight.w300,
@@ -145,8 +141,8 @@ class _PloggingPageState extends State<PloggingPage> {
                                       SizedBox(width: screenWidth * (3 / 393)),
                                       FutureBuilder<QuerySnapshot>(
                                         future: FirebaseFirestore.instance
-                                            .collection('course')
-                                            .doc(course.id)
+                                            .collection('locationMap')
+                                            .doc(tour.id)
                                             .collection('visitor')
                                             .get(),
                                         builder: (context, snapshot) {
@@ -177,22 +173,18 @@ class _PloggingPageState extends State<PloggingPage> {
   }
 }
 
-class Course {
+class TourList {
   final String id; // 코스 ID 추가
   final String image;
-  final String title;
-  final List startLocation;
-  final List endLocation;
+  final List location;
+  final String address;
   final String locationName;
-  final String duration;
 
-  Course({
+  TourList({
     required this.id, // 코스 ID 추가
     required this.image,
-    required this.title,
-    required this.startLocation,
-    required this.endLocation,
-    required this.duration,
+    required this.location,
     required this.locationName,
+    required this.address,
   });
 }

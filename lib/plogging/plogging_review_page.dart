@@ -11,18 +11,13 @@ class CourseReviewPage extends StatefulWidget {
   final String courseId;
   final String courseImage;
   final String courseTitle;
-  final List courseStartLocation;
-  final List courseEndLocation;
-  final String courseDuration;
+
   final String courseLocationName;
   const CourseReviewPage(
       {super.key,
       required this.courseId,
       required this.courseImage,
       required this.courseTitle,
-      required this.courseStartLocation,
-      required this.courseEndLocation,
-      required this.courseDuration,
       required this.courseLocationName});
 
   @override
@@ -417,46 +412,6 @@ class _CourseReviewPageState extends State<CourseReviewPage> {
                 ],
               );
             },
-          ),
-          SizedBox(
-            height: screenHeight * (10 / 852),
-          ),
-          Center(
-            child: SizedBox(
-              width: 350,
-              height: 65,
-              child: ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => GoogleMapPage(
-                        startLocation: widget.courseStartLocation,
-                        endLocation: widget.courseEndLocation,
-                        location1: location_list,
-                        location2: location_list,
-                      ),
-                    ),
-                  );
-                },
-                style: ElevatedButton.styleFrom(
-                  elevation: 0,
-                  backgroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12)),
-                  side: const BorderSide(
-                    color: Color(0xff4468AD),
-                  ),
-                ),
-                child: const Text(
-                  '장소 안내받기',
-                  style: extrabold20,
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: screenHeight * (42 / 852),
           ),
         ],
       ),

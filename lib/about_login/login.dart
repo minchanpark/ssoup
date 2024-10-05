@@ -2,13 +2,14 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
 import 'package:ssoup/about_home/home_navigationbar.dart';
-import 'nick_name.dart';
-import 'theme/color.dart';
-import 'theme/text.dart';
+import 'package:ssoup/about_login/register_page.dart';
+import '../nick_name.dart';
+import '../theme/text.dart';
 
 Future<void> addUserToFirestore(
     firebase_auth.User user, String email, String name) async {
@@ -248,23 +249,25 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    double appWidth = MediaQuery.of(context).size.width;
+    double appHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColor.homeMix,
-        ),
-        child: Stack(
+        color: Colors.white,
+        child: Column(
           children: [
+            SizedBox(height: (211 / 852) * appHeight),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Container(
-                    width: 234,
-                    child: Image.asset('assets/logo.png'),
+                  SizedBox(
+                    width: 172,
+                    height: 94,
+                    child: Image.asset('assets/island.png'),
                   ),
-                  const SizedBox(height: 40.0),
+                  SizedBox(height: (50 / 852) * appHeight),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
@@ -272,28 +275,22 @@ class _LoginPageState extends State<LoginPage> {
                       minimumSize: const Size(double.infinity, 50),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(3),
+                        side: const BorderSide(width: 1),
                       ),
                     ),
                     onPressed: _isLoading ? null : _signInWithGoogle,
                     child: Row(
                       children: [
-                        const SizedBox(
-                          width: 7,
-                        ),
-                        Image.asset(
-                          'assets/google.png',
-                          width: 25,
-                        ),
-                        const SizedBox(
-                          width: 60,
-                        ),
+                        const SizedBox(width: 7),
+                        Image.asset('assets/google.png', width: 25),
+                        const SizedBox(width: 60),
                         Text('구글 계정으로 시작하기',
                             style: regular15.copyWith(
                                 color: const Color(0xff635546))),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20.0),
+                  SizedBox(height: (12 / 852) * appHeight),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xffFAE200),
@@ -306,10 +303,7 @@ class _LoginPageState extends State<LoginPage> {
                     onPressed: _isLoading ? null : _signInWithKakao,
                     child: Row(
                       children: [
-                        Image.asset(
-                          'assets/kakao.png',
-                          height: 23,
-                        ),
+                        Image.asset('assets/kakao.png', height: 23),
                         const SizedBox(
                           width: 53,
                         ),
@@ -319,7 +313,7 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 20.0),
+                  SizedBox(height: (12 / 852) * appHeight),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
@@ -331,14 +325,45 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     onPressed: _isLoading ? null : _signInWithApple,
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(Icons.apple, size: 28, color: Colors.white),
-                        const SizedBox(width: 10),
+                        const SizedBox(width: 5),
+                        const Icon(Icons.apple, size: 35, color: Colors.white),
+                        const SizedBox(width: 53),
                         Text(
                           'Apple로 로그인',
-                          style: regular15.copyWith(color: Colors.white),
+                          style: regular15.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w200,
+                            height: 0.08,
+                            letterSpacing: -0.32,
+                            fontSize: 16,
+                          ),
                         ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: (12 / 852) * appHeight),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xff919191),
+                      elevation: 0,
+                      minimumSize: const Size(double.infinity, 50),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                    ),
+                    onPressed: _isLoading ? null : _signInWithGoogle,
+                    child: Row(
+                      children: [
+                        const SizedBox(width: 7),
+                        SvgPicture.asset(
+                          'assets/login.svg',
+                          width: 28,
+                          height: 28,
+                        ),
+                        const SizedBox(width: 55),
+                        Text('아이디 비번으로 시작하기',
+                            style: regular15.copyWith(color: Colors.white)),
                       ],
                     ),
                   ),
@@ -349,6 +374,20 @@ class _LoginPageState extends State<LoginPage> {
               const Center(
                 child: CircularProgressIndicator(),
               ),
+            SizedBox(height: (51 / 852) * appHeight),
+            TextButton(
+                onPressed: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => SignUpPage()));
+                },
+                child: Text(
+                  "계정이 따로 없다면?",
+                  style: regular15.copyWith(
+                    fontWeight: FontWeight.w200,
+                    letterSpacing: -0.32,
+                    decoration: TextDecoration.underline,
+                  ),
+                ))
           ],
         ),
       ),

@@ -105,7 +105,7 @@ class _ReviewCreatePageState extends State<ReviewCreatePage> {
         'score': rating,
         'timestamp': FieldValue.serverTimestamp(),
       });
-      Navigator.pop(context);
+      Navigator.pop(context, true);
     }
 
     void reviewPopup() {
@@ -297,7 +297,9 @@ class _ReviewCreatePageState extends State<ReviewCreatePage> {
             width: screenWidth * 0.874,
             height: screenHeight * 0.059,
             child: ElevatedButton(
-              onPressed: reviewPopup,
+              onPressed: () {
+                reviewPopup();
+              },
               style: ButtonStyle(
                 elevation: const WidgetStatePropertyAll(0),
                 backgroundColor: const WidgetStatePropertyAll(

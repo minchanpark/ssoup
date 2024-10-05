@@ -9,20 +9,21 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:ssoup/constants.dart';
+import 'package:ssoup/plogging/review_create_page.dart';
+import 'package:ssoup/theme/text.dart';
 
 class GoogleMapPage extends StatefulWidget {
   final List startLocation;
   final List endLocation;
-  final List location1;
-  final List location2;
+  final String courseId;
 
   const GoogleMapPage({
     super.key,
     required this.startLocation,
     required this.endLocation,
-    required this.location1,
-    required this.location2,
+    required this.courseId,
   });
 
   @override
@@ -37,6 +38,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
   late LatLng _startLocation;
   final Set<Polyline> _polylines = {};
   StreamSubscription<Position>? _positionStreamSubscription;
+  bool dialogShown = false;
 
   @override
   void initState() {
@@ -44,7 +46,6 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
     _initializeLocations();
     _checkPermissions();
     _addInitialMarkers();
-    _addLocationMarkers();
     _getNaverRoute();
   }
 
@@ -85,13 +86,15 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
         _updateCurrentLocationMarker();
 
         if (_calculateDistance(
-              _currentPosition.latitude,
-              _currentPosition.longitude,
-              _destinationLocation.latitude,
-              _destinationLocation.longitude,
-            ) <=
-            30) {
+                  _currentPosition.latitude,
+                  _currentPosition.longitude,
+                  _destinationLocation.latitude,
+                  _destinationLocation.longitude,
+                ) <=
+                30 &&
+            !dialogShown) {
           _showArrivalPopup(context, _destinationLocation, _startLocation);
+          dialogShown = true;
         }
       });
     });
@@ -120,7 +123,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
           markerId: const MarkerId('sL'),
           position: _startLocation,
           icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue),
-          infoWindow: const InfoWindow(title: 'Start Location'),
+          infoWindow: const InfoWindow(title: '여기서 출발하세요!'),
         ),
       );
       _markers.add(
@@ -129,71 +132,10 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
           position: _destinationLocation,
           icon:
               BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueGreen),
-          infoWindow: const InfoWindow(title: 'Destination Location'),
+          infoWindow: const InfoWindow(title: '여기서 스탬프를 얻을 수 있어요!'),
         ),
       );
     });
-  }
-
-  // 추가적인 위치 마커 설정 (location1, location2)
-  void _addLocationMarkers() {
-    LatLng location1 = LatLng(widget.location1[0], widget.location1[1]);
-    LatLng location2 = LatLng(widget.location2[0], widget.location2[1]);
-
-    setState(() {
-      _markers.add(
-        Marker(
-          markerId: const MarkerId('location1'),
-          position: location1,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-          infoWindow: const InfoWindow(title: 'Location 1'),
-          onTap: () => _setNaverRoute(location1),
-        ),
-      );
-      _markers.add(
-        Marker(
-          markerId: const MarkerId('location2'),
-          position: location2,
-          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-          infoWindow: const InfoWindow(title: 'Location 2'),
-          onTap: () => _setNaverRoute(location2),
-        ),
-      );
-    });
-  }
-
-  // Naver API를 사용하여 경로를 가져오고 폴리라인을 설정
-  Future<void> _setNaverRoute(LatLng destination) async {
-    try {
-      final currentPosition = await Geolocator.getCurrentPosition(
-          desiredAccuracy: LocationAccuracy.high);
-      LatLng currentLatLng =
-          LatLng(currentPosition.latitude, currentPosition.longitude);
-
-      final url =
-          'https://naveropenapi.apigw.ntruss.com/map-direction/v1/driving?start=${currentLatLng.longitude},${currentLatLng.latitude}&goal=${destination.longitude},${destination.latitude}&option=trafast';
-
-      final response = await http.get(
-        Uri.parse(url),
-        headers: {
-          'X-NCP-APIGW-API-KEY-ID': naverClientId,
-          'X-NCP-APIGW-API-KEY': naverClientSecret,
-        },
-      );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        final points = data['route']?['trafast']?.first['path'] ?? [];
-
-        if (points.isNotEmpty) {
-          _setPolylineFromNaverPoints(points);
-        }
-      } else {
-        print('Failed to load directions: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error in getting route: $e');
-    }
   }
 
   // 경로 데이터를 이용해 폴리라인을 지도에 추가
@@ -243,22 +185,165 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
             // 스탬프 팝업 표시
             showDialog(
               context: context,
+              barrierDismissible: true, // 팝업 외부 클릭 시 닫기 가능
               builder: (BuildContext context) {
-                return AlertDialog(
-                  title: Text(stampDetail['stampName']),
-                  content: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Image.network(stampDetail['stampImageUrl']),
-                      Text(stampDetail['location']),
-                    ],
+                double screenWidth = MediaQuery.of(context).size.width;
+                double screenHeight = MediaQuery.of(context).size.height;
+                DateTime now = DateTime.now();
+
+                return Dialog(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(28), // 다이얼로그 모서리 둥글게 설정
                   ),
-                  actions: <Widget>[
-                    TextButton(
-                      child: const Text('확인'),
-                      onPressed: () => Navigator.of(context).pop(),
+                  backgroundColor: Colors.white,
+                  child: SingleChildScrollView(
+                    child: SizedBox(
+                      width: (332 / 393) * screenWidth,
+                      height: (603 / 852) * screenHeight,
+                      child: Column(
+                        children: <Widget>[
+                          // 스탬프 획득 텍스트
+                          Padding(
+                            padding: const EdgeInsets.only(
+                              top: 69,
+                              bottom: 31,
+                            ),
+                            child: Text(
+                              '스탬프 획득',
+                              style: extrabold24.copyWith(
+                                fontFamily: 'S-Core Dream',
+                                fontWeight: FontWeight.w700,
+                                height: 0.04,
+                                color: const Color(0xFF1E528D),
+                              ),
+                            ),
+                          ),
+                          // 두 개의 이미지를 겹치는 Stack
+                          Stack(
+                            children: <Widget>[
+                              // 배경 이미지 (블루 컨테이너)
+                              Image.asset(
+                                "assets/blue_container.png",
+                                width: (282 / 393) * screenWidth,
+                                height: (195 / 852) * screenHeight,
+                              ),
+                              // 스탬프 이미지
+                              Positioned(
+                                top: 0,
+                                left: 0,
+                                right: 0,
+                                bottom: 0,
+                                child:
+                                    Image.network(stampDetail['stampImageUrl']),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: (15 / 852) * screenHeight), // 간격을 줌
+                          // 플로깅 인증 완료 텍스트
+                          Text(
+                            '${stampDetail['location']} 플로깅 인증 완료!',
+                            style: medium16.copyWith(
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: -0.32,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: (18 / 852) * screenHeight),
+                          Text(
+                            '일시: ${DateFormat('yyyy.MM.dd / kk:mm').format(now)}',
+                            style: medium16.copyWith(
+                              fontWeight: FontWeight.w500,
+                              letterSpacing: -0.32,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                          SizedBox(height: (20 / 852) * screenHeight),
+                          Image.asset(
+                            "assets/heart.png",
+                            width: (282 / 393) * screenWidth,
+                            height: (40 / 852) * screenHeight,
+                          ),
+                          SizedBox(height: (34 / 852) * screenHeight),
+                          // 확인 버튼
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              // 리뷰쓰기 버튼
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor:
+                                      const Color(0xff50A2FF), // 배경색 설정
+                                  minimumSize: Size(
+                                    (129 / 393) * screenWidth, // 너비
+                                    (40.8 / 852) * screenHeight, // 높이
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                ),
+                                onPressed: () async {
+                                  dialogShown = await Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ReviewCreatePage(
+                                        courseId: widget.courseId,
+                                      ),
+                                    ),
+                                  );
+                                  setState(() {
+                                    if (dialogShown == true) {
+                                      Navigator.pop(context);
+                                    }
+                                  });
+                                },
+                                child: Text(
+                                  '리뷰쓰기',
+                                  style: bold15.copyWith(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w600,
+                                    height: 0.11,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                              SizedBox(
+                                  width: (6 / 393) * screenWidth), // 버튼 간 간격
+                              // 닫기 버튼
+                              ElevatedButton(
+                                style: ElevatedButton.styleFrom(
+                                  elevation: 0, // 그림자 없앰
+                                  backgroundColor: Colors.white, // 배경색
+                                  minimumSize: Size(
+                                    (129 / 393) * screenWidth, // 너비
+                                    (40.8 / 852) * screenHeight, // 높이
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(10),
+                                    side: const BorderSide(
+                                      color: Color(0xff4468AD), // 테두리 색
+                                    ),
+                                  ),
+                                ),
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pop(); // 닫기 버튼 클릭 시 팝업 닫기
+                                },
+                                child: Text(
+                                  '닫기',
+                                  style: bold15.copyWith(
+                                    color: const Color(0xFF4FA2FF),
+                                    fontWeight: FontWeight.w600,
+                                    height: 0.11,
+                                    fontSize: 14,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
                     ),
-                  ],
+                  ),
                 );
               },
             );
@@ -356,6 +441,7 @@ class _GoogleMapPageState extends State<GoogleMapPage> {
       ]
     }
   ]''';
+    // ignore: deprecated_member_use
     controller.setMapStyle(style);
   }
 
