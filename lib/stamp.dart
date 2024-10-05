@@ -48,6 +48,10 @@ class _StampPageState extends State<StampPage> {
         }
       }
 
+      while (stamps.length < 6) {
+        stamps.add({'name': '', 'image': '', 'location': ''});
+      }
+
       setState(() {});
     } catch (e) {
       print('Error fetching stamp data: $e');
@@ -88,18 +92,50 @@ class _StampPageState extends State<StampPage> {
               crossAxisCount: 3,
               padding: const EdgeInsets.all(16),
               children: stamps.map((stamp) {
-                return StampItem(
-                  name: stamp['name'],
-                  image: stamp['image'],
-                  location: stamp['location'],
-                  width: screenWidth * (144 / 393),
-                  height: screenHeight * (144 / 852),
-                );
+                if (stamp['name'] == '') {
+                  return EmptyStampItem(
+                    width: screenWidth * (144 / 393),
+                    height: screenHeight * (144 / 852),
+                  );
+                } else {
+                  return StampItem(
+                    name: stamp['name'],
+                    image: stamp['image'],
+                    location: stamp['location'],
+                    width: screenWidth * (144 / 393),
+                    height: screenHeight * (144 / 852),
+                  );
+                }
               }).toList(),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class EmptyStampItem extends StatelessWidget {
+  final double width;
+  final double height;
+
+  const EmptyStampItem({
+    super.key,
+    required this.width,
+    required this.height,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        CircleAvatar(
+          radius: 40,
+          backgroundColor: const Color(0xffEEF4FF),
+        ),
+        const SizedBox(height: 8),
+        Text(" "),
+      ],
     );
   }
 }
