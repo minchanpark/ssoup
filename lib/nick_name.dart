@@ -124,8 +124,11 @@ class _NickNamePageState extends State<NickNamePage> {
                 onPressed: isNickNameFilled
                     ? () {
                         addNickNameToFirestore(nickNameController.text);
-                        Navigator.pushNamed(
-                            context, '/home_page_navigationBar');
+                        Navigator.pushNamedAndRemoveUntil(
+                          context,
+                          '/home_page_navigationBar',
+                          (Route<dynamic> route) => false,
+                        );
                       }
                     : null,
                 style: ElevatedButton.styleFrom(

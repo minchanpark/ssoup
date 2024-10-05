@@ -184,9 +184,6 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       print('Google login error: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Google login failed: $e')),
-      );
     } finally {
       _showLoading(false);
     }
@@ -239,9 +236,6 @@ class _LoginPageState extends State<LoginPage> {
       }
     } catch (e) {
       print('Apple login error: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Apple login failed: $e')),
-      );
     } finally {
       _showLoading(false);
     }
@@ -249,7 +243,6 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
-    double appWidth = MediaQuery.of(context).size.width;
     double appHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       body: Container(
@@ -377,8 +370,10 @@ class _LoginPageState extends State<LoginPage> {
             SizedBox(height: (51 / 852) * appHeight),
             TextButton(
                 onPressed: () {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (context) => SignUpPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const RegisterPage()));
                 },
                 child: Text(
                   "계정이 따로 없다면?",
