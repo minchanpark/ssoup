@@ -62,26 +62,86 @@ class _StampPageState extends State<StampPage> {
       backgroundColor: Colors.white,
       body: Column(
         children: [
-          Stack(
-            children: [
-              Image.asset("assets/ul.png"),
-              Center(
-                  child: Padding(
-                padding: EdgeInsets.only(top: 68.0),
-                child: Text(
-                  "스탬프",
-                  style: medium20,
-                ),
-              )),
-              Center(
-                  child: Padding(
-                padding: EdgeInsets.only(top: 227),
-                child: Text(
-                  "울릉도 곳곳에 숨어있는\n동물 친구들을 찾아주세요!",
-                  style: medium20,
-                ),
-              ))
-            ],
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.elliptical(200, 80),
+              bottomRight: Radius.elliptical(200, 80),
+            ),
+            child: Container(
+              decoration: const BoxDecoration(
+                gradient: AppColor.homeMix,
+              ),
+              width: double.infinity,
+              height: screenHeight * (320 / 852),
+              child: Stack(
+                children: [
+                  Positioned(
+                    top: screenHeight * (54 / 852),
+                    left: screenWidth * (159 / 393),
+                    child: Image.asset(
+                      'assets/ssoup.png',
+                      width: 77,
+                      height: 77,
+                    ),
+                  ),
+                  Positioned(
+                    top: screenHeight * (129 / 852),
+                    left: screenWidth * (60 / 393),
+                    child: Text(
+                      '$nickName님의 스탬프 모아보기',
+                      style: bold23.copyWith(
+                        color: Colors.white,
+                        fontSize: screenWidth * (23 / 393),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: screenHeight * (167 / 852),
+                    left: screenWidth * (157 / 393),
+                    child: Text(
+                      formattedDate,
+                      style: regular15.copyWith(
+                        color: Colors.white,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    top: screenHeight * (201 / 852),
+                    left: screenWidth * (60 / 393),
+                    child: Stack(
+                      children: [
+                        Image.asset(
+                          'assets/aaa.png',
+                          width: 193,
+                        ),
+                        Positioned(
+                          top: screenHeight * (14 / 852),
+                          left: screenWidth * (13 / 393),
+                          child: Text(
+                            '플로깅 인증하고 스탬프를 모아\n제 친구들을 구해주세요!',
+                            textAlign: TextAlign.center,
+                            style: regular13.copyWith(
+                              height: 1.38,
+                              letterSpacing: -0.32,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Positioned(
+                    top: screenHeight * (97 / 852),
+                    left: screenWidth * (134 / 393),
+                    child: Image.asset(
+                      'assets/mugogi.png',
+                      width: screenWidth * (308 / 393),
+                      height: screenHeight * (271 / 852),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
           Expanded(
             child: GridView.count(
