@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'theme/color.dart';
 import 'theme/text.dart';
 
 class StampPage extends StatefulWidget {
@@ -61,7 +60,6 @@ class _StampPageState extends State<StampPage> {
 
   @override
   Widget build(BuildContext context) {
-    double screenWidth = MediaQuery.of(context).size.width;
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.white,
@@ -78,32 +76,36 @@ class _StampPageState extends State<StampPage> {
               Center(
                   child: Padding(
                 padding: EdgeInsets.only(top: (68.0 / 852) * screenHeight),
-                child: Text(
-                  "스탬프",
-                  style: medium20,
-                ),
+                child: const Text("스탬프", style: medium20),
               )),
-              const Center(
+              Center(
                   child: Padding(
-                padding: EdgeInsets.only(top: 227),
+                padding: EdgeInsets.only(top: (170 / 852) * screenHeight),
                 child: Text(
                   "울릉도 곳곳에 숨어있는\n동물 친구들을 찾아주세요!",
-                  style: medium20,
+                  textAlign: TextAlign.center,
+                  style: medium20.copyWith(
+                    fontWeight: FontWeight.w500,
+                    height: 1.7,
+                    letterSpacing: -0.32,
+                  ),
                 ),
               ))
             ],
           ),
-          Expanded(
+          SizedBox(
+            height: 300,
             child: GridView.count(
               crossAxisCount: 3,
+              //physics: const NeverScrollableScrollPhysics(),
               padding: const EdgeInsets.all(16),
               children: stamps.map((stamp) {
                 return StampItem(
                   name: stamp['name'],
                   image: stamp['image'],
                   location: stamp['location'],
-                  width: screenWidth * (144 / 393),
-                  height: screenHeight * (144 / 852),
+                  width: 124,
+                  height: 124,
                 );
               }).toList(),
             ),
@@ -141,8 +143,8 @@ class StampItem extends StatelessWidget {
             radius: 40,
             backgroundColor: const Color(0xffEEF4FF),
             child: SizedBox(
-              width: width,
-              height: height,
+              width: (width / 393) * mediaWidth,
+              height: (height / 852) * mediaHeight,
             ),
           ),
           const SizedBox(height: 8),

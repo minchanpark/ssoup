@@ -2,10 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:ssoup/plogging/photo_review.dart';
-import '../about_map/map.dart';
 import '../theme/color.dart';
 import '../theme/text.dart';
-import 'review_create_page.dart';
 
 class CourseReviewPage extends StatefulWidget {
   final String courseId;
