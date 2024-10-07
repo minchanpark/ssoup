@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:ssoup/about_home/private.dart';
+import 'package:ssoup/about_home/service.dart';
 import 'package:ssoup/theme/text.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -100,13 +102,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 _buildMenuItem('개인정보 처리방침', 1),
                 const Divider(
                     thickness: 1, height: 2, color: Color(0xffB1B1B1)),
-                _buildMenuItem('푸쉬 알림 설정', 2),
+                _buildMenuItem('로그아웃', 2),
                 const Divider(
                     thickness: 1, height: 2, color: Color(0xffB1B1B1)),
-                _buildMenuItem('로그아웃', 3),
-                const Divider(
-                    thickness: 1, height: 2, color: Color(0xffB1B1B1)),
-                _buildMenuItem('회원탈퇴', 4),
+                _buildMenuItem('회원탈퇴', 3),
                 const Divider(
                     thickness: 1, height: 2, color: Color(0xffB1B1B1)),
               ],
@@ -131,6 +130,15 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       onTap: () {
         // 메뉴 항목을 눌렀을 때의 동작을 여기에 추가하세요.
+        if (index == 1) {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => const PrivatePage()));
+        } else if (index == 0) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => const TermsOfServicePage()));
+        }
       },
     );
   }
