@@ -9,14 +9,11 @@ import 'package:ssoup/about_home/home_navigationbar.dart';
 import 'package:ssoup/plogging/plogging.dart';
 import 'package:ssoup/about_login/login.dart';
 import 'package:ssoup/nick_name.dart';
-import 'firebase_options.dart';
 import 'splash.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp();
   KakaoSdk.init(
     nativeAppKey: kakaoNativeAppKey,
     javaScriptAppKey: kakaoJavaScriptAppKey,
