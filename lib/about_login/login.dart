@@ -245,8 +245,8 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     double appHeight = MediaQuery.of(context).size.height;
     return Scaffold(
-      body: Container(
-        color: Colors.white,
+      backgroundColor: Colors.white,
+      body: SingleChildScrollView(
         child: Column(
           children: [
             SizedBox(height: (211 / 852) * appHeight),
@@ -345,7 +345,9 @@ class _LoginPageState extends State<LoginPage> {
                         borderRadius: BorderRadius.circular(3),
                       ),
                     ),
-                    onPressed: _isLoading ? null : _signInWithGoogle,
+                    onPressed: () {
+                      Navigator.pushNamed(context, '/login_with_id');
+                    },
                     child: Row(
                       children: [
                         const SizedBox(width: 7),

@@ -88,6 +88,7 @@ flutter:
     - assets/
     - assets/fluent-stamp-32-light.svg
     - assets/login.svg
+    - assets/ul.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

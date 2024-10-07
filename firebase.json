@@ -1,1 +1,53 @@
-{"flutter":{"platforms":{"android":{"default":{"projectId":"ssoup-82c05","appId":"1:159990997817:android:f5dc842c23b21f61ed7ee8","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"ssoup-82c05","configurations":{"android":"1:159990997817:android:f5dc842c23b21f61ed7ee8","ios":"1:159990997817:ios:66516696123fac95ed7ee8","web":"1:159990997817:web:91507460a55d92aded7ee8","windows":"1:159990997817:web:e3781a7940ed07aaed7ee8"}}},"ios":{"default":{"projectId":"ssoup-82c05","appId":"1:159990997817:ios:66516696123fac95ed7ee8","uploadDebugSymbols":false,"fileOutput":"ios/Runner/GoogleService-Info.plist"}}}}}
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "ssoup-82c05",
+          "appId": "1:159990997817:android:f5dc842c23b21f61ed7ee8",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "ssoup-82c05",
+          "configurations": {
+            "ios": "1:159990997817:ios:66516696123fac95ed7ee8",
+            "macos": "1:159990997817:ios:66516696123fac95ed7ee8",
+            "web": "1:159990997817:web:91507460a55d92aded7ee8"
+          }
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "ssoup-82c05",
+          "appId": "1:159990997817:ios:66516696123fac95ed7ee8",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "macos": {
+        "default": {
+          "projectId": "ssoup-82c05",
+          "appId": "1:159990997817:ios:66516696123fac95ed7ee8",
+          "uploadDebugSymbols": false,
+          "fileOutput": "macos/Runner/GoogleService-Info.plist"
+        }
+      }
+    }
+  },
+  "hosting": {
+    "public": "build/web",
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "**/node_modules/**"
+    ],
+    "rewrites": [
+      {
+        "source": "**",
+        "destination": "/index.html"
+      }
+    ]
+  }
+}

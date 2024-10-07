@@ -63,54 +63,56 @@ class _StampPageState extends State<StampPage> {
     double screenHeight = MediaQuery.of(context).size.height;
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          Stack(
-            children: [
-              Image.asset(
-                "assets/ul.png",
-                width: double.infinity,
-                height: (367 / 852) * screenHeight,
-                fit: BoxFit.cover,
-              ),
-              Center(
-                  child: Padding(
-                padding: EdgeInsets.only(top: (68.0 / 852) * screenHeight),
-                child: const Text("스탬프", style: medium20),
-              )),
-              Center(
-                  child: Padding(
-                padding: EdgeInsets.only(top: (170 / 852) * screenHeight),
-                child: Text(
-                  "울릉도 곳곳에 숨어있는\n동물 친구들을 찾아주세요!",
-                  textAlign: TextAlign.center,
-                  style: medium20.copyWith(
-                    fontWeight: FontWeight.w500,
-                    height: 1.7,
-                    letterSpacing: -0.32,
-                  ),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Stack(
+              children: [
+                Image.asset(
+                  "assets/ul.png",
+                  width: double.infinity,
+                  height: (367 / 852) * screenHeight,
+                  fit: BoxFit.cover,
                 ),
-              ))
-            ],
-          ),
-          SizedBox(
-            height: 300,
-            child: GridView.count(
-              crossAxisCount: 3,
-              //physics: const NeverScrollableScrollPhysics(),
-              padding: const EdgeInsets.all(16),
-              children: stamps.map((stamp) {
-                return StampItem(
-                  name: stamp['name'],
-                  image: stamp['image'],
-                  location: stamp['location'],
-                  width: 124,
-                  height: 124,
-                );
-              }).toList(),
+                Center(
+                    child: Padding(
+                  padding: EdgeInsets.only(top: (68.0 / 852) * screenHeight),
+                  child: const Text("스탬프", style: medium20),
+                )),
+                Center(
+                    child: Padding(
+                  padding: EdgeInsets.only(top: (170 / 852) * screenHeight),
+                  child: Text(
+                    "울릉도 곳곳에 숨어있는\n동물 친구들을 찾아주세요!",
+                    textAlign: TextAlign.center,
+                    style: medium20.copyWith(
+                      fontWeight: FontWeight.w500,
+                      height: 1.7,
+                      letterSpacing: -0.32,
+                    ),
+                  ),
+                ))
+              ],
             ),
-          ),
-        ],
+            SizedBox(
+              height: 300,
+              child: GridView.count(
+                crossAxisCount: 3,
+                physics: const NeverScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(16),
+                children: stamps.map((stamp) {
+                  return StampItem(
+                    name: stamp['name'],
+                    image: stamp['image'],
+                    location: stamp['location'],
+                    width: 124,
+                    height: 124,
+                  );
+                }).toList(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

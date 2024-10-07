@@ -19,7 +19,7 @@ class _CustomProgressBarState extends State<CustomProgressBar> {
         .snapshots() // 실시간 스트림으로 변경
         .map((snapshot) {
       if (snapshot.exists) {
-        return snapshot['stampId'] as List<dynamic>;
+        return snapshot['stampId'];
       } else {
         throw Exception("User document does not exist");
       }
