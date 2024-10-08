@@ -11,14 +11,37 @@ import 'package:ssoup/about_login/register_page.dart';
 import '../nick_name.dart';
 import '../theme/text.dart';
 
-Future<void> addUserToFirestore(
-    firebase_auth.User user, String email, String name) async {
+Future<bool> isLoginMethodMatching(String? email, String loginMethod) async {
+  final CollectionReference users =
+      FirebaseFirestore.instance.collection('user');
+
+  // 이메일이 일치하는 유저 문서 조회
+  final QuerySnapshot result =
+      await users.where('email', isEqualTo: email).get();
+
+  // 해당 이메일로 등록된 유저가 있는지 확인
+  if (result.docs.isNotEmpty) {
+    final userData = result.docs.first.data() as Map<String, dynamic>;
+
+    // loginMethod가 일치하는지 확인
+    return userData['loginMethod'] == loginMethod;
+  }
+
+  return false; // 유저가 없거나 loginMethod가 일치하지 않으면 false
+}
+
+Future<void> addUserToFirestore(firebase_auth.User user, String email,
+    String name, String loginMethod) async {
   final CollectionReference users =
       FirebaseFirestore.instance.collection('user');
   final DocumentSnapshot snapshot = await users.doc(user.uid).get();
 
   if (snapshot.exists) {
-    final updatedUserData = {'email': email, 'name': name};
+    final updatedUserData = {
+      'email': email,
+      'name': name,
+      'loginMethod': loginMethod,
+    };
     await users.doc(user.uid).update(updatedUserData);
     print('User data updated in Firestore: $updatedUserData');
   } else {
@@ -30,7 +53,8 @@ Future<void> addUserToFirestore(
       'totalStamp': 0,
       'totalKm': 0.0,
       'nickName': '',
-      'stampId': '',
+      'stampId': [],
+      'loginMethod': loginMethod,
     };
     await users.doc(user.uid).set(newUserData);
     print('New user data added to Firestore: $newUserData');
@@ -44,21 +68,31 @@ Future<firebase_auth.UserCredential> signInWithKakao() async {
     print('Kakao login successful: ${token.accessToken}');
 
     final kakao.User kakaoUser = await kakao.UserApi.instance.me();
-    final String email = kakaoUser.kakaoAccount?.email ?? '';
-    final String name = kakaoUser.kakaoAccount?.profile?.nickname ?? '';
+    final email = kakaoUser.kakaoAccount?.email ?? '';
+    final name = kakaoUser.kakaoAccount?.profile?.nickname ?? '';
+
+    // Firestore에서 loginMethod 일치 여부 확인
+    isLoginMethodMatching(email, 'Kakao');
 
     final credential =
         firebase_auth.OAuthProvider("oidc.oidc.kakao.com").credential(
       accessToken: token.accessToken,
-      idToken: token.idToken,
+      idToken: token.idToken ?? '',
     );
 
     final userCredential = await firebase_auth.FirebaseAuth.instance
         .signInWithCredential(credential);
-    final firebase_auth.User user = userCredential.user!;
+    final firebase_auth.User? user = userCredential.user;
+
+    if (user == null) {
+      throw firebase_auth.FirebaseAuthException(
+        code: 'ERROR_USER_NOT_FOUND',
+        message: 'Firebase user not found after Kakao login',
+      );
+    }
 
     print('Firebase user authenticated: ${user.uid}');
-    await addUserToFirestore(user, email, name);
+    await addUserToFirestore(user, email, name, 'Kakao');
 
     return userCredential;
   } catch (error) {
@@ -72,7 +106,6 @@ Future<firebase_auth.UserCredential> signInWithKakao() async {
 
 Future<firebase_auth.UserCredential> signInWithGoogle() async {
   try {
-    await firebase_auth.FirebaseAuth.instance.signOut();
     final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
     if (googleUser == null) {
       throw firebase_auth.FirebaseAuthException(
@@ -83,6 +116,19 @@ Future<firebase_auth.UserCredential> signInWithGoogle() async {
 
     final GoogleSignInAuthentication googleAuth =
         await googleUser.authentication;
+
+    if (googleAuth.accessToken == null || googleAuth.idToken == null) {
+      throw firebase_auth.FirebaseAuthException(
+        code: 'ERROR_MISSING_GOOGLE_AUTH_TOKEN',
+        message: 'Missing Google authentication token',
+      );
+    }
+
+    final String email = googleUser.email;
+
+    // Firestore에서 loginMethod 일치 여부 확인
+    isLoginMethodMatching(email, 'Google');
+
     final credential = firebase_auth.GoogleAuthProvider.credential(
       accessToken: googleAuth.accessToken,
       idToken: googleAuth.idToken,
@@ -90,8 +136,17 @@ Future<firebase_auth.UserCredential> signInWithGoogle() async {
 
     final userCredential = await firebase_auth.FirebaseAuth.instance
         .signInWithCredential(credential);
-    final firebase_auth.User user = userCredential.user!;
-    await addUserToFirestore(user, user.email!, user.displayName!);
+    final firebase_auth.User? user = userCredential.user;
+
+    if (user == null) {
+      throw firebase_auth.FirebaseAuthException(
+        code: 'ERROR_USER_NOT_FOUND',
+        message: 'User not found after Google sign-in',
+      );
+    }
+
+    await addUserToFirestore(user, user.email ?? 'no-email',
+        user.displayName ?? 'no-name', 'Google');
 
     return userCredential;
   } catch (error) {
@@ -113,19 +168,30 @@ Future<firebase_auth.UserCredential> signInWithApple() async {
     );
 
     final oauthCredential = firebase_auth.OAuthProvider("apple.com").credential(
-      idToken: appleCredential.identityToken,
+      idToken: appleCredential.identityToken ?? '',
       accessToken: appleCredential.authorizationCode,
     );
 
+    final String email = appleCredential.email ?? '';
+
+    // Firestore에서 loginMethod 일치 여부 확인
+    isLoginMethodMatching(email, 'Apple');
+
     final userCredential = await firebase_auth.FirebaseAuth.instance
         .signInWithCredential(oauthCredential);
-    final firebase_auth.User user = userCredential.user!;
+    final firebase_auth.User? user = userCredential.user;
 
-    final email = appleCredential.email ?? user.email ?? '';
-    final name =
+    if (user == null) {
+      throw firebase_auth.FirebaseAuthException(
+        code: 'ERROR_USER_NOT_FOUND',
+        message: 'User not found after Apple sign-in',
+      );
+    }
+
+    final String name =
         (appleCredential.givenName ?? '') + (appleCredential.familyName ?? '');
 
-    await addUserToFirestore(user, email, name);
+    await addUserToFirestore(user, email, name, 'Apple');
 
     return userCredential;
   } catch (error) {
@@ -169,8 +235,10 @@ class _LoginPageState extends State<LoginPage> {
       final userCredential = await signInWithGoogle();
       final user = userCredential.user!;
       final hasNickname = await checkNickname(user);
+      final bool isMatching =
+          await isLoginMethodMatching(userCredential.user?.email, 'Google');
 
-      if (hasNickname) {
+      if (isMatching == true && hasNickname) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -195,8 +263,10 @@ class _LoginPageState extends State<LoginPage> {
       final userCredential = await signInWithKakao();
       final user = userCredential.user!;
       final hasNickname = await checkNickname(user);
+      final bool isMatching =
+          await isLoginMethodMatching(userCredential.user?.email, 'Kakao');
 
-      if (hasNickname) {
+      if (isMatching == true && hasNickname) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -221,8 +291,10 @@ class _LoginPageState extends State<LoginPage> {
       final userCredential = await signInWithApple();
       final user = userCredential.user!;
       final hasNickname = await checkNickname(user);
+      final bool isMatching =
+          await isLoginMethodMatching(userCredential.user?.email, 'Apple');
 
-      if (hasNickname) {
+      if (isMatching == true && hasNickname) {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(

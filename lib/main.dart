@@ -9,7 +9,9 @@ import 'package:ssoup/about_home/home_navigationbar.dart';
 import 'package:ssoup/plogging/plogging.dart';
 import 'package:ssoup/about_login/login.dart';
 import 'package:ssoup/nick_name.dart';
+import 'package:ssoup/transport/taxi_page.dart';
 import 'splash.dart';
+import 'transport/boat_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,6 +44,8 @@ class MyApp extends StatelessWidget {
         "/setting_page": (BuildContext context) => const SettingsPage(),
         "/plogging_page": (BuildContext context) => const PloggingPage(),
         "/login_with_id": (BuildContext context) => const LoginWithId(),
+        "/taxi_page": (BuildContext context) => const TaxiPage(),
+        "/boat_page": (BuildContext context) => const BoatPage(),
       },
       home: const LoginPage(),
     );
