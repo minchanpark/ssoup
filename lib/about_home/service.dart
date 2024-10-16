@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class TermsOfServicePage extends StatelessWidget {
-  const TermsOfServicePage({super.key});
+class ServicePage extends StatelessWidget {
+  const ServicePage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,7 @@ class TermsOfServicePage extends StatelessWidget {
             children: [
               Text(
                 "제1조(목적)\n"
-                "이 약관은 ssoup(이하 '회사'라 합니다)가 제공하는 제반 서비스의 이용과 관련하여 회사와 "
+                "이 약관은 그린울릉(이하 '회사'라 합니다)가 제공하는 제반 서비스의 이용과 관련하여 회사와 "
                 "회원과의 권리, 의무 및 책임사항, 기타 필요한 사항을 규정함을 목적으로 합니다.",
                 style: TextStyle(fontSize: 16),
               ),
@@ -58,7 +58,7 @@ class TermsOfServicePage extends StatelessWidget {
 
               Text(
                 "제4조(약관의 효력과 변경)\n"
-                "  1. 이 약관은 ssoup(이)가 제공하는 모든 인터넷서비스에 게시하여 공시합니다. "
+                "  1. 이 약관은 그린울릉(이)가 제공하는 모든 인터넷서비스에 게시하여 공시합니다. "
                 "'회사'는 ‘전자상거래 등에서의 소비자보호에 관한 법률(이하 '전자상거래법'이라 함)', "
                 "'약관의 규제에 관한 법률(이하 '약관규제법'이라 함)', '전자문서 및 전자거래 기본법(이하 '전자문서법'이라 함)', "
                 "‘전자금융거래법‘, '정보통신망 이용촉진 및 정보보호 등에 관한 법률(이하 '정보통신망법'이라 함)', "

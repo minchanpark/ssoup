@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:ssoup/plogging/plogging_review_page.dart';
-import 'package:ssoup/about_map/map.dart';
+import '../about_map/map_tour.dart';
 import '../theme/text.dart';
+import 'tour_review_page.dart';
 
 class TourDetailPage extends StatefulWidget {
   final String tourId;
@@ -72,11 +72,13 @@ class _TourDetailPageState extends State<TourDetailPage> {
                     child: TabBarView(
                       children: [
                         _buildCourseInfo(screenWidth, screenHeight),
-                        /* CourseReviewPage(
-                          courseId: widget.tourId,
-                          courseImage: widget.tourImage,
-                          courseLocationName: widget.tourLocationName,
-                        ),*/
+                        // 리뷰 페이지에 대한 자리표시자 추가
+
+                        TourReviewPage(
+                          tourId: widget.tourId,
+                          tourImage: widget.tourImage,
+                          tourTitle: widget.tourLocationName,
+                        ),
                       ],
                     ),
                   ),
@@ -107,16 +109,15 @@ class _TourDetailPageState extends State<TourDetailPage> {
               height: 65,
               child: ElevatedButton(
                 onPressed: () {
-                  /* Navigator.push(
+                  Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => GoogleMapPage(
-                        startLocation: widget.courseStartLocation,
-                        endLocation: widget.courseEndLocation,
+                      builder: (context) => GoogleMapTourPage(
                         courseId: widget.tourId,
+                        location: widget.location,
                       ),
                     ),
-                  );*/
+                  );
                 },
                 style: ElevatedButton.styleFrom(
                   elevation: 0,

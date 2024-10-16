@@ -98,7 +98,7 @@ class BoatPage extends StatelessWidget {
                   width: 343,
                   height: 111,
                   margin:
-                      EdgeInsets.symmetric(vertical: (14 / 852) * screenHeight),
+                      EdgeInsets.symmetric(vertical: (9 / 852) * screenHeight),
                   padding: EdgeInsets.symmetric(
                     horizontal: (16 / 393) * screenWidth,
                   ),

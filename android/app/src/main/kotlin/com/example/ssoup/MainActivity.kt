@@ -1,4 +1,4 @@
-package com.example.ssoup
+package com.soda.uleung
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -6,12 +6,15 @@ class TransportationPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
         scrolledUnderElevation: 0,
         toolbarHeight: 50,
         backgroundColor: Colors.white,
+        automaticallyImplyLeading: false,
         title: Column(
           children: [
             const SizedBox(height: 30),
@@ -23,7 +26,10 @@ class TransportationPage extends StatelessWidget {
                   letterSpacing: -0.32,
                 )),
             const SizedBox(height: 9),
-            const Divider(),
+            Divider(
+              indent: (15 / 393) * screenWidth,
+              endIndent: (15 / 393) * screenWidth,
+            ),
           ],
         ),
         elevation: 0,

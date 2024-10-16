@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart';
+import 'package:ssoup/about_home/private.dart';
+import 'package:ssoup/about_home/service.dart';
 import 'package:ssoup/about_home/setting_page.dart';
 import 'package:ssoup/about_login/login_with_id.dart';
 import 'package:ssoup/constants.dart';
@@ -46,6 +48,9 @@ class MyApp extends StatelessWidget {
         "/login_with_id": (BuildContext context) => const LoginWithId(),
         "/taxi_page": (BuildContext context) => const TaxiPage(),
         "/boat_page": (BuildContext context) => const BoatPage(),
+        "/splash": (BuildContext context) => const SplashPage(),
+        "/private": (BuildContext context) => const PrivatePage(),
+        "/service": (BuildContext context) => const ServicePage(),
       },
       home: const LoginPage(),
     );

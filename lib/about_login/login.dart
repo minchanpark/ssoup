@@ -229,7 +229,7 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  Future<void> _signInWithGoogle() async {
+  /* Future<void> _signInWithGoogle() async {
     _showLoading(true);
     try {
       final userCredential = await signInWithGoogle();
@@ -311,7 +311,7 @@ class _LoginPageState extends State<LoginPage> {
     } finally {
       _showLoading(false);
     }
-  }
+  }*/
 
   @override
   Widget build(BuildContext context) {
@@ -332,8 +332,8 @@ class _LoginPageState extends State<LoginPage> {
                     height: 94,
                     child: Image.asset('assets/island.png'),
                   ),
-                  SizedBox(height: (50 / 852) * appHeight),
-                  ElevatedButton(
+                  /*  SizedBox(height: (50 / 852) * appHeight),
+              ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       elevation: 0,
@@ -406,8 +406,8 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ],
                     ),
-                  ),
-                  SizedBox(height: (12 / 852) * appHeight),
+                  ),*/
+                  SizedBox(height: (150 / 852) * appHeight),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xff919191),

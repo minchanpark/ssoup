@@ -50,8 +50,8 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBHvMqUXRSbwHzkWl6IKMcDHFbvvy6vZVA',
-    appId: '1:159990997817:android:f5dc842c23b21f61ed7ee8',
+    apiKey: 'AIzaSyALYtGU28ETOC2lZi_uSZlMrrVDd7UgZnc',
+    appId: '1:159990997817:android:337de613d5d77d74ed7ee8',
     messagingSenderId: '159990997817',
     projectId: 'ssoup-82c05',
     storageBucket: 'ssoup-82c05.appspot.com',
@@ -63,8 +63,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '159990997817',
     projectId: 'ssoup-82c05',
     storageBucket: 'ssoup-82c05.appspot.com',
-    androidClientId: '159990997817-eqitbmdlf8k9397r2hd6prvpl7lfk5rn.apps.googleusercontent.com',
-    iosClientId: '159990997817-6f382o1qjbnga4k132u5dktmh7uev3dj.apps.googleusercontent.com',
+    androidClientId:
+        '159990997817-eqitbmdlf8k9397r2hd6prvpl7lfk5rn.apps.googleusercontent.com',
+    iosClientId:
+        '159990997817-6f382o1qjbnga4k132u5dktmh7uev3dj.apps.googleusercontent.com',
     iosBundleId: 'com.example.ssoup',
   );
 
@@ -74,8 +76,10 @@ class DefaultFirebaseOptions {
     messagingSenderId: '159990997817',
     projectId: 'ssoup-82c05',
     storageBucket: 'ssoup-82c05.appspot.com',
-    androidClientId: '159990997817-eqitbmdlf8k9397r2hd6prvpl7lfk5rn.apps.googleusercontent.com',
-    iosClientId: '159990997817-6f382o1qjbnga4k132u5dktmh7uev3dj.apps.googleusercontent.com',
+    androidClientId:
+        '159990997817-eqitbmdlf8k9397r2hd6prvpl7lfk5rn.apps.googleusercontent.com',
+    iosClientId:
+        '159990997817-6f382o1qjbnga4k132u5dktmh7uev3dj.apps.googleusercontent.com',
     iosBundleId: 'com.example.ssoup',
   );
 
@@ -87,5 +91,4 @@ class DefaultFirebaseOptions {
     authDomain: 'ssoup-82c05.firebaseapp.com',
     storageBucket: 'ssoup-82c05.appspot.com',
   );
-
 }
