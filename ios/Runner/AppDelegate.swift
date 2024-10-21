@@ -1,6 +1,8 @@
-import UIKit
 import Flutter
+import UIKit
 import GoogleMaps
+import Firebase
+// import kakao_flutter_sdk_common
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -8,19 +10,17 @@ import GoogleMaps
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    GMSServices.provideAPIKey("AIzaSyAcFH0RxG1lD5jBA6voMl4MvKOCdB5zYg8")
     GeneratedPluginRegistrant.register(with: self)
-
+    
+    // Firebase 초기화
+    FirebaseApp.configure()
+    
+    // Google Maps API 키 추가
+    GMSServices.provideAPIKey("AIzaSyDIBovNEZWIZSPVyRmzmBaCsInU8YgQPHc")
+    
+    // Kakao 플러그인 수동 등록
+    //SwiftKakaoFlutterSdkPlugin.register(with: self)
+    
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-  }
-
-  override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-    var applicationResult = false
-
-    if (!applicationResult) {
-       applicationResult = super.application(app, open: url, options: options)
-    }
-
-    return applicationResult
   }
 }

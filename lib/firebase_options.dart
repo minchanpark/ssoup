@@ -58,16 +58,14 @@ class DefaultFirebaseOptions {
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyBkD4Q-5r5wAQ8vgttAcZGPnMKdSJYRqjI',
-    appId: '1:159990997817:ios:66516696123fac95ed7ee8',
+    apiKey: 'AIzaSyDIBovNEZWIZSPVyRmzmBaCsInU8YgQPHc',
+    appId: '1:159990997817:ios:d7a81845d9e7d495ed7ee8',
     messagingSenderId: '159990997817',
     projectId: 'ssoup-82c05',
     storageBucket: 'ssoup-82c05.appspot.com',
-    androidClientId:
-        '159990997817-eqitbmdlf8k9397r2hd6prvpl7lfk5rn.apps.googleusercontent.com',
-    iosClientId:
-        '159990997817-6f382o1qjbnga4k132u5dktmh7uev3dj.apps.googleusercontent.com',
-    iosBundleId: 'com.example.ssoup',
+    androidClientId: '159990997817-db0df385ao72vndsgrdei1oo59hap2b1.apps.googleusercontent.com',
+    iosClientId: '159990997817-mlkooh6aercekrbk16gb0fb1001idpo6.apps.googleusercontent.com',
+    iosBundleId: 'com.soda.uleung',
   );
 
   static const FirebaseOptions macos = FirebaseOptions(

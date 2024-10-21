@@ -4,10 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:kakao_flutter_sdk/kakao_flutter_sdk.dart' as kakao;
+import 'package:kakao_flutter_sdk/kakao_flutter_sdk_user.dart' as kakao;
 import 'package:sign_in_with_apple/sign_in_with_apple.dart';
-import 'package:ssoup/about_home/home_navigationbar.dart';
 import 'package:ssoup/about_login/register_page.dart';
+import '../about_home/home_navigationbar.dart';
 import '../nick_name.dart';
 import '../theme/text.dart';
 
@@ -74,8 +74,7 @@ Future<firebase_auth.UserCredential> signInWithKakao() async {
     // Firestore에서 loginMethod 일치 여부 확인
     isLoginMethodMatching(email, 'Kakao');
 
-    final credential =
-        firebase_auth.OAuthProvider("oidc.oidc.kakao.com").credential(
+    final credential = firebase_auth.OAuthProvider("oidc.kakao.com").credential(
       accessToken: token.accessToken,
       idToken: token.idToken ?? '',
     );
@@ -229,7 +228,7 @@ class _LoginPageState extends State<LoginPage> {
     });
   }
 
-  /* Future<void> _signInWithGoogle() async {
+  Future<void> _signInWithGoogle() async {
     _showLoading(true);
     try {
       final userCredential = await signInWithGoogle();
@@ -311,7 +310,7 @@ class _LoginPageState extends State<LoginPage> {
     } finally {
       _showLoading(false);
     }
-  }*/
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -332,8 +331,8 @@ class _LoginPageState extends State<LoginPage> {
                     height: 94,
                     child: Image.asset('assets/island.png'),
                   ),
-                  /*  SizedBox(height: (50 / 852) * appHeight),
-              ElevatedButton(
+                  SizedBox(height: (50 / 852) * appHeight),
+                  ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       elevation: 0,
@@ -406,8 +405,8 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ],
                     ),
-                  ),*/
-                  SizedBox(height: (150 / 852) * appHeight),
+                  ),
+                  SizedBox(height: (12 / 852) * appHeight),
                   ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: const Color(0xff919191),
