@@ -22,8 +22,8 @@ migrate_working_dir/
 #.vscode/
 
 # Ignore only the constants.dart file
-/lib/constants.dart
-/lib/firebase_options.dart
+constants.dart
+firebase_options.dart
 
 # Flutter/Dart/Pub related
 **/doc/api/
