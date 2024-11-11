@@ -8,7 +8,7 @@ import 'package:ssoup/about_home/home.dart';
 import 'package:ssoup/stamp.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-import '../transport_page.dart';
+import '../transport/transport_page.dart';
 
 class HomePageNavigationBar extends StatefulWidget {
   const HomePageNavigationBar({super.key});

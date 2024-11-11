@@ -1,0 +1,7 @@
+<resources>
+    <string name="client_id">5W1i7HaL5v17UYztE6WJ</string>
+    <string name="client_secret">flw484EdxS</string>
+    <string name="client_name">ssoup</string>
+    <string name="app_name">내가 그린 울릉</string>
+    <string name="kakao_app_key">842b3b6744424d1938d1d97d8e46c034</string>
+</resources>

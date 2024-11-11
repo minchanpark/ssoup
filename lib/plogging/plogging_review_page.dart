@@ -27,7 +27,6 @@ class _CourseReviewPageState extends State<CourseReviewPage> {
 
   String nickname = "";
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  List location_list = [1.1, 0.1];
 
   @override
   void initState() {

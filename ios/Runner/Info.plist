@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-	<string>Ssoup</string>
+	<string>내가 그린 울릉</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -15,7 +15,7 @@
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
-	<string>ssoup</string>
+	<string>내가 그린 울릉</string>
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -27,23 +27,33 @@
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>google</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>com.googleusercontent.apps.159990997817-6f382o1qjbnga4k132u5dktmh7uev3dj</string>
-				<string>kakao70ab4d7fb227b35cc0e1120f48cb3021</string>
-				<string>ssoupurlscheme</string>
+				<string>com.googleusercontent.apps.159990997817-mlkooh6aercekrbk16gb0fb1001idpo6</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>kakao</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>kakao842b3b6744424d1938d1d97d8e46c034</string>
 			</array>
 		</dict>
 	</array>
-	<key>CFBundleVersion</key>
-	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSApplicationQueriesSchemes</key>
 	<array>
 		<string>kakaokompassauth</string>
+		<!-- KakaoLink -->
 		<string>kakaolink</string>
-		<string>naversearchapp</string>
-		<string>naversearchthirdlogin</string>
+		<string>kakaotalk</string>
 	</array>
+	<key>CFBundleVersion</key>
+	<string>$(FLUTTER_BUILD_NUMBER)</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSAppTransportSecurity</key>
@@ -51,31 +61,34 @@
 		<key>NSAllowsArbitraryLoads</key>
 		<true/>
 	</dict>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>앱에서 Apple 로그인을 사용하려면 권한이 필요합니다.</string>
 	<key>NSCameraUsageDescription</key>
-	<string>We need access to the camera to take pictures</string>
+	<string>앱에서 카메라를 사용하려면 권한이 필요합니다.</string>
 	<key>NSLocationAlwaysUsageDescription</key>
-	<string>We need your location to provide better service.</string>
+	<string>앱이 백그라운드에서 위치 정보를 사용합니다.</string>
 	<key>NSLocationTemporaryUsageDescriptionDictionary</key>
 	<dict>
-		<key>YourPurposeKey</key>
-		<string>The example App requires temporary access to the device's precise location.</string>
+		<key>EventLocationTracking</key>
+		<string>The app needs temporary access to your precise location for event tracking.</string>
+		<key>RouteNavigation</key>
+		<string>The app requires temporary access to your location to provide navigation services during your route.</string>
 	</dict>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>We need your location to provide better service.</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>We need access to the microphone to record videos</string>
+	<string>앱이 사용 중일 때 사용자의 위치를 액세스합니다.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>We need access to the photo library to select pictures</string>
+	<string>앱에서 사진을 선택하려면 사진 라이브러리 접근이 필요합니다.</string>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
 	<key>UIBackgroundModes</key>
 	<array>
-		<string>location</string>
+		<string>fetch</string>
+		<string>remote-notification</string>
 	</array>
-	<key>UILaunchStoryboardName</key>
-	<string>LaunchScreen</string>
-	<key>UIMainStoryboardFile</key>
-	<string>Main</string>
+	<!--<key>UILaunchStoryboardName</key>
+	<string>LaunchScreen.storyboard</string>-->
+	<key>UIRequiresFullScreen</key>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
@@ -89,25 +102,5 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>naverConsumerKey</key>
-	<string>jSSDX9vyG5t_3htQlW73</string>
-	<key>naverConsumerSecret</key>
-	<string>L0VKXGZxWq</string>
-	<key>naverServiceAppName</key>
-	<string>ssoup</string>
-	<key>naverServiceAppUrlScheme</key>
-	<string>ssoupurlscheme</string>
-	<key>NSAppleIDUsageDescription</key>
-	<string>애플 계정으로 로그인하기 위해 사용합니다.</string>
-
-	<!-- 추가된 부분 -->
-	<key>io.flutter.embedded_views_preview</key>
-	<true/>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>앱이 사용 중일 때 위치에 접근합니다.</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>앱이 백그라운드에서 위치에 접근합니다.</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>앱이 항상 위치에 접근합니다.</string>
 </dict>
 </plist>

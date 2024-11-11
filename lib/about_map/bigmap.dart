@@ -1,14 +1,15 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:math' show cos, sqrt, asin;
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:ssoup/constants.dart';
 import 'package:ssoup/theme/color.dart';
 import 'package:ssoup/theme/text.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BigMapPage extends StatefulWidget {
   const BigMapPage({super.key});
@@ -81,13 +82,21 @@ class _BigMapPageState extends State<BigMapPage> {
       final LatLng location = LatLng(data['location'][0], data['location'][1]);
       final String name = data['locationName'];
       final String information = data['information'];
+      final String time = data['time'];
+      final String phoneNumber = data['phoneNumber'];
+      final String adultPrice = data['adultPrice'];
+      final String teenPrice = data['teenPrice'];
+      final String kidPrice = data['kidPrice'];
+      final String address = data['address'];
+      final String imageUrl = data['imageUrl'];
 
       final Marker touristMarker = Marker(
         markerId: MarkerId(doc.id),
         position: location,
         icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
         onTap: () {
-          _showMarkerInfoDialog(name, information);
+          _showMarkerInfoDialog(name, time, phoneNumber, adultPrice, teenPrice,
+              kidPrice, address, information, imageUrl, location);
         },
       );
       setState(() {
@@ -142,12 +151,6 @@ class _BigMapPageState extends State<BigMapPage> {
       if (routes != null && routes.isNotEmpty) {
         final points = routes[0]['path'];
         _setPolylineFromNaverPoints(points);
-        _calculateDistance(
-          _currentLocation!.latitude,
-          _currentLocation!.longitude,
-          destination.latitude,
-          destination.longitude,
-        );
       } else {
         print('No routes found');
       }
@@ -174,31 +177,226 @@ class _BigMapPageState extends State<BigMapPage> {
     });
   }
 
-  double _calculateDistance(
-      double lat1, double lon1, double lat2, double lon2) {
-    const p = 0.017453292519943295; // Math.PI / 180
-    const c = cos;
-    final a = 0.5 -
-        c((lat2 - lat1) * p) / 2 +
-        c(lat1 * p) * c(lat2 * p) * (1 - c((lon2 - lon1) * p)) / 2;
-    return 12742 *
-        asin(sqrt(a)) *
-        1000; // 2 * R; R = 6371 km, convert to meters
+  void _makePhoneCall(String phoneNumber) async {
+    final Uri url = Uri(scheme: 'tel', path: phoneNumber);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $phoneNumber';
+    }
   }
 
-  void _showMarkerInfoDialog(String name, String information) {
+  void _showMarkerInfoDialog(
+    String name,
+    String time,
+    String phoneNumber,
+    String adultPrice,
+    String teenPrice,
+    String kidPrice,
+    String address,
+    String information,
+    String imageUrl,
+    LatLng location,
+  ) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
+        double screenWidth = MediaQuery.of(context).size.width;
+        double screenHeight = MediaQuery.of(context).size.height;
         return AlertDialog(
-          title: Text(name),
-          content: Text(information),
+          backgroundColor: Colors.white,
+          content: Stack(
+            children: [
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      IconButton(
+                        icon: Icon(
+                          Icons.close,
+                          size: 34,
+                          color: Color(0xFFD9D9D9),
+                        ),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                  Text(
+                    name,
+                    style: medium20.copyWith(
+                        fontWeight: FontWeight.w500,
+                        fontSize: (20 / 393) * screenWidth),
+                  ),
+                  Text(
+                    address,
+                    style: regular10.copyWith(
+                      color: Color(0xFF909090),
+                      fontSize: (14 / 393) * screenWidth,
+                      fontWeight: FontWeight.w200,
+                    ),
+                  ),
+                  SizedBox(height: (18 / 852) * screenHeight),
+                  GestureDetector(
+                    onTap: () {
+                      //클릭하면 전화할 수 있는 함수 추가하기
+                      _makePhoneCall(phoneNumber);
+                    },
+                    child: Row(
+                      children: [
+                        SvgPicture.asset(
+                          'assets/phone.svg',
+                          width: 14,
+                          height: 14,
+                          color: const Color(0xff343434),
+                        ),
+                        SizedBox(width: 12),
+                        Text(
+                          phoneNumber,
+                          style: medium15.copyWith(
+                            fontSize: (14 / 393) * screenWidth,
+                            color: Color(0xFF131313),
+                            fontWeight: FontWeight.w500,
+                            decoration: TextDecoration.underline,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      SvgPicture.asset(
+                        'assets/clock.svg',
+                        alignment: AlignmentDirectional.topStart,
+                        width: 14,
+                        height: 14,
+                        color: const Color(0xff343434),
+                      ),
+                      SizedBox(width: (12 / 393) * screenWidth),
+                      Text(
+                        time,
+                        style: medium13.copyWith(
+                          color: Color(0xFF131313),
+                          fontSize: (14 / 393) * screenWidth,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Column(
+                        children: [
+                          SvgPicture.asset(
+                            'assets/won.svg',
+                            width: 14,
+                            height: 14,
+                            color: const Color(0xff343434),
+                          ),
+                        ],
+                      ),
+                      SizedBox(width: (12 / 393) * screenWidth),
+                      Column(
+                        children: [
+                          Text(
+                            '어른:     $adultPrice',
+                            style: medium13.copyWith(
+                              fontSize: (14 / 393) * screenWidth,
+                            ),
+                          ),
+                          Text(
+                            '청소년:  $teenPrice',
+                            style: medium13.copyWith(
+                              fontSize: (14 / 393) * screenWidth,
+                            ),
+                          ),
+                          Text(
+                            '아동:     $kidPrice',
+                            style: medium13.copyWith(
+                              fontSize: (14 / 393) * screenWidth,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: (17 / 852) * screenHeight),
+                  const Divider(
+                    color: Color(0xffADAAAA),
+                    thickness: 1,
+                  ),
+                  SizedBox(height: (17 / 852) * screenHeight),
+                  SizedBox(
+                    height: 200,
+                    child: SingleChildScrollView(
+                      child: Text(
+                        information,
+                        style: medium13.copyWith(
+                          color: Color(0xFF131313),
+                          fontSize: (14 / 393) * screenWidth,
+                          letterSpacing: -0.28,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Positioned(
+                left: (160 / 393) * screenWidth,
+                top: (130 / 852) * screenHeight,
+                child: Container(
+                  width: 90,
+                  height: 90,
+                  decoration: ShapeDecoration(
+                    image: DecorationImage(
+                      image: NetworkImage(imageUrl),
+                      fit: BoxFit.fill,
+                    ),
+                    shape: OvalBorder(),
+                  ),
+                ),
+              )
+            ],
+          ),
           actions: <Widget>[
-            TextButton(
-              child: const Text('Close'),
+            ElevatedButton(
               onPressed: () {
                 Navigator.of(context).pop();
+                _getNaverRoute(location); // 해당 위치로 길 안내
               },
+              style: ButtonStyle(
+                elevation: const WidgetStatePropertyAll(0),
+                backgroundColor: const WidgetStatePropertyAll(
+                  Color(0xFF4FA2FF),
+                ),
+                shape: WidgetStatePropertyAll(
+                  RoundedRectangleBorder(
+                    side: const BorderSide(width: 1, color: Color(0xFF4FA2FF)),
+                    borderRadius: BorderRadius.circular(6),
+                  ),
+                ),
+              ),
+              child: SizedBox(
+                width: 274,
+                height: 30,
+                child: Center(
+                  child: Text(
+                    '안내받기',
+                    style: medium13.copyWith(
+                      color: const Color(0xFFFFFFFF),
+                      fontSize: 15,
+                      fontFamily: 'S-Core Dream',
+                      fontWeight: FontWeight.w600,
+                      height: 0.09,
+                      letterSpacing: -0.32,
+                    ),
+                  ),
+                ),
+              ),
             ),
           ],
         );
@@ -268,9 +466,12 @@ class _BigMapPageState extends State<BigMapPage> {
     return Scaffold(
       appBar: AppBar(
         scrolledUnderElevation: 0,
-        title: const Text(
-          '울릉투어 맵',
-          style: regular23,
+        automaticallyImplyLeading: false,
+        title: Center(
+          child: const Text(
+            '울릉투어 맵',
+            style: regular23,
+          ),
         ),
         backgroundColor: const Color(0xffC6EBFE),
       ),

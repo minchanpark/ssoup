@@ -1,6 +1,7 @@
+import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
+import 'package:ssoup/main.dart';
 import 'package:ssoup/theme/text.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -12,6 +13,7 @@ class SettingsPage extends StatefulWidget {
 
 class _SettingsPageState extends State<SettingsPage> {
   String nickName = '';
+
   Future<void> fetchNickName() async {
     try {
       String uid = FirebaseAuth.instance.currentUser!.uid;
@@ -29,6 +31,111 @@ class _SettingsPageState extends State<SettingsPage> {
   void initState() {
     super.initState();
     fetchNickName();
+  }
+
+  /*void _logout() {
+    try {
+      FirebaseAuth.instance.signOut();
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => MyApp()),
+        (Route<dynamic> route) => false, // 모든 이전 페이지 스택을 제거
+      );
+    } catch (e) {
+      print('Error logging out: $e');
+    }
+  }*/
+
+  void _deleteAccount() {
+    try {
+      String uid = FirebaseAuth.instance.currentUser!.uid;
+
+      // 1. Firestore에서 사용자 데이터 삭제 (선택 사항)
+      FirebaseFirestore.instance.collection('user').doc(uid).delete();
+
+      // 2. Firebase Authentication에서 사용자 삭제
+      FirebaseAuth.instance.currentUser!.delete();
+
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => MyApp()),
+        (Route<dynamic> route) => false, // 모든 이전 페이지 스택을 제거
+      );
+    } catch (e) {
+      print('Error deleting account: $e');
+    }
+  }
+
+  void _showDeleteAccountDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text('회원탈퇴'),
+          content: const Text('정말로 회원탈퇴를 하시겠습니까?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                '취소',
+                style: medium13.copyWith(color: Color(0xFF1A86FF)),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(
+                '탈퇴',
+                style: medium13.copyWith(color: Color(0xff9D9D9D)),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop(); // 다이얼로그 닫기
+                _deleteAccount(); // 회원탈퇴 처리
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _logoutDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.white,
+          title: const Text('로그아웃'),
+          content: const Text('로그아웃 하시겠습니까?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text(
+                '취소',
+                style: medium13.copyWith(color: Color(0xFF1A86FF)),
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(
+                '로그아웃',
+                style: medium13.copyWith(color: Color(0xff9D9D9D)),
+              ),
+              onPressed: () {
+                FirebaseAuth.instance.signOut();
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyApp()),
+                  (Route<dynamic> route) => false, // 모든 이전 페이지 스택을 제거
+                );
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -70,19 +177,26 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Row(
                 children: [
                   Container(
-                    width: 65,
-                    height: 65,
-                    decoration: const ShapeDecoration(
-                      color: Color(0xFFD9D9D9),
-                      shape: OvalBorder(),
+                    width: (65 / 393) * appWidth,
+                    height: (65 / 852) * appHeight,
+                    decoration: ShapeDecoration(
+                      color: Colors.transparent,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100),
+                        side: BorderSide(color: Colors.black),
+                      ),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(100),
+                      child: Image.asset("assets/ul.png"),
                     ),
                   ),
                   const SizedBox(width: 6),
                   Text(
                     '$nickName 님',
-                    style: medium15.copyWith(
+                    style: const TextStyle(
                       fontWeight: FontWeight.w600,
-                      height: 0.14,
+                      fontSize: 15,
                       letterSpacing: -0.32,
                     ),
                   ),
@@ -100,13 +214,10 @@ class _SettingsPageState extends State<SettingsPage> {
                 _buildMenuItem('개인정보 처리방침', 1),
                 const Divider(
                     thickness: 1, height: 2, color: Color(0xffB1B1B1)),
-                _buildMenuItem('푸쉬 알림 설정', 2),
+                _buildMenuItem('로그아웃', 2),
                 const Divider(
                     thickness: 1, height: 2, color: Color(0xffB1B1B1)),
-                _buildMenuItem('로그아웃', 3),
-                const Divider(
-                    thickness: 1, height: 2, color: Color(0xffB1B1B1)),
-                _buildMenuItem('회원탈퇴', 4),
+                _buildMenuItem('회원탈퇴', 3),
                 const Divider(
                     thickness: 1, height: 2, color: Color(0xffB1B1B1)),
               ],
@@ -122,15 +233,22 @@ class _SettingsPageState extends State<SettingsPage> {
     return ListTile(
       title: Text(
         title,
-        style: medium16.copyWith(
+        style: const TextStyle(
           fontSize: 17,
           fontWeight: FontWeight.w500,
-          height: 0.11,
           letterSpacing: -0.32,
         ),
       ),
       onTap: () {
-        // 메뉴 항목을 눌렀을 때의 동작을 여기에 추가하세요.
+        if (index == 0) {
+          Navigator.pushNamed(context, "/service");
+        } else if (index == 1) {
+          Navigator.pushNamed(context, "/private");
+        } else if (index == 2) {
+          _logoutDialog(); // 로그아웃 기능
+        } else if (index == 3) {
+          _showDeleteAccountDialog(); // 회원탈퇴 기능
+        }
       },
     );
   }

@@ -1,6 +1,7 @@
-import UIKit
 import Flutter
+import UIKit
 import GoogleMaps
+import Firebase
 
 @main
 @objc class AppDelegate: FlutterAppDelegate {
@@ -8,19 +9,15 @@ import GoogleMaps
     _ application: UIApplication,
     didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?
   ) -> Bool {
-    GMSServices.provideAPIKey("AIzaSyAcFH0RxG1lD5jBA6voMl4MvKOCdB5zYg8")
+    // Firebase 초기화
+    FirebaseApp.configure()
+      
+    // Google Maps API 키 추가
+    GMSServices.setMetalRendererEnabled(true)
+    GMSServices.provideAPIKey("AIzaSyDIBovNEZWIZSPVyRmzmBaCsInU8YgQPHc")
+
     GeneratedPluginRegistrant.register(with: self)
-
+    
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
-  }
-
-  override func application(_ app: UIApplication, open url: URL, options: [UIApplication.OpenURLOptionsKey : Any] = [:]) -> Bool {
-    var applicationResult = false
-
-    if (!applicationResult) {
-       applicationResult = super.application(app, open: url, options: options)
-    }
-
-    return applicationResult
   }
 }

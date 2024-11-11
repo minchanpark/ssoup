@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import '../theme/text.dart';
+import 'tour_detail_page.dart';
 
 class TourListPage extends StatefulWidget {
   const TourListPage({super.key});
@@ -50,6 +51,7 @@ class _TourListPageState extends State<TourListPage> {
               location: doc['location'],
               locationName: doc['locationName'],
               address: doc['address'],
+              duration: doc['duration'],
             );
           }).toList();
 
@@ -63,17 +65,18 @@ class _TourListPageState extends State<TourListPage> {
                   SizedBox(height: screenHeight * (10 / 852)),
                   GestureDetector(
                     onTap: () {
-                      /*Navigator.push(
+                      Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => TourDetailPage(
-                            courseId: tour.id, // courseId 전달
-                            courseImage: tour.image,
-                            courseLocationName: tour.locationName,
+                            tourId: tour.id, // courseId 전달
+                            tourImage: tour.image,
+                            tourLocationName: tour.locationName,
                             location: tour.location,
+                            duration: tour.duration,
                           ),
                         ),
-                      );*/
+                      );
                     },
                     child: Container(
                       margin: EdgeInsets.symmetric(
@@ -179,6 +182,7 @@ class TourList {
   final List location;
   final String address;
   final String locationName;
+  final String duration;
 
   TourList({
     required this.id, // 코스 ID 추가
@@ -186,5 +190,6 @@ class TourList {
     required this.location,
     required this.locationName,
     required this.address,
+    required this.duration,
   });
 }
