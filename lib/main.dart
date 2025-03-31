@@ -23,10 +23,10 @@ void main() async {
     javaScriptAppKey: kakaoJavaScriptAppKey,
   );
 
-  runApp(
+  /*runApp(
       const MaterialApp(debugShowCheckedModeBanner: false, home: SplashPage()));
 
-  await Future.delayed(const Duration(seconds: 3));
+  await Future.delayed(const Duration(seconds: 3));*/
 
   runApp(const MaterialApp(debugShowCheckedModeBanner: false, home: MyApp()));
 }
@@ -51,6 +51,7 @@ class MyApp extends StatelessWidget {
         "/splash": (BuildContext context) => const SplashPage(),
         "/private": (BuildContext context) => const PrivatePage(),
         "/service": (BuildContext context) => const ServicePage(),
+        "/login_page": (BuildContext context) => const LoginPage(),
       },
       home: const LoginPage(),
     );
