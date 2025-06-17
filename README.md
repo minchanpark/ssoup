@@ -23,31 +23,48 @@
 
 `ssoup` 프로젝트는 Flutter를 기반으로 개발되었으며, 다음과 같은 주요 디렉토리와 파일로 구성됩니다.
 
-ssoup/
-├── .gitignore
-├── .vscode/
-├── android/
-├── ios/
-├── lib/
-│   ├── about_home/
-│   ├── about_login/
-│   ├── about_map/
-│   ├── location/
-│   ├── plogging/
-│   ├── transport/
-│   ├── theme/
-│   ├── main.dart
-│   ├── nick_name.dart
-│   ├── splash.dart
-│   └── stamp.dart
-├── linux/
-├── macos/
-├── public/
-├── web/
-├── windows/
-├── pubspec.yaml
-├── analysis_options.yaml
-└── README.md
+시작 및 로그인 화면
+   - SplashPage: 애플리케이션 시작 시 표시되는 스플래시 화면
+   - LoginPage: 구글, 카카오, 또는 아이디/비밀번호를 통한 로그인 옵션을 제공하는 화면
+   - LoginWithId: 아이디와 비밀번호를 입력하여 로그인하는 화면
+   - RegisterPage: 새로운 계정을 생성하기 위한 회원가입 화면
+   - NickNamePage: 사용자 닉네임을 설정하는 화면
+
+메인 네비게이션 및 홈 화면
+   - HomePageNavigationBar: 하단 네비게이션 바를 포함하여 홈, 스탬프, 지도, 이동수단 화면으로 전환하는 메인 레이아웃
+   - HomePage: 애플리케이션의 홈 화면으로, 관광 명소 및 플로깅 관련 버튼, 스탬프 진행도 등을 표시
+
+관광 명소 (Tour)
+   - TourListPage: 울릉도 관광 명소 목록을 표시하는 화면
+   - TourDetailPage: 개별 관광 명소의 상세 정보와 리뷰 탭을 포함하는 화면
+   - TourReviewPage: 특정 관광 명소에 대한 리뷰를 보여주는 화면 (평점, 이미지 리뷰, 텍스트 리뷰 포함)
+   - ReviewCreatePageTour: 관광 명소에 대한 리뷰를 작성하는 화면
+   - PhotoReviewTourPage: 특정 관광 명소의 모든 포토 리뷰를 모아 보여주는 화면
+
+플로깅 (Plogging)
+   - PloggingPage: 울릉도 플로깅 코스 목록을 표시하는 화면
+   - CourseDetailPage: 개별 플로깅 코스의 상세 정보와 리뷰 탭을 포함하는 화면
+   - CourseReviewPage: 특정 플로깅 코스에 대한 리뷰를 보여주는 화면
+   - ReviewCreatePage: 플로깅 코스에 대한 리뷰를 작성하는 화면
+   - PhotoReviewPage: 특정 플로깅 코스의 모든 포토 리뷰를 모아 보여주는 화면
+
+지도 화면
+   - BigMapPage: 울릉도 전체 지도를 표시하고 관광지, 쓰레기통 필터링 기능을 제공하는 화면
+   - GoogleMapPage: 플로깅 코스 길 안내를 위한 지도 화면
+   - GoogleMapTourPage: 관광 명소 길 안내를 위한 지도 화면
+
+이동수단 화면
+   - TransportationPage: 울릉도 내 이동수단 선택 (택시, 배편) 화면
+   - TaxiPage: 울릉도 콜택시 목록 및 전화 걸기 기능을 제공하는 화면
+   - BoatPage: 독도 배편 예약 링크를 제공하는 화면
+
+스탬프 화면
+   - StampPage: 사용자가 획득한 스탬프 목록을 보여주는 화면
+
+설정 및 약관 화면
+   - SettingsPage: 사용자 프로필, 서비스 이용약관, 개인정보 처리방침, 로그아웃, 회원탈퇴 기능을 포함하는 설정 화면
+   - ServicePage: 서비스 이용약관 내용을 표시하는 화면
+   - PrivatePage: 개인정보 처리방침 내용을 표시하는 화면
 
 ## 기술 스택
 
