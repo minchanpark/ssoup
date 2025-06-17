@@ -24,31 +24,30 @@
 `ssoup` 프로젝트는 Flutter를 기반으로 개발되었으며, 다음과 같은 주요 디렉토리와 파일로 구성됩니다.
 
 ssoup/
-├── .gitignore                    # Git 버전 관리에서 제외할 파일 및 폴더 설정
-├── .vscode/                      # VS Code 개발 환경 설정 파일 (C/C++ 디버깅, 빌드 설정)
-├── android/                      # Android 플랫폼 관련 파일 및 설정 (Gradle, Manifest, Google Services)
-├── ios/                          # iOS 플랫폼 관련 파일 및 설정 (Xcode 프로젝트, AppDelegate)
-├── lib/                          # Flutter 애플리케이션의 Dart 소스 코드
-│   ├── about_home/               # 홈 화면, 설정, 개인정보 처리방침, 서비스 이용약관 관련 위젯 및 로직
-│   ├── about_login/              # 로그인, 회원가입, ID/PW 로그인 관련 위젯 및 로직
-│   ├── about_map/                # 지도 관련 위젯 및 로직 (관광지 및 쓰레기통 지도, 길 안내)
-│   ├── location/                 # 관광 명소 목록, 상세 페이지, 리뷰 작성 및 조회 관련 위젯 및 로직
-│   ├── plogging/                 # 플로깅 코스 목록, 상세 페이지, 리뷰 작성 및 조회 관련 위젯 및 로직
-│   ├── transport/                # 이동수단 정보 (택시, 배편) 관련 위젯 및 로직
-│   ├── theme/                    # 애플리케이션 전반에 걸쳐 사용되는 색상 및 텍스트 스타일 정의
-│   ├── main.dart                 # 애플리케이션의 진입점 및 라우트 정의
-│   ├── nick_name.dart            # 닉네임 설정 페이지
-│   ├── splash.dart               # 스플래시 화면
-│   └── stamp.dart                # 스탬프 현황 페이지
-├── linux/                        # Linux 플랫폼 관련 파일 및 설정 (CMakeLists, C++ 소스)
-├── macos/                        # macOS 플랫폼 관련 파일 및 설정 (Xcode 프로젝트, Swift 소스)
-├── public/                       # Firebase Hosting 공개 디렉토리 (기본 index.html 포함)
-├── web/                          # 웹 플랫폼 관련 파일 및 설정 (index.html, manifest.json)
-├── windows/                      # Windows 플랫폼 관련 파일 및 설정 (CMakeLists, C++ 소스)
-├── pubspec.yaml                  # Flutter 프로젝트의 종속성 및 메타데이터 정의
-├── analysis_options.yaml         # Dart 코드 분석 및 린트(lint) 규칙 설정
-└── README.md                     # 프로젝트 설명 (현재 파일)
-
+├── .gitignore
+├── .vscode/
+├── android/
+├── ios/
+├── lib/
+│   ├── about_home/
+│   ├── about_login/
+│   ├── about_map/
+│   ├── location/
+│   ├── plogging/
+│   ├── transport/
+│   ├── theme/
+│   ├── main.dart
+│   ├── nick_name.dart
+│   ├── splash.dart
+│   └── stamp.dart
+├── linux/
+├── macos/
+├── public/
+├── web/
+├── windows/
+├── pubspec.yaml
+├── analysis_options.yaml
+└── README.md
 
 ## 기술 스택
 
